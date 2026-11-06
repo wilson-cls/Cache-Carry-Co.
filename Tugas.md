@@ -1,14 +1,18 @@
-Tujuan Project:
+#Tujuan Project
 Tugas Besar Pemrograman Web Dasar bertujuan melihat dan mengukur kemampuan mahasiswa 
 dalam membangun sebuah aplikasi web. Aplikasi web yang dibangun bertujuan untuk menyelesaikan 
 permasalahan dalam studi kasus
 
-Ketentuan Project:
+---
+
+#Ketentuan Project
 1. Tugas Besar dilakukan secara berkelompok, setiap kelompok terdiri dari 5 – 6 mahasiswa. 
 2. Mahasiswa dibebaskan dalam memilih topik. 
 3. Topik yang dipilih tidak boleh sama antar kelompok. 
 
-Deskripsi Project:
+---
+
+#Deskripsi Project
 Mahasiswa diminta untuk membuat aplikasi web untuk menyelesaikan sebuah permasalahan dan 
 harus memenuhi kriteria sebagai berikut: 
 1. Aplikasi web memiliki backend system berbasis PHP murni (bukan framework). 
@@ -20,7 +24,9 @@ harus memenuhi kriteria sebagai berikut:
 7. Aplikasi web memiliki fitur untuk CRUD (transaksi) data ke system yang diproses melalui 
 backend (minimal 2 CRUD) 
 
-Bonus:
+---
+
+#Bonus
 1. Aplikasi web memiliki User Interface untuk menampilkan data yang diproses melalui frontend 
 sebagai user admin. 
 2. Aplikasi web menggunakan fitur geolocation jika relevan dengan topik yang dipilih. 
@@ -28,7 +34,9 @@ sebagai user admin.
 registrasi. 
 4. Aplikasi web memiliki fitur untuk menambahkan atau mengupdate foto profil pengguna.
 
-Ketentuan Pengerjaan:
+---
+
+#Ketentuan Pengerjaan
 1. Setelah topik kelompok dikumpulkan, kelompok akan diberikan notes progres yang harus 
 dikerjakan dan akan digunakan sebagai bahan pemaparan progres pada delivery project 
 pertama dan kedua. 
