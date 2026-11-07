@@ -1,5 +1,5 @@
 # Cahce-Carry-Co.
-Repository ini dibuat untuk memenuhi tugas besar mata kuliah **Pemrograman Web Dasar**. Website ini dirancang untuk memfasilitasi transaksi dan katalogisasi kendaraan-kendaraan fiksi dan unik, yang mencakup moda transportasi udara, laut, dan darat.
+Repository ini dibuat untuk memenuhi Tugas Besar mata kuliah **Pemrograman Web Dasar**. Website ini dirancang sebagai platform terpusat untuk memfasilitasi katalogisasi spesifikasi teknis serta pencatatan transaksi (sewa/jual-beli) kendaraan eksotis dan non-standar—mulai dari moda transportasi udara, maritim, hingga kendaraan darat berat—secara terstruktur, transparan, dan terorganisir.
 
 ##### [Detail Tugas Besar](Tugas.md)
 ---
