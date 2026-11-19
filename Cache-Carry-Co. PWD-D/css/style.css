@@ -1,0 +1,87 @@
+body{
+    background-color: #1E1E1E;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+#navbar{
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    border-bottom: 1px solid #FCA311;
+}
+
+#logo a{
+    display: flex;
+    align-items: center;
+    color: #F3F3F3;
+    font-size: 12px;
+    font-weight: bold;
+    gap: 12px;
+    text-decoration: none;
+}
+
+#logo img{
+    height: 48px;
+    width: 48px;
+}
+
+#searchBar{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 387px;
+    background-color: #1E1E1E;
+    border: 0.8px solid #F3F3F3;
+    border-radius: 11.25px;
+    padding: 5px 20px;
+    box-sizing: border-box;
+}
+
+#quickSearch{
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 10px 5px;
+    color: #F3F3F3;
+}
+
+#quickSearch::placeholder{
+    color: #595970;
+    opacity: 1;
+}
+
+.searchIcon{
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    opacity: 0.75;
+}
+
+#navMenu{
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+#navMenu a{
+    color: #F3F3F3;
+    text-decoration: none;
+}
+
+#profile{
+    display: flex;
+    align-items: center;
+}
+
+.signIn{
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 20px;
+    border-radius: 11.25px;
+}
