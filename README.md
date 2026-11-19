@@ -8,4 +8,3 @@ Repository ini dibuat untuk memenuhi Tugas Besar mata kuliah **Pemrograman Web D
 Website dan seluruh konten di dalamnya **murni bersifat fiktif, hiburan, dan simulasi belaka**. Seluruh transaksi, data kendaraan, dan fitur transaksi yang ada di dalam website ini hanyalah contoh kasus untuk keperluan tugas kuliah dan tidak mewakili transaksi di dunia nyata.
 
 ---
->>>>>>> 0f82ef4 (coba push)
