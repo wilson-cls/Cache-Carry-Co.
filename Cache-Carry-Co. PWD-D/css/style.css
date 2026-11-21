@@ -18,13 +18,17 @@ body{
 }
 
 #navbar{
+    position: sticky;
+    top: 0;
     display: flex;
+    z-index: 1000;
     align-items: center;
     padding: 15px 30px;
     display: flex;
     gap: 20px;
     justify-content: space-between;
     border-bottom: 1px solid #FCA311;
+    background-color: #1E1E1E;
 }
 
 #logo a{
