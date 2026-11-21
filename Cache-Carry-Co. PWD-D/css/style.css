@@ -93,6 +93,9 @@ body{
 #profile{
     display: flex;
     align-items: center;
+    position: relative;
+    display: inline-block;
+
 }
 
 .signIn{
