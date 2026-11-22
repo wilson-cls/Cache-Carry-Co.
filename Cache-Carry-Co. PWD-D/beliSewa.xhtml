@@ -3,64 +3,65 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sunreef 80 Power - Cache-Carry-Co.</title>
+  <title id="pageTitle">Sunreef 80 Power - Cache-Carry-Co.</title>
   <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/style.css" />
   <link rel="stylesheet" type="text/css" href="../Cache-Carry-Co. PWD-D/css/beliSewa.css" />
 </head>
 <body>
-    <div id="navbar">
-      <div id="logo">
-          <a href="../Cache-Carry-Co. PWD-D/index.xhtml">
-              <img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="logo" />
-              <h2>Cache-Carry-Co. </h2>
-          </a>
-      </div>
+  <div id="navbar">
+    <div id="logo">
+      <a href="../Cache-Carry-Co. PWD-D/index.xhtml">
+        <img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="logo" />
+        <h2>Cache-Carry-Co. </h2>
+      </a>
+    </div>
 
-      <div id="searchBar">
-          <img src="../Cache-Carry-Co. PWD-D/images/Search.svg" alt="Search Icon" class="searchIcon" />
-          <input type="text" name="quickSearch" id="quickSearch" placeholder="Quick search any vehicle..."/>
-      </div>
+    <div id="searchBar">
+      <img src="../Cache-Carry-Co. PWD-D/images/Search.svg" alt="Search Icon" class="searchIcon" />
+      <input type="text" name="quickSearch" id="quickSearch" placeholder="Quick search any vehicle..." />
+    </div>
 
-      <!-- nanti pakai JS WAJIB nambahin class ke menu yang diclik -->
-      <div id="navMenu">
-          <a href="">Home</a>
-          <a href="">Vehicle</a>
-          <a href="">Garage</a>
-          <a href="">Cart</a>
-      </div>
+    <!-- nanti pakai JS WAJIB nambahin class ke menu yang diclik -->
+    <div id="navMenu">
+      <a href="">Home</a>
+      <a href="">Vehicle</a>
+      <a href="">Garage</a>
+      <a href="">Cart</a>
+    </div>
 
-      <div id="profile">
-          <button type="button" class="signIn">
-              Sign In
-          </button>
-      </div>
+    <div id="profile">
+      <button type="button" class="signIn">
+        Sign In
+      </button>
+    </div>
   </div>
 
   <!-- blm revisi ini -->
   <div class="productWrapper">
     <div class="productImg">
-      <img src="../Cache-Carry-Co. PWD-D/images/Kendaraan Laut/Sunreef 80 Power.svg"
-       alt="Sunreef 80 Power" />
+      <img id="productImgEl"
+           src="../Cache-Carry-Co. PWD-D/images/Kendaraan Laut/Sunreef 80 Power.svg"
+           alt="Sunreef 80 Power" />
     </div>
 
-    <div class="info">Laut - 2022</div>
-    <h1 class="productName">Sunreef 80 Power</h1>
+    <div id="infoEl" class="info">Laut - 2022</div>
+    <h1 id="productNameEl" class="productName">Sunreef 80 Power</h1>
 
     <div class="specList">
       <div class="specBox">
-        <div class="specVal">8 - 12</div>
+        <div id="specPenumpang" class="specVal">8 - 12</div>
         <div class="specLbl">pessangers</div>
       </div>
       <div class="specBox">
-        <div class="specVal">20 - 25 kn</div>
+        <div id="specKecepatan" class="specVal">20 - 25 kn</div>
         <div class="specLbl">speed</div>
       </div>
       <div class="specBox">
-        <div class="specVal">3,000+ nm</div>
+        <div id="specJarak" class="specVal">3,000+ nm</div>
         <div class="specLbl">range</div>
       </div>
       <div class="specBox">
-        <div class="specVal">Wi-Fi</div>
+        <div id="specWifi" class="specVal">Wi-Fi</div>
         <div class="specLbl">Available</div>
       </div>
     </div>
@@ -69,11 +70,11 @@
     <div class="trxOptions">
       <div id="trxBuy" class="trxCard active" onclick="selectTransaction('buy')">
         <div class="trxLabel">Buy</div>
-        <div class="trxPrice">Rp 95.000.000.000</div>
+        <div id="hargaBeli" class="trxPrice">Rp 95.000.000.000</div>
       </div>
       <div id="trxRent" class="trxCard" onclick="selectTransaction('rent')">
         <div class="trxLabel">Rent</div>
-        <div class="trxPrice">Rp 200.000.000</div>
+        <div id="hargaSewa" class="trxPrice">Rp 200.000.000</div>
       </div>
     </div>
 
