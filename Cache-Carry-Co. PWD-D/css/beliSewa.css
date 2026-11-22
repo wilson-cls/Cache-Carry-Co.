@@ -36,6 +36,7 @@
   font-weight: 400;
   letter-spacing: 1px;
   margin-bottom: 24px;
+  color: #f3f3f3;
 }
 
 /* highlight spesifikasi */
@@ -67,7 +68,7 @@
 }
 
 /* pilihan transaksi */
-.subTitle {
+.subtitle {
   font-size: 13px;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
@@ -92,7 +93,7 @@
 }
 
 .trxCard.active {
-  background-color: #ffa800;
+  background-color: #FCA311;
   color: #1e1e1e;
 }
 
@@ -212,5 +213,34 @@
 
 .btnCart:hover,
 .btnMain:hover {
-  background-color: #e2e2e2;
+  background-color: #FCA311;
+}
+
+/* Pop up notifikasi keranjang di tengah layar */
+.cartMessage {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(8px);
+  background-color: #161616;
+  color: #f3f3f3;
+  border: 1px solid #FCA311;
+  border-radius: 14px;
+  padding: 16px 26px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  max-width: 90vw;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  z-index: 9999;
+}
+
+.cartMessage.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) translateY(0);
 }
