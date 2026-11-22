@@ -50,23 +50,14 @@ function updateDuration(delta) {
   document.getElementById('durationCount').innerHTML = durationDays;
 }
 
-// pop-up berhasil masukin ke keranjang tengah layar
-function addToCart() {
-  var nameEl = document.getElementById('productNameEl');
+// Menampilkan pop-up di tengah layar dengan efek fade-in lalu fade-out
+function showBeliSewaPopup(text) {
   var msgEl = document.getElementById('cartMessage');
-  var namaKendaraan = nameEl ? nameEl.textContent.trim() : 'Kendaraan';
-
-  var detail = currentType === 'rent'
-    ? 'Sewa ' + quantity + ' unit (' + durationDays + ' hari)'
-    : 'Beli ' + quantity + ' unit';
-
   if (!msgEl) {
     return;
   }
 
-  msgEl.textContent = 'Product added to your cart! ';
-
-  // Reset trus aktifin class 'show' untuk munculin fade in
+  msgEl.textContent = text;
   msgEl.classList.remove('show');
   void msgEl.offsetWidth;
   msgEl.classList.add('show');
@@ -75,8 +66,66 @@ function addToCart() {
     clearTimeout(cartPopupTimer);
   }
 
-  // Hapus class 'show' setelah 2,2 detik untuk munculin fade out
   cartPopupTimer = setTimeout(function () {
     msgEl.classList.remove('show');
   }, 2200);
 }
+
+// Menyimpan item ke keranjang via backend lalu memunculkan pop-up konfirmasi
+function addToCart() {
+  var nameEl = document.getElementById('productNameEl');
+  var namaKendaraan = nameEl ? nameEl.textContent.trim() : 'Kendaraan';
+  var slug = window.CURRENT_VEHICLE_SLUG || 'sunreef-80-power';
+
+  var payload = {
+    action: 'add_item',
+    slug: slug,
+    mode: currentType,
+    units: quantity,
+    duration_days: currentType === 'rent' ? durationDays : 1
+  };
+
+  var detail = currentType === 'rent'
+    ? 'Sewa ' + quantity + ' unit (' + durationDays + ' hari)'
+    : 'Beli ' + quantity + ' unit';
+
+  if (typeof fetch === 'function') {
+    fetch('cart_action.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        if (data && data.status === 'ok') {
+          showBeliSewaPopup('Berhasil dimasukkan ke keranjang: ' + namaKendaraan + ' (' + detail + ').');
+        }
+      })
+  } else {
+    showBeliSewaPopup('Berhasil dimasukkan ke keranjang: ' + namaKendaraan + ' (' + detail + ').');
+  }
+}
+
+function goToCartPage() {
+  window.location.href = 'cart.xhtml';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var navMenu = document.getElementById('navMenu');
+  if (!navMenu) {
+    return;
+  }
+
+  var links = navMenu.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (links[i].textContent.trim().toLowerCase() === 'cart') {
+      links[i].setAttribute('href', 'cart.php');
+      links[i].addEventListener('click', function (e) {
+        e.preventDefault();
+        goToCartPage();
+      });
+    }
+  }
+});
