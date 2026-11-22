@@ -1,0 +1,202 @@
+#header-main{
+    color: #F3F3F3;
+    padding: 24px 0px;
+    border-bottom: 1px solid #F3F3F3;
+    margin-bottom: 20px;
+}
+
+#header-main p{
+    font-size: 14px;
+}
+
+#body-vehicle{
+    display: flex;
+}
+
+#content-vehicle{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    padding: 0 30px; 
+}
+
+#vehicle-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+}
+
+#searchBar-vehicle{
+    display: flex;
+    align-items: center;
+    flex: 1;
+    max-width: 500px;
+    height: 40px; 
+    background-color: #1E1E1E;
+    border: 0.8px solid #383838;
+    border-radius: 12px;
+    padding: 5px 16px;
+    box-sizing: border-box;
+}
+
+#searchBar-vehicle input{
+    background: transparent;
+    border: none;
+    color: #F3F3F3;
+    width: 100%;
+    outline: none;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 13px;
+}
+
+#side-bar{
+    width: 220px;
+    min-height: 100vh;
+    background-color: #1E1E1E;
+    color: #F3F3F3;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    padding-right: 20px;
+    border-right: 0.5px solid #F3F3F3;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.header-filter{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.header-filter span{
+    font-size: 20px;
+    font-weight: 600;
+    color: #F3F3F3;
+}
+
+.header-filter button{
+    background-color: #333333;
+    color: #F3F3F3;
+    border: none;
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    cursor: pointer;
+}
+
+.kategori-title{
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #F3F3F3;
+}
+
+#side-bar label{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #F3F3F3;
+    cursor: pointer;
+}
+
+#side-bar input[type="checkbox"]{
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #F3F3F3;
+    border-radius: 4px;
+    margin: 0;
+    cursor: pointer;
+}
+
+#side-bar input[type="checkbox"]:checked{
+    background-color: #FCA311;
+    border-color: #FCA311;
+}
+
+#sort-data{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+.sort-label{
+    font-size: 13px;
+    color: #CCCCCC;
+}
+
+#sorting-select{
+    width: 185px;
+    height: 40px;
+    padding: 0 36px 0 14px;
+    background-color: #2A2A2A;
+    color: #F3F3F3;
+    border: 1px solid #383838;
+    border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23F3F3F3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+#sorting-select:hover,
+#sorting-select:focus{
+    border-color: #FCA311;
+    background-color: #323232;
+}
+
+#sorting-select option{
+    background-color: #2A2A2A;
+    color: #F3F3F3;
+    padding: 10px;
+}
+
+.vehicle-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+.vehicle-card{
+    background-color: #2A2A2A;
+    border-radius: 14px;
+    padding: 16px;
+    color: #F3F3F3;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #383838;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.vehicle-card:hover{
+    border-color: #FCA311;
+    transform: translateY(-3px);
+}
+
+.vehicle-card h3{
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.vehicle-card p{
+    font-size: 13px;
+    color: #CCCCCC;
+    margin: 0;
+}
