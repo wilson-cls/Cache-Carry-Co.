@@ -1,82 +1,299 @@
-// Menyimpan jenis transaksi aktif ('buy' atau 'rent')
-var currentType = 'buy';
+// Frame default kosong untuk data kendaraan (diisi oleh backend via window.INITIAL_VEHICLE atau renderVehicle)
+var VEHICLE_FRAME = {
+  id: '',
+  nama: '',
+  info: '',
+  gambar: '',
+  harga_beli: 0,
+  harga_sewa: 0,
+  specs: [] // Frame array spesifikasi: [{ value: '', label: '' }]
+};
 
-// Menyimpan jumlah unit kendaraan yang dipilih (minimal 1)
-var quantity = 1;
+// Frame default kotak spesifikasi bila backend belum mengisi specs
+var DEFAULT_SPEC_FRAME = [
+  { value: '', label: '' },
+  { value: '', label: '' },
+  { value: '', label: '' },
+  { value: '', label: '' }
+];
 
-// Menyimpan durasi sewa dalam hari, dipakai di mode rent (minimal 1)
-var durationDays = 1;
+// data kendaraan aktif(selected) yang masuk ke frame
+var currentVehicle = Object.assign({}, VEHICLE_FRAME, window.INITIAL_VEHICLE || {});
 
-// Timer agar pop-up fade in & out
-var cartPopupTimer = null;
+// transaksi di halaman Beli & Sewa
+var trxState = {
+  mode: 'buy', // 'buy' atau 'rent'
+  units: 1,
+  duration_days: 1
+};
 
-// Mengatur tampilan transaksi buy/rent
-function selectTransaction(type) {
-  currentType = type;
+var beliSewaPopupTimer = null;
 
-  var buyCard = document.getElementById('trxBuy');
-  var rentCard = document.getElementById('trxRent');
-  var ctaBtn = document.getElementById('btnCheckout');
-  var qtyBar = document.getElementById('qtyBar');
-
-  if (type === 'buy') {
-    buyCard.className = 'trxCard active';
-    rentCard.className = 'trxCard';
-    ctaBtn.innerHTML = 'BUY NOW';
-    qtyBar.className = 'qtyBar';
-  } else {
-    buyCard.className = 'trxCard';
-    rentCard.className = 'trxCard active';
-    ctaBtn.innerHTML = 'RENT NOW';
-    qtyBar.className = 'qtyBar rentMode';
-  }
+// format angka menjadi Rupiah
+function formatRupiah(num) {
+  var angka = Math.max(0, Math.round(Number(num) || 0));
+  return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
-// Menambah/mengurangi jumlah unit kendaraan
-function updateQty(delta) {
-  quantity += delta;
-  if (quantity < 1) {
-    quantity = 1;
+// total transaksi berdasarkan mode, unit, dan durasi
+function hitungTotalBeliSewa() {
+  var units = Math.max(1, parseInt(trxState.units, 10) || 1);
+  if (trxState.mode === 'rent') {
+    var days = Math.max(1, parseInt(trxState.duration_days, 10) || 1);
+    return (Number(currentVehicle.harga_sewa) || 0) * units * days;
   }
-  document.getElementById('qtyCount').innerHTML = quantity;
+  return (Number(currentVehicle.harga_beli) || 0) * units;
 }
 
-// Menambah/mengurangi durasi sewa
-function updateDuration(delta) {
-  durationDays += delta;
-  if (durationDays < 1) {
-    durationDays = 1;
-  }
-  document.getElementById('durationCount').innerHTML = durationDays;
-}
-
-// pop-up berhasil masukin ke keranjang tengah layar
-function addToCart() {
-  var nameEl = document.getElementById('productNameEl');
+// menampilkan pesan/notifikasi di #cartMessage
+function showBeliSewaPopup(text) {
   var msgEl = document.getElementById('cartMessage');
-  var namaKendaraan = nameEl ? nameEl.textContent.trim() : 'Kendaraan';
-
-  var detail = currentType === 'rent'
-    ? 'Sewa ' + quantity + ' unit (' + durationDays + ' hari)'
-    : 'Beli ' + quantity + ' unit';
-
   if (!msgEl) {
     return;
   }
 
-  msgEl.textContent = 'Product added to your cart! ';
-
-  // Reset trus aktifin class 'show' untuk munculin fade in
+  msgEl.textContent = text;
   msgEl.classList.remove('show');
   void msgEl.offsetWidth;
   msgEl.classList.add('show');
 
-  if (cartPopupTimer) {
-    clearTimeout(cartPopupTimer);
+  if (beliSewaPopupTimer) {
+    clearTimeout(beliSewaPopupTimer);
   }
 
-  // Hapus class 'show' setelah 2,2 detik untuk munculin fade out
-  cartPopupTimer = setTimeout(function () {
+  beliSewaPopupTimer = setTimeout(function () {
     msgEl.classList.remove('show');
   }, 2200);
+}
+
+// Kirim aksi ke endpoint backend
+function syncBeliSewaAction(actionName, payload) {
+  if (typeof fetch !== 'function') {
+    return;
+  }
+  var bodyData = Object.assign({ action: actionName }, payload || {});
+  fetch('beli_sewa_action.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(bodyData)
+  }).catch(function () {});
+}
+
+// mode transaksi buy/rent
+function selectTransaction(mode) {
+  trxState.mode = mode === 'rent' ? 'rent' : 'buy';
+  if (!trxState.duration_days || trxState.duration_days < 1) {
+    trxState.duration_days = 1;
+  }
+  updateTransactionUI();
+}
+
+// jumlah unit (+/-)
+function updateQty(delta) {
+  trxState.units = Math.max(1, (parseInt(trxState.units, 10) || 1) + delta);
+  var qtyEl = document.getElementById('qtyCount');
+  if (qtyEl) {
+    qtyEl.textContent = trxState.units;
+  }
+}
+
+// durasi sewa dalam hari (+/-)
+function updateDuration(delta) {
+  trxState.duration_days = Math.max(1, (parseInt(trxState.duration_days, 10) || 1) + delta);
+  var dayEl = document.getElementById('durationCount');
+  if (dayEl) {
+    dayEl.textContent = trxState.duration_days;
+  }
+}
+
+// tampilan mode buy/rent, unit, dan durasi
+function updateTransactionUI() {
+  var isRent = trxState.mode === 'rent';
+  var buyCard = document.getElementById('trxBuy');
+  var rentCard = document.getElementById('trxRent');
+  var durationGroup = document.getElementById('durationGroup');
+  var btnCheckout = document.getElementById('btnCheckout');
+  var qtyEl = document.getElementById('qtyCount');
+  var dayEl = document.getElementById('durationCount');
+
+  if (buyCard) {
+    buyCard.className = 'trxCard' + (!isRent ? ' active' : '');
+  }
+  if (rentCard) {
+    rentCard.className = 'trxCard' + (isRent ? ' active' : '');
+  }
+  if (durationGroup) {
+    durationGroup.style.display = isRent ? 'flex' : 'none';
+  }
+  if (btnCheckout) {
+    btnCheckout.textContent = isRent ? 'RENT NOW' : 'BUY NOW';
+  }
+  if (qtyEl) {
+    qtyEl.textContent = Math.max(1, parseInt(trxState.units, 10) || 1);
+  }
+  if (dayEl) {
+    dayEl.textContent = Math.max(1, parseInt(trxState.duration_days, 10) || 1);
+  }
+}
+
+// render grid spesifikasi ke dalam frame #specList
+function renderSpecs(specs) {
+  var listEl = document.getElementById('specList');
+  var tplEl = document.getElementById('specBoxTemplate');
+  if (!listEl) {
+    return;
+  }
+
+  var items = (Array.isArray(specs) && specs.length > 0) ? specs : DEFAULT_SPEC_FRAME;
+  listEl.innerHTML = '';
+
+  for (var i = 0; i < items.length; i++) {
+    var spec = Object.assign({ value: '', label: '' }, items[i] || {});
+    if (tplEl && tplEl.content) {
+      var clone = tplEl.content.cloneNode(true);
+      var valEl = clone.querySelector('.js-spec-val');
+      var lblEl = clone.querySelector('.js-spec-lbl');
+      if (valEl) valEl.textContent = spec.value;
+      if (lblEl) lblEl.textContent = spec.label;
+      listEl.appendChild(clone);
+    } else {
+      var box = document.createElement('div');
+      box.className = 'specBox';
+      box.innerHTML =
+        '<div class="specVal">' + spec.value + '</div>' +
+        '<div class="specLbl">' + spec.label + '</div>';
+      listEl.appendChild(box);
+    }
+  }
+}
+
+// pasang event ke semua tombol & kartu yang sudah di-render di container
+function bindBeliSewaEvents(container) {
+  var buyCard = container.querySelector('.js-trx-buy') || document.getElementById('trxBuy');
+  var rentCard = container.querySelector('.js-trx-rent') || document.getElementById('trxRent');
+  var qtyMinus = container.querySelector('.js-qty-minus');
+  var qtyPlus = container.querySelector('.js-qty-plus');
+  var dayMinus = container.querySelector('.js-day-minus');
+  var dayPlus = container.querySelector('.js-day-plus');
+  var addCartBtn = container.querySelector('.js-add-cart');
+  var checkoutBtn = container.querySelector('.js-checkout') || document.getElementById('btnCheckout');
+
+  if (buyCard) {
+    buyCard.onclick = function () { selectTransaction('buy'); };
+  }
+  if (rentCard) {
+    rentCard.onclick = function () { selectTransaction('rent'); };
+  }
+  if (qtyMinus) {
+    qtyMinus.onclick = function () { updateQty(-1); };
+  }
+  if (qtyPlus) {
+    qtyPlus.onclick = function () { updateQty(1); };
+  }
+  if (dayMinus) {
+    dayMinus.onclick = function () { updateDuration(-1); };
+  }
+  if (dayPlus) {
+    dayPlus.onclick = function () { updateDuration(1); };
+  }
+  if (addCartBtn) {
+    addCartBtn.onclick = addToCart;
+  }
+  if (checkoutBtn) {
+    checkoutBtn.onclick = checkoutVehicle;
+  }
+}
+
+// frame utama (the vehicle selected on the catalog page)
+function renderVehicle(vehicleData) {
+  var container = document.getElementById('beliSewaContainer');
+  var mainTpl = document.getElementById('beliSewaTemplate');
+
+  currentVehicle = Object.assign({}, VEHICLE_FRAME, currentVehicle, vehicleData || {});
+  trxState.units = 1;
+  trxState.duration_days = 1;
+  trxState.mode = 'buy';
+
+  // clone template utama ke dalam #beliSewaContainer agar semua grid & tombol muncul
+  if (container && mainTpl && mainTpl.content) {
+    container.innerHTML = '';
+    container.appendChild(mainTpl.content.cloneNode(true));
+  }
+
+  var titleEl = document.getElementById('pageTitle');
+  if (titleEl && currentVehicle.nama) {
+    titleEl.textContent = currentVehicle.nama + ' - Cache-Carry-Co.';
+  }
+
+  // frame gambar di dalam div.productImg
+  var imgEl = document.getElementById('productImgEl');
+  if (imgEl) {
+    imgEl.src = currentVehicle.gambar || '';
+    imgEl.alt = currentVehicle.nama || '';
+  }
+
+  // frame teks & harga
+  var infoEl = document.getElementById('infoEl');
+  if (infoEl) {
+    infoEl.textContent = currentVehicle.info || '';
+  }
+
+  var nameEl = document.getElementById('productNameEl');
+  if (nameEl) {
+    nameEl.textContent = currentVehicle.nama || '';
+  }
+
+  var beliEl = document.getElementById('hargaBeli');
+  if (beliEl) {
+    beliEl.textContent = formatRupiah(currentVehicle.harga_beli);
+  }
+
+  var sewaEl = document.getElementById('hargaSewa');
+  if (sewaEl) {
+    sewaEl.textContent = formatRupiah(currentVehicle.harga_sewa);
+  }
+
+  renderSpecs(currentVehicle.specs);
+  if (container) {
+    bindBeliSewaEvents(container);
+  }
+  updateTransactionUI();
+}
+
+// tambah item ke cart
+function addToCart() {
+  var payload = {
+    id: currentVehicle.id,
+    nama: currentVehicle.nama,
+    mode: trxState.mode,
+    units: trxState.units,
+    duration_days: trxState.mode === 'rent' ? trxState.duration_days : 1,
+    subtotal: hitungTotalBeliSewa()
+  };
+
+  syncBeliSewaAction('add_to_cart', payload);
+  showBeliSewaPopup((currentVehicle.nama || 'Vehicle') + ' added to cart');
+}
+
+// proses checkout langsung
+function checkoutVehicle() {
+  var payload = {
+    id: currentVehicle.id,
+    nama: currentVehicle.nama,
+    mode: trxState.mode,
+    units: trxState.units,
+    duration_days: trxState.mode === 'rent' ? trxState.duration_days : 1,
+    total: hitungTotalBeliSewa()
+  };
+
+  syncBeliSewaAction('checkout_vehicle', payload);
+  showBeliSewaPopup('Processing ' + trxState.mode + ' order...');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function () {
+    renderVehicle(currentVehicle);
+  });
+} else {
+  renderVehicle(currentVehicle);
 }
