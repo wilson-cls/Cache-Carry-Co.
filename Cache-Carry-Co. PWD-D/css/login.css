@@ -1,0 +1,168 @@
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+#header-continer {
+   position: sticky;
+   top: 0;
+   z-index: 1000;
+   background-color: #1e1e1e;
+   border-bottom: 1px solid #ffa500;
+}
+
+#header-continer .judul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 15px 0;
+    box-sizing: border-box;
+    height: max-content;
+}
+
+#header-continer .judul img {
+    width: 60px;
+    height: 60px;
+}
+
+#header-continer .judul h2 {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 0;
+    color: #f3f3f3;
+    letter-spacing: -0.8px;
+    padding-bottom: 6px;
+}
+
+#login-page {
+    background-color: #1e1e1e;
+    color: #f3f3f3;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 50px;
+    box-sizing: border-box;
+}
+
+
+.login-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 1100px;
+    max-width: 92vw;
+    height: 550px;
+}
+
+.login-section .welcome-header {
+    margin-bottom: 70px;
+    text-align: center;
+}
+
+.login-section .welcome-header h1 {
+    font-size: 60px;
+    font-weight: 550;
+    color: #f3f3f3;
+    margin-bottom: 10px;
+}
+
+.login-section .welcome-header p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #f3f3f392;
+    line-height: 1.5;
+}
+
+
+/* Gambar */
+.image-section {
+    width: 50%;
+    height: 100%;
+    flex-shrink: 0;
+}
+
+.image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 30px;
+    opacity: 0.7;
+}
+
+/* Form Login */
+.login-section {
+    flex: 1;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 50px;
+}
+
+
+/* Kotak Input */
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-radius: 15px;
+    background-color: #f3f3f3;
+    padding: 0 15px;
+    font-size: 18px;
+    outline: none;
+}
+
+
+.button-group {
+    margin-top: 45px;
+}
+
+
+.button-group input {
+    font-weight: bold;
+    width: 100%;
+    height: 45px;
+    border: 1px solid black;
+    border-radius: 15px;
+    background-color: #ffa500;
+    color: #1e1e1e;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.button-group input:hover {
+    color: #ffa500;
+    background-color: #f3f3f3;
+}
+
+.signup {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 42px;
+    color: #dddddd;
+}
+
+.signup a {
+    color: #ffa500;
+    text-decoration: none;
+}
+
+.signup a:hover {
+    color: #f3f3f3;
+    text-decoration: underline;
+}
+
