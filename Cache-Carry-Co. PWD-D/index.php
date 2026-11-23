@@ -27,6 +27,8 @@
 
     // Mengambil data satu per satu
     while ($row = mysqli_fetch_assoc($query)) {
+        $row['harga_jual'] = formatRupiah($row['harga_jual']);
+        $row['harga_sewa'] = formatRupiah($row['harga_sewa']);
         $data[] = $row;
     }
 

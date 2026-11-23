@@ -24,11 +24,5 @@
     function formatRupiah($angka) {
         return 'Rp ' . number_format($angka, 0, ',', '.');
     }
-
-    // encode path image
-    function fotoUrl($path) {
-        $parts = array_map('rawurlencode', explode('/', trim($path)));
-        return implode('/', $parts);
-    }
 ?>
 
