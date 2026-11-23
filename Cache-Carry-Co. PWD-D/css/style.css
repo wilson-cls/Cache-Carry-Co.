@@ -215,6 +215,7 @@ body::-webkit-scrollbar {
 
 .bottom{
     width: 100vw;
+    height: 100vw;
     background-color: #2D2D2D;
     display: flex;
     padding: 30px 40px;
