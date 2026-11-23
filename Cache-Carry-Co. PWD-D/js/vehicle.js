@@ -8,14 +8,13 @@ var filterLand = document.getElementById("filter-tipe-2");
 var filterAir = document.getElementById("filter-tipe-3");
 var filterSea = document.getElementById("filter-tipe-4");
 
+// sorting vehicle
+var sortSelect = document.getElementById("sorting-select");
+
 
 // Function to retrieve vehicles
-async function tampilkanKendaraan(kategori) {
-    var url = "vehicle.php";
-
-    if (kategori != "all") {
-        url += "?kategori=" + kategori;
-    }
+async function tampilkanKendaraan(kategori, sort) {
+    var url = "vehicle.php?kategori=" + kategori + "&sort=" + sort;
 
     try {
         const response = await fetch(url);
@@ -70,8 +69,9 @@ async function tampilkanKendaraan(kategori) {
     }
 }
 
-function updateFilter() {
+function updateTampilan() {
     let selected = [];
+    let kategori = "all";
 
     if(filterAir.checked) selected.push("1");
     if(filterSea.checked) selected.push("2");
@@ -79,11 +79,15 @@ function updateFilter() {
 
     if(selected.length > 0) {
         filterAll.checked = false;
-        tampilkanKendaraan(selected);
+        kategori = selected.join(",");
     } else {
         filterAll.checked = true;
-        tampilkanKendaraan(["all"]);
+        kategori = "all";
     }
+
+    let sort = sortSelect.value;
+
+    tampilkanKendaraan(kategori, sort);
 }
 
 filterAll.addEventListener("change", function(){
@@ -91,15 +95,16 @@ filterAll.addEventListener("change", function(){
         filterAir.checked = false;
         filterSea.checked = false;
         filterLand.checked = false;
-        tampilkanKendaraan(["all"]);
+        updateTampilan();
     } else {
         filterAll.checked = true;
     }
 });
 
-filterAir.addEventListener("change", updateFilter);
-filterSea.addEventListener("change", updateFilter);
-filterLand.addEventListener("change", updateFilter);
+filterAir.addEventListener("change", updateTampilan);
+filterSea.addEventListener("change", updateTampilan);
+filterLand.addEventListener("change", updateTampilan);
+sortSelect.addEventListener("change", updateTampilan);
 
 // Display all vehicles when the page first opens
-tampilkanKendaraan(["all"]);
+updateTampilan();

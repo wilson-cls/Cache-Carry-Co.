@@ -4,7 +4,9 @@
     header('Content-Type: application/json; charset=utf-8');
 
     $kategori = isset($_GET['kategori']) ? $_GET['kategori'] : "all";
+    $sort     = isset($_GET['sort']) ? $_GET['sort'] : "nama-asc";
 
+    // Filter data
     if($kategori == "1") {
         $sql = "SELECT * FROM kendaraan WHERE id_kategori = 1";
     } else if($kategori == "2") {
@@ -21,11 +23,29 @@
         $sql = "SELECT * FROM kendaraan";
     }
 
+    // Sort data
+    if ($sort == "nama-asc") {
+        $sql .= " ORDER BY nama ASC";
+    } else if ($sort == "nama-desc") {
+        $sql .= " ORDER BY nama DESC";
+    } else if ($sort == "price-asc") {
+        $sql .= " ORDER BY harga_jual ASC";
+    } else if ($sort == "price-desc") {
+        $sql .= " ORDER BY harga_jual DESC";
+    } else if ($sort == "year-asc") {
+        $sql .= " ORDER BY tahun ASC";
+    } else if ($sort == "year-desc") {
+        $sql .= " ORDER BY tahun DESC";
+    } 
+
+
     $query = mysqli_query($conn, $sql);
 
     $data = [];
 
     while($row = mysqli_fetch_assoc($query)){
+        $row['harga_jual'] = formatRupiahSingkat($row['harga_jual']);
+        $row['harga_sewa'] = formatRupiahSingkat($row['harga_sewa']);
         $data[] = $row;
     }
 
