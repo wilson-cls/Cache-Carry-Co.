@@ -29,6 +29,15 @@ var trxState = {
 
 var beliSewaPopupTimer = null;
 
+function cloneTemplate(tpl) {
+  var frag = document.createDocumentFragment();
+  var src = (tpl.content && tpl.content.childNodes.length) ? tpl.content : tpl;
+  for (var i = 0; i < src.childNodes.length; i++) {
+    frag.appendChild(src.childNodes[i].cloneNode(true));
+  }
+  return frag;
+}
+
 // format angka menjadi Rupiah
 function formatRupiah(num) {
   var angka = Math.max(0, Math.round(Number(num) || 0));
@@ -139,31 +148,30 @@ function updateTransactionUI() {
 // render grid spesifikasi ke dalam frame #specList
 function renderSpecs(specs) {
   var listEl = document.getElementById('specList');
-  var tplEl = document.getElementById('specBoxTemplate');
   if (!listEl) {
     return;
   }
 
   var items = (Array.isArray(specs) && specs.length > 0) ? specs : DEFAULT_SPEC_FRAME;
-  listEl.innerHTML = '';
+  listEl.textContent = '';
 
   for (var i = 0; i < items.length; i++) {
     var spec = Object.assign({ value: '', label: '' }, items[i] || {});
-    if (tplEl && tplEl.content) {
-      var clone = tplEl.content.cloneNode(true);
-      var valEl = clone.querySelector('.js-spec-val');
-      var lblEl = clone.querySelector('.js-spec-lbl');
-      if (valEl) valEl.textContent = spec.value;
-      if (lblEl) lblEl.textContent = spec.label;
-      listEl.appendChild(clone);
-    } else {
-      var box = document.createElement('div');
-      box.className = 'specBox';
-      box.innerHTML =
-        '<div class="specVal">' + spec.value + '</div>' +
-        '<div class="specLbl">' + spec.label + '</div>';
-      listEl.appendChild(box);
-    }
+
+    var box = document.createElement('div');
+    box.className = 'specBox';
+
+    var val = document.createElement('div');
+    val.className = 'specVal js-spec-val';
+    val.textContent = spec.value;
+
+    var lbl = document.createElement('div');
+    lbl.className = 'specLbl js-spec-lbl';
+    lbl.textContent = spec.label;
+
+    box.appendChild(val);
+    box.appendChild(lbl);
+    listEl.appendChild(box);
   }
 }
 
@@ -290,10 +298,41 @@ function checkoutVehicle() {
   showBeliSewaPopup('Processing ' + trxState.mode + ' order...');
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', function () {
-    renderVehicle(currentVehicle);
-  });
-} else {
-  renderVehicle(currentVehicle);
+var vehicleId = new URLSearchParams(window.location.search).get('id');
+async function tampilkanDetail() {
+  if (!vehicleId) return;
+
+  var url = "beliSewa.php?id=" + encodeURIComponent(vehicleId);
+
+  try {
+    const response = await fetch(url);
+    const result = await response.json();
+
+    if(!response.ok || !result.success){
+      throw new Error(result.message || "Failed to fetch data");
+    }
+
+    const kendaraan = result.data;
+
+    renderVehicle({
+          id: kendaraan.id_kendaraan,
+          nama: kendaraan.nama,
+          info: (kendaraan.merek || "-") + " • " + (kendaraan.tahun || "-"),
+          gambar: kendaraan.foto,
+          harga_beli: kendaraan.harga_jual,
+          harga_sewa: kendaraan.harga_sewa,
+          specs: [
+              { value: kendaraan.merek || "-", label: "Brand" },
+              { value: kendaraan.tahun || "-", label: "Year" },
+              { value: kendaraan.kecepatan || "-", label: "Top Speed" }, 
+              { value: kendaraan.kapasitas_penumpang || "-", label: "Capacity" }  
+          ]
+      });
+
+  } catch (error) {
+    console.error("Error: ", error);
+  }
 }
+
+tampilkanDetail();
+

@@ -35,6 +35,12 @@ async function tampilkanKendaraan(kategori, sort) {
             const card = document.createElement("div");
             card.classList.add("vehicle-card");
 
+            card.style.cursor = "pointer";
+
+            card.addEventListener("click", function() {
+                window.location.href = "beliSewa.xhtml?id=" + kendaraan.id_kendaraan;
+            })
+
             const img = document.createElement("img");
             img.src = kendaraan.foto;
             img.alt = kendaraan.nama || "Vehicle image";
