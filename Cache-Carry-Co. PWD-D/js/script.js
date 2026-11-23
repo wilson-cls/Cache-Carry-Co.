@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     async function showVehicle() {
         try {
-            const response = await fetch("index.php"); //fetch data
+            const response = await fetch("get_kendaraan.php"); //fetch data
             const result = await response.json(); // json jadi objek js
 
             if(!response.ok || !result.success) {
@@ -108,5 +108,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     showVehicle();
-
 });
