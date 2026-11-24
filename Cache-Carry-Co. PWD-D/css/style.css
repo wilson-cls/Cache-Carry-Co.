@@ -52,14 +52,13 @@ body::-webkit-scrollbar {
 
 #logo h2{
     min-width: 140px;
-    white-space: nowrap;
 }
 
 #navMenu{
     display: flex;
     align-items: center;
     gap: 50px;
-    padding-left: 600px;
+    padding-left: 500px;
 }
 
 #navMenu a{
@@ -86,6 +85,7 @@ body::-webkit-scrollbar {
     font-weight: bold;
     padding: 8px 20px;
     border-radius: 11.25px;
+    min-width: 100px;
 }
 
 #main{
