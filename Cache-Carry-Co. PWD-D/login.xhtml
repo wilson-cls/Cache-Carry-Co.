@@ -11,68 +11,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/style.css" />
-    <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/login.css" />
+    <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/login_signIn.css" />
     <link rel="icon" type="image/svg+xml" href="../Cache-Carry-Co. PWD-D/images/Logo.svg" />
     <title>Login - Cache-Carry-Co.</title>
 </head>
 
 <body>
 
-    <div id="header-continer">
-       <div class="judul">
-        <span><img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="Image" /></span>
-        <h2>Cache-Carry-Co.</h2>
-       </div>
-     </div>
-
 <!-- ======================== LOGIN PAGE ======================== -->
-   <div id="login-page">
-     <div class="login-container">
-
-        <!-- Ini untuk Gambar -->
-        <div class="image-section">
-            <img src="../Cache-Carry-Co. PWD-D/images/login-hero.svg" alt="Image" />
-        </div>
-
-        <!-- End Gambar -->
-
-        <!-- Ini untuk Form Login -->
-        <div class="login-section">
-
-            <div class="welcome-header">
-            <h1>WELCOME</h1>
-            <p>Please log in using the account you have registered.</p>
-        </div>
-
-            <form action="#" method="post">
-
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username"
-                           name="username" />
+    <div id="login-page">
+        <div class="login-container">
+            <!-- Ini untuk Gambar -->
+            <div class="image-section">
+                <img src="../Cache-Carry-Co. PWD-D/images/login-hero.svg" alt="Image" />
+            </div>
+            <!-- Ini untuk Form Login -->
+            <div class="login-section">
+                <div class="judul">
+                    <span><img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="Image" /></span>
+                    <h2>Cache-Carry-Co.</h2>
                 </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password"
-                           name="password" />
+                <div class="welcome-header">
+                    <h1>WELCOME BACK</h1>
+                    <p>Please log in using the account you have registered.</p>
                 </div>
+                <div id="form-utama">
+                    <form action="#" method="post">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" />
+                        </div>
 
-                <div class="button-group">
-                    <input type="submit" value="Sign in" />
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" />
+                        </div>
+
+                        <div class="button-group">
+                            <input type="submit" value="Sign in" />
+                        </div>
+
+                        <p class="signup">
+                            Doesn't have account?
+                            <a href="../Cache-Carry-Co. PWD-D/signIn.xhtml">Sign up</a>
+                        </p>
+                    </form>
                 </div>
-
-                <p class="signup">
-                    Doesn't have account?
-                    <a href="#">Sign up</a>
-                </p>
-
-            </form>
-
+            </div>
         </div>
-
     </div>
-   </div>
 
     <script src="../Cache-Carry-Co. PWD-D/js/script.js"></script>
 </body>
