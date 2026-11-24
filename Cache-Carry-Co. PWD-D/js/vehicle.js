@@ -139,5 +139,24 @@ if (searchInput) {
     });
 }
 
+var resetBtn = document.getElementById("btn-reset");
+
+if (resetBtn) {
+    resetBtn.addEventListener("click", function() {
+        filterAll.checked = true;
+        filterAir.checked = false;
+        filterSea.checked = false;
+        filterLand.checked = false;
+
+        sortSelect.value = "nama-asc";
+
+        if(searchInput) searchInput.value = "";
+        clearTimeout(searchTimer);
+
+        updateTampilan();
+    });
+}
+
+
 // Display all vehicles when the page first opens
 updateTampilan();

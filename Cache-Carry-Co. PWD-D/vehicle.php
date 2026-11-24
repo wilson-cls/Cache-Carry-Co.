@@ -7,8 +7,6 @@
     $sort     = isset($_GET['sort']) ? $_GET['sort'] : "nama-asc";
     $q = isset($_GET['q']) ? mysqli_real_escape_string($conn, trim($_GET['q'])) : "";
 
-
-
     // Filter data
     if($kategori == "1") {
         $sql = "SELECT * FROM kendaraan WHERE id_kategori = 1";
