@@ -50,43 +50,11 @@ body::-webkit-scrollbar {
     width: 48px;
 }
 
-#searchBar{
-    display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: 387px;
-    background-color: #1E1E1E;
-    border: 0.8px solid #F3F3F3;
-    border-radius: 11.25px;
-    padding: 5px 20px;
-    box-sizing: border-box;
-}
-
-#quickSearch{
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    padding: 10px 5px;
-    color: #F3F3F3;
-}
-
-#quickSearch::placeholder{
-    color: #595970;
-    opacity: 1;
-}
-
-.searchIcon{
-    width: 18px;
-    height: 18px;
-    margin-right: 12px;
-    opacity: 0.75;
-}
-
 #navMenu{
     display: flex;
     align-items: center;
     gap: 50px;
+    padding-left: 600px;
 }
 
 #navMenu a{
