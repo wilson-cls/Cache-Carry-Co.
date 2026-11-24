@@ -11,18 +11,18 @@
     // untuk kartu produk
     function formatRupiahSingkat($angka) {
         if($angka >= 1000000000000) {
-            return 'Rp ' . rtrim(rtrim(number_format($angka / 1000000000000, 2, ',', '.'), '0'), ',') . ' T';
+            return 'IDR ' . rtrim(rtrim(number_format($angka / 1000000000000, 2, ',', '.'), '0'), ',') . ' T';
         } elseif($angka >= 1000000000) {
-            return 'Rp ' . rtrim(rtrim(number_format($angka / 1000000000, 2, ',', '.'), '0'), ',') . ' B';
+            return 'IDR ' . rtrim(rtrim(number_format($angka / 1000000000, 2, ',', '.'), '0'), ',') . ' B';
         } elseif ($angka >= 1000000) {
-            return 'Rp ' . rtrim(rtrim(number_format($angka / 1000000, 2, ',', '.'), '0'), ',') . ' M';
+            return 'IDR ' . rtrim(rtrim(number_format($angka / 1000000, 2, ',', '.'), '0'), ',') . ' M';
         } 
-        return 'Rp ' . number_format($angka, 0, ',', '.');
+        return 'IDR ' . number_format($angka, 0, ',', '.');
     }
 
     // format lengkap untuk detail / cart
     function formatRupiah($angka) {
-        return 'Rp ' . number_format($angka, 0, ',', '.');
+        return 'IDR ' . number_format($angka, 0, ',', '.');
     }
 ?>
 
