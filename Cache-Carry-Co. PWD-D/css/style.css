@@ -50,6 +50,10 @@ body::-webkit-scrollbar {
     width: 48px;
 }
 
+#logo h3{
+    min-width: 140px;
+}
+
 #navMenu{
     display: flex;
     align-items: center;
