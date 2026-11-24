@@ -6,6 +6,9 @@ var VEHICLE_FRAME = {
   gambar: '',
   harga_beli: 0,
   harga_sewa: 0,
+  deskripsi: '',
+  stok_jual: null,
+  stok_sewa: null,
   specs: [] // Frame array spesifikasi: [{ value: '', label: '' }]
 };
 
@@ -13,7 +16,7 @@ var VEHICLE_FRAME = {
 var DEFAULT_SPEC_FRAME = [
   { value: '', label: '' },
   { value: '', label: '' },
-  { value: '', label: '' },
+  { value: '', label: '' }, 
   { value: '', label: '' }
 ];
 
@@ -41,7 +44,7 @@ function cloneTemplate(tpl) {
 // format angka menjadi Rupiah
 function formatRupiah(num) {
   var angka = Math.max(0, Math.round(Number(num) || 0));
-  return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return 'IDR ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 // total transaksi berdasarkan mode, unit, dan durasi
@@ -52,6 +55,86 @@ function hitungTotalBeliSewa() {
     return (Number(currentVehicle.harga_sewa) || 0) * units * days;
   }
   return (Number(currentVehicle.harga_beli) || 0) * units;
+}
+
+function updatePriceDisplay() {
+  var units = Math.max(1, parseInt(trxState.units, 10) || 1);
+  var days = Math.max(1, parseInt(trxState.duration_days, 10) || 1);
+
+  var totalBeli = (Number(currentVehicle.harga_beli) || 0) * units;
+  var totalSewa = (Number(currentVehicle.harga_sewa) || 0) * units * days;
+
+  var beliEl = document.getElementById('hargaBeli');
+  var sewaEl = document.getElementById('hargaSewa');
+
+  if (beliEl) beliEl.textContent = formatRupiah(totalBeli);
+  if (sewaEl) sewaEl.textContent = formatRupiah(totalSewa);
+}
+
+function getStok(){
+  var raw = trxState.mode === 'rent' ? currentVehicle.stok_sewa : currentVehicle.stok_jual;
+  var s = parseInt(raw, 10);
+  return isNaN(s) ? null : s;
+}
+
+function validateStock() {
+  var stok = getStok();
+  var label = trxState.mode === 'rent' ? 'for rent' : 'for sale';
+  if (stok === null) {
+    return true;
+  }
+  
+  if (stok < 1) {
+    showBeliSewaPopup('Sorry, no units ' + label);
+    return false;
+  }
+
+  if (trxState.units > stok) {
+    showBeliSewaPopup('Only ' + stok + ' unit(s) ' + label);
+    return false;
+  }
+
+  return true;
+}
+
+function renderStock() {
+  var stokEl = document.getElementById('stokInfo');
+  if (!stokEl) {
+    return;
+  }
+
+  var isRent = trxState.mode === 'rent';
+  var stok = getStok();
+  stokEl.className = 'stokInfo';
+
+  if (stok === null) {
+    stokEl.textContent = '';
+  } else if (stok < 1) {
+    stokEl.textContent = isRent ? 'Out of stock (rent)' : 'Out of stock (sale)';
+    stokEl.className = 'stokInfo empty';
+  } else if (stok < 5) {
+    stokEl.textContent = 'Only ' + stok + (isRent ? ' left to rent' : ' left for sale');
+    stokEl.className = 'stokInfo low';
+  } else {
+    stokEl.textContent = (isRent ? 'Available to rent: ' : 'In stock: ') + stok;
+  }
+
+  var habis = (stok !== null && stok < 1);
+  var checkoutBtn = document.getElementById('btnCheckout');
+  var cartBtn = document.querySelector(' .js-add-cart');
+  
+  if (checkoutBtn) checkoutBtn.disabled = habis;
+  if (cartBtn) cartBtn.disabled = habis;
+
+  var qtyBtns = document.querySelectorAll('.qtyBtn');
+  for(var i = 0; i < qtyBtns.length; i++) {
+    qtyBtns[i].disabled = habis;
+  }
+
+  var qtyBar = document.getElementById('qtyBar');
+  if (qtyBar) {
+    qtyBar.className = 'qtyBar' + (habis ? ' disabled' : '');
+  }
 }
 
 // menampilkan pesan/notifikasi di #cartMessage
@@ -94,25 +177,50 @@ function selectTransaction(mode) {
   if (!trxState.duration_days || trxState.duration_days < 1) {
     trxState.duration_days = 1;
   }
+
+  var stok = getStok();
+  if (stok !== null && stok >= 1 && trxState.units > stok) {
+    trxState.units = stok;
+    showBeliSewaPopup('Quantity adjusted to available stock (' + stok + ')');
+  }
+
   updateTransactionUI();
 }
 
 // jumlah unit (+/-)
 function updateQty(delta) {
-  trxState.units = Math.max(1, (parseInt(trxState.units, 10) || 1) + delta);
+  var current = Math.max(1, parseInt(trxState.units, 10) || 1);
+  var next = Math.max(1, current + delta);
+  var stok = getStok();
+
+  if (stok !== null && stok < 1) return;
+  
+  if(delta > 0 && stok !== null && next > stok) {
+    showBeliSewaPopup('Only ' + stok + ' unit(s) ' +  (trxState.mode === 'rent' ? 'for rent' : 'for sale'));
+    return;
+  }
+
+  trxState.units = next;
   var qtyEl = document.getElementById('qtyCount');
   if (qtyEl) {
     qtyEl.textContent = trxState.units;
   }
+
+  updatePriceDisplay();
 }
 
 // durasi sewa dalam hari (+/-)
 function updateDuration(delta) {
+  var stok = getStok();
+  if (stok !== null && stok < 1) return;
+
   trxState.duration_days = Math.max(1, (parseInt(trxState.duration_days, 10) || 1) + delta);
   var dayEl = document.getElementById('durationCount');
   if (dayEl) {
     dayEl.textContent = trxState.duration_days;
   }
+
+  updatePriceDisplay();
 }
 
 // tampilan mode buy/rent, unit, dan durasi
@@ -143,6 +251,9 @@ function updateTransactionUI() {
   if (dayEl) {
     dayEl.textContent = Math.max(1, parseInt(trxState.duration_days, 10) || 1);
   }
+  
+  updatePriceDisplay();
+  renderStock();
 }
 
 // render grid spesifikasi ke dalam frame #specList
@@ -261,6 +372,12 @@ function renderVehicle(vehicleData) {
     sewaEl.textContent = formatRupiah(currentVehicle.harga_sewa);
   }
 
+  var descEl = document.getElementById('descEl');
+  if (descEl) {
+    descEl.textContent = currentVehicle.deskripsi || '';
+    descEl.style.display = currentVehicle.deskripsi ? 'block' : 'none';
+  }
+
   renderSpecs(currentVehicle.specs);
   if (container) {
     bindBeliSewaEvents(container);
@@ -321,6 +438,9 @@ async function tampilkanDetail() {
           gambar: kendaraan.foto,
           harga_beli: kendaraan.harga_jual,
           harga_sewa: kendaraan.harga_sewa,
+          stok_jual: kendaraan.stok_jual,
+          stok_sewa: kendaraan.stok_sewa,
+          deskripsi: kendaraan.deskripsi,
           specs: [
               { value: kendaraan.merek || "-", label: "Brand" },
               { value: kendaraan.tahun || "-", label: "Year" },

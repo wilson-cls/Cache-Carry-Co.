@@ -214,6 +214,11 @@
   cursor: pointer;
 }
 
+.qtyBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .qtyBtn:hover {
   background-color: rgba(0, 0, 0, 0.08);
 }
@@ -287,4 +292,64 @@
 
 .btnMain:active {
   transform: scale(0.99);
+}
+
+/* info stok */
+.stokInfo {
+  font-size: 14px;
+  margin: 4px 0 12px;
+  color: #555;
+}
+
+.stokInfo.low {
+  color: #d97706;      
+}
+
+.stokInfo.empty {
+  color: #dc2626;      
+  font-weight: bold;
+}
+
+/* tombol nonaktif saat stok habis */
+button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.qtyBar.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.qtyBar.disabled .qtyBtn:disabled {
+  opacity: 1;
+}
+
+.cartMessage {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%) translateY(20px);
+  background: #111;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 9999;
+}
+
+.cartMessage.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.vehicleDesc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #d1d5db;
+  margin-bottom: 24px;
+  white-space: pre-line;   /* baris baru di database ikut tampil */
 }
