@@ -1,4 +1,7 @@
 #header-main{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     color: #F3F3F3;
     padding: 24px 0px;
     border-bottom: 1px solid #F3F3F3;
