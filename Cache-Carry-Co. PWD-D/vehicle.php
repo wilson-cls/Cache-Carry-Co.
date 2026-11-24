@@ -5,6 +5,9 @@
 
     $kategori = isset($_GET['kategori']) ? $_GET['kategori'] : "all";
     $sort     = isset($_GET['sort']) ? $_GET['sort'] : "nama-asc";
+    $q = isset($_GET['q']) ? mysqli_real_escape_string($conn, trim($_GET['q'])) : "";
+
+
 
     // Filter data
     if($kategori == "1") {
@@ -14,13 +17,17 @@
     } else if ($kategori == "3") {
         $sql = "SELECT * FROM kendaraan WHERE id_kategori = 3";
     } else if ($kategori == "1,2") {
-        $sql = "SELECT * FROM kendaraan WHERE id_kategori = 1 OR id_kategori = 2";
+        $sql = "SELECT * FROM kendaraan WHERE (id_kategori = 1 OR id_kategori = 2)";
     } else if ($kategori == "1,3") {
-        $sql = "SELECT * FROM kendaraan WHERE id_kategori = 1 OR id_kategori = 3";
+        $sql = "SELECT * FROM kendaraan WHERE (id_kategori = 1 OR id_kategori = 3)";
     } else if ($kategori == "2,3") {
-        $sql = "SELECT * FROM kendaraan WHERE id_kategori = 2 OR id_kategori = 3";
+        $sql = "SELECT * FROM kendaraan WHERE (id_kategori = 2 OR id_kategori = 3)";
     } else {
-        $sql = "SELECT * FROM kendaraan";
+        $sql = "SELECT * FROM kendaraan WHERE 1=1";
+    }
+
+    if($q !== "") {
+        $sql .= " AND (nama LIKE '%$q%' OR merek LIKE '%$q%')";
     }
 
     // Sort data
@@ -37,7 +44,6 @@
     } else if ($sort == "year-desc") {
         $sql .= " ORDER BY tahun DESC";
     } 
-
 
     $query = mysqli_query($conn, $sql);
 

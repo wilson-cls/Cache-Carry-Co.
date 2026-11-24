@@ -10,15 +10,25 @@ var filterSea = document.getElementById("filter-tipe-4");
 
 // sorting vehicle
 var sortSelect = document.getElementById("sorting-select");
+var searchInput = document.getElementById("vehicle-search");
 
+// membuang respons lama kalau ada response baru
+var requestCounter = 0;
+var searchTimer = null;
 
 // Function to retrieve vehicles
-async function tampilkanKendaraan(kategori, sort) {
-    var url = "vehicle.php?kategori=" + kategori + "&sort=" + sort;
+async function tampilkanKendaraan(kategori, sort, q) {
+    var myRequest = ++requestCounter;
+
+    var url = "vehicle.php?kategori=" + encodeURIComponent(kategori) + 
+              "&sort=" + encodeURIComponent(sort) + 
+              "&q=" + encodeURIComponent(q || "");
 
     try {
         const response = await fetch(url);
         const result = await response.json();
+
+        if(myRequest !== requestCounter) return;
 
         if(!response.ok || !result.success){
             throw new Error(result.message || "Failed to fetch data");
@@ -70,6 +80,7 @@ async function tampilkanKendaraan(kategori, sort) {
             vehicleContainer.appendChild(card);
         });
     } catch (error) {
+        if (myRequest !== requestCounter) return;
         console.error("Error: ", error);
         vehicleContainer.textContent = "Failed to Load Vehicle";
     }
@@ -92,8 +103,9 @@ function updateTampilan() {
     }
 
     let sort = sortSelect.value;
+    let q = searchInput ? searchInput.value.trim() : "";
 
-    tampilkanKendaraan(kategori, sort);
+    tampilkanKendaraan(kategori, sort, q);
 }
 
 filterAll.addEventListener("change", function(){
@@ -111,6 +123,21 @@ filterAir.addEventListener("change", updateTampilan);
 filterSea.addEventListener("change", updateTampilan);
 filterLand.addEventListener("change", updateTampilan);
 sortSelect.addEventListener("change", updateTampilan);
+
+if (searchInput) {
+    searchInput.addEventListener("input", function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(updateTampilan, 300);
+    });
+
+    searchInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            clearTimeout(searchTimer);
+            updateTampilan();
+        }
+    });
+}
 
 // Display all vehicles when the page first opens
 updateTampilan();
