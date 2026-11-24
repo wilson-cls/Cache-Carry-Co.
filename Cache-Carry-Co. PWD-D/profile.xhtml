@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="id" lang="id">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- buka jalur koneksi lebih awal ke server Google Fonts sebelum file font-nya diunduh -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin="anonymous"
+    />
+    <!-- mengunduh file font Plus Jakarta Sans -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/style.css" />
+    <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/profile.css" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="../Cache-Carry-Co. PWD-D/images/Logo.svg"
+    />
+    <title>Profile - Cache-Carry-Co.</title>
+  </head>
+
+  <body>
+    <div id="navbar">
+      <div id="logo">
+        <a href="../Cache-Carry-Co. PWD-D/index.xhtml">
+          <img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="logo" />
+          <h2>Cache-Carry-Co.</h2>
+        </a>
+      </div>
+
+      <div id="searchBar">
+        <img
+          src="../Cache-Carry-Co. PWD-D/images/Search.svg"
+          alt="Search Icon"
+          class="searchIcon"
+        />
+        <input
+          type="text"
+          name="quickSearch"
+          id="quickSearch"
+          placeholder="Quick search any vehicle..."
+        />
+      </div>
+
+      <!-- nanti pakai JS WAJIB nambahin class ke menu yang diclik -->
+      <div id="navMenu">
+        <a href="../Cache-Carry-Co. PWD-D/index.xhtml">Home</a>
+        <a href="../Cache-Carry-Co. PWD-D/vehicle.xhtml">Vehicle</a>
+        <a href="../Cache-Carry-Co. PWD-D/garage.xhtml">Garage</a>
+        <a href="../Cache-Carry-Co. PWD-D/cart.xhtml">Cart</a>
+      </div>
+
+      <div id="profile">
+        <button type="button" class="logo-profile" id="profile-btn">
+          <img src="images/Login.svg" alt="logo-profile" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Bagian Foto profile & username -->
+    <div id="head-profile">
+      <div id="profile-card">
+        <div id="avatar-wrapper">
+          <img
+            src="images/profileimg.svg"
+            alt="Foto Profil Pengguna"
+            class="avatar"
+          />
+        </div>
+        <h2><span id="username">@Tmsxxx123</span></h2>
+      </div>
+    </div>
+
+    <!-- Bagian Informasi Data User (Nama, Email, dsb) -->
+    <div id="profile-content">
+      <div id="profile-content-box">
+        <div class="atribut-profile">
+          <p><span class="label-profile">Name</span></p>
+          <p><span id="name-value" class="field-value">Thomas Wilson</span></p>
+        </div>
+        <div class="atribut-profile">
+          <p><span class="label-profile">Email</span></p>
+          <p>
+            <span id="email-value" class="field-value"
+              >ThomasWilson@yahoo.com</span
+            >
+          </p>
+        </div>
+        <div class="atribut-profile">
+          <p><span class="label-profile">Phone Number</span></p>
+          <p>
+            <span id="phone-value" class="field-value">+628-XXXX-XXXX</span>
+          </p>
+        </div>
+        <div class="atribut-profile">
+          <p><span class="label-profile">Address</span></p>
+          <p>
+            <span id="address-value" class="field-value">User Address</span>
+          </p>
+        </div>
+        <!-- Bagian Tombol Sign Out -->
+        <div class="profile-actions">
+          <button type="button" id="btn-sign-out">Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../Cache-Carry-Co. PWD-D/js/profile.js"></script>
+  </body>
+</html>
