@@ -52,6 +52,7 @@ body::-webkit-scrollbar {
 
 #logo h3{
     min-width: 140px;
+    white-space: nowrap;
 }
 
 #navMenu{
