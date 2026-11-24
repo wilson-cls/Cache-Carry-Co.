@@ -7,6 +7,7 @@
     padding: 20px;
     box-sizing: border-box;
     overflow: hidden;
+    min-height: 100vh;
 }
 
 .judul{
@@ -34,7 +35,7 @@
 }
 
 .login-section{
-    min-width: 100vh;
+    min-width: 0;
 }
 
 .login-section .welcome-header {
