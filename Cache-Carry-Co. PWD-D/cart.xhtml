@@ -6,6 +6,7 @@
   <title id="pageTitle">Cart - Cache-Carry-Co.</title>
   <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/style.css" />
   <link rel="stylesheet" type="text/css" href="../Cache-Carry-Co. PWD-D/css/cart.css" />
+  <link rel="icon" type="image/svg+xml" href="../Cache-Carry-Co. PWD-D/images/Logo.svg" />
 </head>
 
 <body>
@@ -34,124 +35,126 @@
     </div>
   </div>
 
-  <div class="cartWrapper">
-    <div class="cartHeader">
-      <h1 id="cartHeading" class="cartHeading">Ready for Acquisition</h1>
-      <p id="cartSubheading" class="cartSubheading">Set your buy or lease preferences for your saved vehicles and check out seamlessly.</p>
-    </div>
+  <div id="main">
+    <div class="cartWrapper">
+      <div class="cartHeader">
+        <h1 id="cartHeading" class="cartHeading">Ready for Acquisition</h1>
+        <p id="cartSubheading" class="cartSubheading">Set your buy or lease preferences for your saved vehicles and check out seamlessly.</p>
+      </div>
 
-    <!-- pilih semua item dan hapus item yang dicentang -->
-    <div class="selectBar">
-      <label class="selectAllLabel" for="selectAllBox">
-        <input type="checkbox" id="selectAllBox" class="cartCheckbox" onchange="toggleSelectAll()" />
-        <span id="selectAllText">Select All Vehicles (0 of 0)</span>
-      </label>
-      <button type="button" id="btnRemoveSelected" class="btnRemoveSelected" onclick="removeSelectedItems()">Remove Selected</button>
-    </div>
+      <!-- pilih semua item dan hapus item yang dicentang -->
+      <div class="selectBar">
+        <label class="selectAllLabel" for="selectAllBox">
+          <input type="checkbox" id="selectAllBox" class="cartCheckbox" onchange="toggleSelectAll()" />
+          <span id="selectAllText">Select All Vehicles (0 of 0)</span>
+        </label>
+        <button type="button" id="btnRemoveSelected" class="btnRemoveSelected" onclick="removeSelectedItems()">Remove Selected</button>
+      </div>
 
-    <!-- untuk cart.js render daftar item keranjang -->
-    <div id="cartItemList" class="cartItemList"></div>
+      <!-- untuk cart.js render daftar item keranjang -->
+      <div id="cartItemList" class="cartItemList"></div>
 
-    <template id="cartCardTemplate">
-      <div class="cartCard">
-        <!-- thumbnail gambar kendaraan -->
-        <div class="cartThumbBox">
-          <img class="js-thumb" src="" alt="" />
-        </div>
-
-        <!-- isi utama card item di keranjang-->
-        <div class="cartCardBody">
-          <div class="cartCardTop">
-            <div>
-              <div class="cartItemTitle js-title"></div>
-              <div class="cartItemMeta js-meta"></div>
-            </div>
-            <button type="button" class="btnDeleteItem js-delete" title="Remove Item">&#128465;</button>
+      <template id="cartCardTemplate">
+        <div class="cartCard">
+          <!-- thumbnail gambar kendaraan -->
+          <div class="cartThumbBox">
+            <img class="js-thumb" src="" alt="" />
           </div>
 
-          <!-- pilihan mode transaksi & harga satuan (bagian tengah-bawah card cart) -->
-          <div class="cartCardMiddle">
-            <div class="modeSwitch">
-              <button type="button" class="modeBtn js-btn-buy">Buy</button>
-              <button type="button" class="modeBtn js-btn-rent">Rent</button>
-            </div>
-            <div class="unitPriceInfo">
-              <div class="unitPriceLabel js-price-label">Unit Purchase Price</div>
-              <div class="unitPriceVal js-price-val">Rp 0</div>
-            </div>
-          </div>
-
-          <!-- pilih, jumlah unit, durasi sewa, dan subtotal -->
-          <div class="cartCardBottom">
-            <div class="controlsRow">
-              <div class="controlGroup">
-                <input type="checkbox" class="cartCheckbox js-check" />
-                <span class="controlLabel">Units</span>
-                <div class="pillStepper">
-                  <button type="button" class="stepBtn js-unit-minus">-</button>
-                  <span class="stepVal js-unit-val">1</span>
-                  <button type="button" class="stepBtn js-unit-plus">+</button>
-                </div>
+          <!-- isi utama card item di keranjang-->
+          <div class="cartCardBody">
+            <div class="cartCardTop">
+              <div>
+                <div class="cartItemTitle js-title"></div>
+                <div class="cartItemMeta js-meta"></div>
               </div>
+              <button type="button" class="btnDeleteItem js-delete" title="Remove Item">&#128465;</button>
+            </div>
 
-              <!-- durasi sewa dalam hari (+/-) -->
-              <div class="durationGroup">
-                <span class="controlLabel">Duration (Days)</span>
-                <div class="pillStepper">
-                  <button type="button" class="stepBtn js-day-minus">-</button>
-                  <span class="stepVal js-day-val">1</span>
-                  <button type="button" class="stepBtn js-day-plus">+</button>
-                </div>
+            <!-- pilihan mode transaksi & harga satuan (bagian tengah-bawah card cart) -->
+            <div class="cartCardMiddle">
+              <div class="modeSwitch">
+                <button type="button" class="modeBtn js-btn-buy">Buy</button>
+                <button type="button" class="modeBtn js-btn-rent">Rent</button>
+              </div>
+              <div class="unitPriceInfo">
+                <div class="unitPriceLabel js-price-label">Unit Purchase Price</div>
+                <div class="unitPriceVal js-price-val">Rp 0</div>
               </div>
             </div>
 
-            <div class="subtotalGroup">
-              <span class="subtotalLabel">Subtotal:</span>
-              <span class="subtotalVal js-subtotal-val">Rp 0</span>
+            <!-- pilih, jumlah unit, durasi sewa, dan subtotal -->
+            <div class="cartCardBottom">
+              <div class="controlsRow">
+                <div class="controlGroup">
+                  <input type="checkbox" class="cartCheckbox js-check" />
+                  <span class="controlLabel">Units</span>
+                  <div class="pillStepper">
+                    <button type="button" class="stepBtn js-unit-minus">-</button>
+                    <span class="stepVal js-unit-val">1</span>
+                    <button type="button" class="stepBtn js-unit-plus">+</button>
+                  </div>
+                </div>
+
+                <!-- durasi sewa dalam hari (+/-) -->
+                <div class="durationGroup">
+                  <span class="controlLabel">Duration (Days)</span>
+                  <div class="pillStepper">
+                    <button type="button" class="stepBtn js-day-minus">-</button>
+                    <span class="stepVal js-day-val">1</span>
+                    <button type="button" class="stepBtn js-day-plus">+</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="subtotalGroup">
+                <span class="subtotalLabel">Subtotal:</span>
+                <span class="subtotalVal js-subtotal-val">Rp 0</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </template>
+      </template>
 
-    <!-- summary total beli/sewa dan tombol checkout -->
-    <div class="cartSummary">
-      <div class="totalRow">
-        <span class="totalLabel">Total :</span>
-        <span id="cartTotalVal" class="totalValue">Rp 0</span>
+      <!-- summary total beli/sewa dan tombol checkout -->
+      <div class="cartSummary">
+        <div class="totalRow">
+          <span class="totalLabel">Total :</span>
+          <span id="cartTotalVal" class="totalValue">Rp 0</span>
+        </div>
+        <button type="button" id="btnCheckoutCart" class="btnCheckoutCart" onclick="checkoutCart()">CHECK OUT</button>
       </div>
-      <button type="button" id="btnCheckoutCart" class="btnCheckoutCart" onclick="checkoutCart()">CHECK OUT</button>
     </div>
+
+    <div id="cartMessage" class="cartMessage"></div>
   </div>
 
-  <div id="cartMessage" class="cartMessage"></div>
+  <div class="bottom">
+      <div id="btm-header">
+          <div id="logo">
+            <img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="logo" />
+            <h3>Cache-Carry-Co. </h3>
+          </div>
 
- <div class="bottom">
-    <div id="btm-header">
-        <div id="logo">
-          <img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="logo" />
-          <h3>Cache-Carry-Co. </h3>
-        </div>
+          <div id="about-us">
+              <h3>About Us</h3>
+              <p>Cache-Carry-Co. is a premier digital marketplace and asset management platform dedicated to connecting enterprises with high-performance fleets</p>
+          </div>
+      </div>       
 
-        <div id="about-us">
-            <h3>About Us</h3>
-            <p>Cache-Carry-Co. is a premier digital marketplace and asset management platform dedicated to connecting enterprises with high-performance fleets</p>
-        </div>
-    </div>       
-
-    <div id="creator">
-      <h3>CREATORS: </h3>
-        <div id="name">
-          <p>wilson-cls</p>
-          <p>ahenggtsas-gif</p>
-          <p>audreydeitra</p>
-          <p>danielnmrisa</p>
-          <p>vio0onit</p>
-        </div>
+      <div id="creator">
+        <h3>CREATORS: </h3>
+          <div id="name">
+            <p>wilson-cls</p>
+            <p>ahenggtsas-gif</p>
+            <p>audreydeitra</p>
+            <p>danielnmrisa</p>
+            <p>vio0onit</p>
+          </div>
+      </div>
     </div>
-  </div>
 
-  <script src="../Cache-Carry-Co. PWD-D/js/script.js"></script>
-  <script type="text/javascript" src="js/cart.js"></script>
+    <script src="../Cache-Carry-Co. PWD-D/js/script.js"></script>
+    <script type="text/javascript" src="js/cart.js"></script>
 </body>
 </html>
