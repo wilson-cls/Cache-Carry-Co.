@@ -31,6 +31,7 @@ function showCartPopup(text) {
   }
 
   msgEl.textContent = text;
+  msgEl.style.color = "white";
   msgEl.classList.remove('show');
   void msgEl.offsetWidth;
   msgEl.classList.add('show');
@@ -204,6 +205,7 @@ function renderCart() {
     var emptyDiv = document.createElement('div');
     emptyDiv.className = 'emptyCartBox';
     emptyDiv.textContent = 'Cart is empty. Add vehicles to the cart first';
+    emptyDiv.style.color = "white";
     listEl.appendChild(emptyDiv);
     updateSelectBarAndTotal();
     return;

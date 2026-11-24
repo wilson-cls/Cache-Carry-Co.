@@ -38,6 +38,7 @@ async function tampilkanKendaraan(kategori, sort, q) {
 
         if(result.data.length === 0) {
             vehicleContainer.textContent = "Vehicle not found";
+            vehicleContainer.style.color = "white";
             return;
         }
 
@@ -83,6 +84,7 @@ async function tampilkanKendaraan(kategori, sort, q) {
         if (myRequest !== requestCounter) return;
         console.error("Error: ", error);
         vehicleContainer.textContent = "Failed to Load Vehicle";
+        vehicleContainer.color = "white";
     }
 }
 

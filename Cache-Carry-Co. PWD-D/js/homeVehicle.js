@@ -14,6 +14,7 @@
 
             if(result.data.length === 0) {
                 productContainer.textContent = "No vehicle available yet";
+                productContainer.style.color = "white";
                 return;
             }
 
@@ -58,6 +59,7 @@
         } catch (error) {
             console.error("Error: ", error);
             productContainer.textContent = "Failed to Load Vehicle";
+            productContainer.style.color = "white";
         }
     }
 
