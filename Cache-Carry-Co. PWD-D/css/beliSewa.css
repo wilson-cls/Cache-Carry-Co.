@@ -355,3 +355,34 @@ button:disabled {
   margin-bottom: 32px;
   white-space: pre-line;   /* baris baru di database ikut tampil */
 }
+
+.cartCheckbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #9a9a9a;
+  border-radius: 5px;
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cartCheckbox:checked {
+  background-color: #fca111;
+  border-color: #fca111;
+}
+
+.cartCheckbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid #141414;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
