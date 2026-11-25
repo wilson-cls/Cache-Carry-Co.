@@ -122,6 +122,12 @@ function toggleSelectAll() {
       selectedIds.push(String(cartItems[i].id));
     }
   }
+
+  var selectBarEl = document.querySelector('.selectBar');
+  if (selectBarEl) {
+    selectBarEl.classList.toggle('active', selectedIds.length > 0);
+  }
+
   updateSelectBarAndTotal();
 }
 
