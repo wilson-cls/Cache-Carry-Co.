@@ -1,3 +1,11 @@
+.productTop{
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 36px;
+  align-items: start;
+  margin-bottom: 35px;
+}
+
 /* Container utama halaman Beli & Sewa */
 .productWrapper {
   margin: 28px auto;
@@ -9,18 +17,19 @@
 
 /* Bagian gambar */
 .mediaSection {
-  margin-bottom: 20px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
 }
 
 /* Div khusus gambar utama */
 .productImg {
   width: 100%;
-  height: 620px;
-  border-radius: 20px;
+  height: 440px;
+  border-radius: 16px;
   overflow: hidden;
-  background-color: #202020;
-  border: 1px solid #303030;
   margin-bottom: 14px;
+  box-sizing: border-box;
 }
 
 .productImg img {
@@ -78,20 +87,17 @@
 /* Grid spesifikasi */
 .specList {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   padding: 14px 8px;
   margin-bottom: 24px;
-  border-top: 1px solid #fca311;
-  border-bottom: 1px solid #fca311;
   background-color: transparent;
 }
 
 .specBox {
-  background-color: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 4px 8px;
+  background-color: #2e2e2e;
+  border-radius: 14px;
+  padding: 10px 8px;
   text-align: center;
 }
 
@@ -121,7 +127,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 /* (unselected buy & rent) */
@@ -147,14 +153,14 @@
 }
 
 .trxLabel {
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.3;
   color: inherit;
 }
 
 .trxPrice {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.35;
   margin-top: 4px;
@@ -168,7 +174,7 @@
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
-  background-color: transparent;
+  background-color: #2D2D2D;
   color: #f5f5f5;
   padding: 16px 24px;
   border-radius: 20px;
@@ -297,10 +303,17 @@
 }
 
 /* info stok */
+.productInfoSection{
+  width: 100%;
+  min-width: 0;
+  padding: 8px 0;
+}
+
 .stokInfo {
   font-size: 14px;
-  margin: 4px 0 12px;
+  padding-bottom: 20px;
   color: #ffffff;
+  border-bottom: 1px solid #2e2e2e;
 }
 
 .stokInfo.low {

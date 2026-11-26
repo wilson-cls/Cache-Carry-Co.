@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="id" lang="id">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" type="text/css" href="css/beliSewa.css" />
 </head>
+
 <body>
   <div id="navbar">
     <div id="logo">
@@ -35,46 +37,56 @@
 
   <!-- template struktur halaman/detail kendaraan -->
   <template id="beliSewaTemplate">
-    <!-- foto produk -->
-    <div class="mediaSection">
-      <div class="productImg">
-        <img id="productImgEl" class="js-main-img" src="" alt="" />
-      </div>
-
-      <div id="vehicleImageList" class="vehicleImageList js-img-list"></div>
-    </div>
-
-    <div id="infoEl" class="info js-info"></div>
-    <h1 id="productNameEl" class="productName js-name"></h1>
-    <div id="stokInfo" class="stokInfo"></div>
-    <!-- spesifikasi -->
-    <div id="specList" class="specList js-spec-list"></div>
-    <div id="descEl" class="vehicleDesc js-desc"></div>
-
-    <div class="subtitle">CHOOSE TRANSACTION</div>
-    <div class="trxOptions">
-      <div id="trxBuy" class="trxCard active js-trx-buy">
-        <div class="trxLabel">Buy</div>
-        <div id="hargaBeli" class="trxPrice js-price-buy">Rp 0</div>
-      </div>
-      <div id="trxRent" class="trxCard js-trx-rent">
-        <div class="trxLabel">Rent</div>
-        <div id="hargaSewa" class="trxPrice js-price-rent">Rp 0</div>
-      </div>
-    </div>
-
-    <div id="qtyBar" class="qtyBar">
-      <div class="qtyUnitGroup">
-        <div class="qtyLabel">
-          Total<br />
-          Vehicle
+    <div class="productTop">
+      <!-- foto produk -->
+      <div class="mediaSection">
+        <div class="productImg">
+          <img id="productImgEl" class="js-main-img" src="" alt="" />
         </div>
-        <div class="qtyControl">
-          <button type="button" class="qtyBtn js-qty-minus">-</button>
-          <span id="qtyCount" class="qtyCount js-qty-val">1</span>
-          <button type="button" class="qtyBtn js-qty-plus">+</button>
-        </div>
+        <div id="vehicleImageList" class="vehicleImageList js-img-list"></div>
       </div>
+
+      <!-- Kolom Kanan: Informasi Produk, Spesifikasi -->
+      <div class="productInfoSection">
+        <!-- info -->
+        <div id="infoEl" class="info js-info"></div>
+        <h1 id="productNameEl" class="productName js-name"></h1>
+        <div id="stokInfo" class="stokInfo"></div>
+
+        <!-- Spesifikasi Produk -->
+        <div id="specList" class="specList js-spec-list"></div>
+        <div id="descEl" class="vehicleDesc js-desc"></div>
+
+        <!-- Opsi Transaksi (Buy/Rent) -->
+        <div class="trxOptions">
+          <div id="trxBuy" class="trxCard active js-trx-buy">
+            <div class="trxLabel">Buy</div>
+            <div id="hargaBeli" class="trxPrice js-price-buy">Rp 0</div>
+          </div>
+
+          <div id="trxRent" class="trxCard js-trx-rent">
+            <div class="trxLabel">Rent</div>
+            <div id="hargaSewa" class="trxPrice js-price-rent">Rp 0</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- Panel Aksi -->
+    <div class="productActionSection">
+      <!-- Kontrol Jumlah Unit dan Durasi -->
+      <div id="qtyBar" class="qtyBar">
+        <div class="qtyUnitGroup">
+          <div class="qtyLabel">
+            Total<br />
+            Vehicle
+          </div>
+          <div class="qtyControl">
+            <button type="button" class="qtyBtn js-qty-minus">-</button>
+            <span id="qtyCount" class="qtyCount js-qty-val">1</span>
+            <button type="button" class="qtyBtn js-qty-plus">+</button>
+          </div>
+        </div>
 
       <div id="durationGroup" class="durationGroup js-duration-group">
         <div class="qtyLabel">
@@ -91,11 +103,11 @@
 
     <div class="btnGroup">
       <button type="button" class="btnCart js-add-cart" title="Add to Cart">+</button>
-      <button type="button" id="btnCheckout" class="btnMain js-checkout" data-login-url="login.xhtml">BUY NOW</button>
+      <button type="button" id="btnCheckout" class="btnMain js-checkout">BUY NOW</button>
     </div>
   </template>
 
-  <!--  spec box -->
+  <!-- Template Kotak Spesifikasi -->
   <template id="specBoxTemplate">
     <div class="specBox">
       <div class="specVal js-spec-val"></div>
@@ -103,9 +115,36 @@
     </div>
   </template>
 
+  <!-- Notifikasi Keranjang -->
   <div id="cartMessage" class="cartMessage"></div>
 
+  <div class="bottom">
+    <div id="btm-header">
+      <div id="logo">
+        <img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="logo" />
+        <h3>Cache-Carry-Co. </h3>
+      </div>
+
+      <div id="about-us">
+        <h3>About Us</h3>
+        <p>Cache-Carry-Co. is a premier digital marketplace and asset management platform dedicated to connecting
+          enterprises with high-performance fleets</p>
+      </div>
+    </div>
+
+    <div id="creator">
+      <h3>CREATORS: </h3>
+      <div id="name">
+        <p>wilson-cls</p>
+        <p>ahenggtsas-gif</p>
+        <p>audreydeitra</p>
+        <p>danielnmrisa</p>
+        <p>vio0onit</p>
+      </div>
+    </div>
+  </div>
   <script type="text/javascript" src="js/script.js"></script>
   <script type="text/javascript" src="js/beliSewa.js"></script>
 </body>
+
 </html>
