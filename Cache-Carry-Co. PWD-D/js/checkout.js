@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const CHECKOUT_PHP_URL = "../Cache-Carry-Co. PWD-D/checkout.php";
 
   // nyimpan id_kendaraan
-  let currentIdKendaraan = null;
+  const params = new URLSearchParams(window.location.search);
+  let currentIdKendaraan = params.get('id');
 
   function formatRupiah(amount) {
     const num = Number(amount || 0);
