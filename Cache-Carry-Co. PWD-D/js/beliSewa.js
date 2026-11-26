@@ -117,7 +117,6 @@ function renderStock() {
     stokEl.className = 'stokInfo low';
   } else {
     stokEl.textContent = (isRent ? 'Available to rent: ' : 'In stock: ') + stok;
-    stokEl.style.color = "white";
   }
 
   var habis = (stok !== null && stok < 1);
@@ -146,7 +145,6 @@ function showBeliSewaPopup(text) {
   }
 
   msgEl.textContent = text;
-  msgEl.style.color = "white";
   msgEl.classList.remove('show');
   void msgEl.offsetWidth;
   msgEl.classList.add('show');
