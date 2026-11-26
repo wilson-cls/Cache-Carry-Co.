@@ -444,49 +444,49 @@ function checkoutVehicle() {
     });
 }
 
-var vehicleId = new URLSearchParams(window.location.search).get('id');
-async function tampilkanDetail() {
-  if (!vehicleId) return;
+var params = new URLSearchParams(window.location.search);
+var vehicleId = params.get('id_kendaraan');
 
-  var url = "beliSewa.php?id=" + encodeURIComponent(vehicleId);
+async function tampilkanDetail() {
+  var url = vehicleId
+    ? "beliSewa.php?id=" + encodeURIComponent(vehicleId)
+    : "beliSewa.php";
 
   try {
     const response = await fetch(url);
     const result = await response.json();
 
-    if(!response.ok || !result.success){
+    if (!response.ok || !result.success || !result.data) {
       throw new Error(result.message || "Failed to fetch data");
     }
 
     const kendaraan = result.data;
 
     renderVehicle({
-          id: kendaraan.id_kendaraan,
-          nama: kendaraan.nama,
-          info: (kendaraan.merek || "-") + " • " + (kendaraan.tahun || "-"),
-          gambar: kendaraan.foto,
-          harga_beli: kendaraan.harga_jual,
-          harga_sewa: kendaraan.harga_sewa,
-          stok_jual: kendaraan.stok_jual,
-          stok_sewa: kendaraan.stok_sewa,
-          deskripsi: kendaraan.deskripsi,
-          specs: [
-              { value: kendaraan.merek || "-", label: "Brand" },
-              { value: kendaraan.tahun || "-", label: "Year" },
-              { value: kendaraan.kecepatan || "-", label: "Top Speed" }, 
-              { value: kendaraan.kapasitas_penumpang || "-", label: "Capacity" }  
-          ]
-      });
-
+      id: kendaraan.id_kendaraan,
+      nama: kendaraan.nama,
+      info: (kendaraan.merek || "-") + " • " + (kendaraan.tahun || "-"),
+      gambar: kendaraan.foto,
+      harga_beli: kendaraan.harga_jual,
+      harga_sewa: kendaraan.harga_sewa,
+      stok_jual: kendaraan.stok_jual,
+      stok_sewa: kendaraan.stok_sewa,
+      deskripsi: kendaraan.deskripsi,
+      specs: [
+        { value: kendaraan.merek || "-", label: "Brand" },
+        { value: kendaraan.tahun || "-", label: "Year" },
+        { value: kendaraan.kecepatan || "-", label: "Top Speed" },
+        { value: kendaraan.kapasitas_penumpang || "-", label: "Capacity" }
+      ]
+    });
   } catch (error) {
     console.error("Error: ", error);
     var container = document.getElementById('beliSewaContainer');
-    if(container){
-      container.textContent = "Failed to load vehicle details";
+    if (container) {
+      container.textContent = error.message || "Failed to load vehicle details";
       container.style.color = "white";
     }
   }
 }
 
 tampilkanDetail();
-
