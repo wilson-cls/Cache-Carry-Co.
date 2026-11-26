@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
       nameEl.textContent = recipientName;
     }
     if (addressEl) {
-      addressEl.textContent = alamatPengiriman;
+      addressEl.value = alamatPengiriman;
     }
 
     // daftar item vehicle
@@ -164,7 +164,8 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({
           action: "place_order",
           id_kendaraan: currentIdKendaraan,
-          payment_method: selectedMethod
+          payment_method: selectedMethod,
+          recipient_address: document.getElementById("recipientAddress").value
         })
       })
         .then(function (response) {
