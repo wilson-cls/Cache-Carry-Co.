@@ -1,6 +1,8 @@
 <?php 
     // diinclude oleh semua halaman
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     
     $conn = mysqli_connect('localhost', 'root', '', 'cache_carry_co');
 
