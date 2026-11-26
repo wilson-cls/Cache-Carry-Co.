@@ -1,19 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
   var CHECKOUT_PHP_URL = "checkout.php";
   var BELI_SEWA_PHP_URL = "beliSewa.php";
-  var CART_STORAGE_KEYS = ["cart", "cartItems", "keranjang", "checkoutCart"];
 
   var params = new URLSearchParams(window.location.search);
   var urlId = params.get("id");
   var urlMode = params.get("mode") === "rent" ? "rent" : "buy";
-  var urlUnits = Math.max(1, parseInt(params.get("units"), 10) || 1);
-  var urlDays = Math.max(1, parseInt(params.get("days"), 10) || 1);
+  var urlUnits = Math.max(1, parseInt(params.get("units"), 10) || 1); // Minimal 1 unit; batas atas stok dicek di Beli/Sewa & backend
+  var urlDays = Math.max(1, parseInt(params.get("days"), 10) || 1);   // Minimal 1 hari; tidak ada batas maksimum khusus
 
-  // Menyimpan data aktif yang akan dikirim saat Place Order (disinkronkan dari session/URL/item)
+  // Menyimpan ID kendaraan aktif yang akan dikirim saat Place Order
   var currentIdKendaraan = urlId || null;
-  var activeMode = urlMode;
-  var activeUnits = urlUnits;
-  var activeDays = urlDays;
 
   // Format angka menjadi mata uang Rupiah (tanpa desimal)
   function formatRupiah(amount) {
@@ -21,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return "Rp" + num.toLocaleString("id-ID");
   }
 
-  // Ambil nilai opsi metode pembayaran yang sedang dipilih user
+  // Ambil nilai radio button metode pembayaran yang sedang dipilih user
   function getSelectedPaymentMethod() {
     var checked = document.querySelector('input[name="payment_method"]:checked');
     return checked ? checked.value : "";
@@ -50,15 +46,15 @@ document.addEventListener("DOMContentLoaded", function () {
     return Math.max(1, parseInt(raw, 10) || 1);
   }
 
-  // Ambil durasi sewa dalam hari
+  // Ambil durasi sewa dalam hari (minimal 1; khusus mode rent)
   function resolveItemDays(item, days) {
     var raw =
       days !== undefined
         ? days
         : (item &&
-            (item.days !== undefined
-              ? item.days
-              : item.duration_days));
+            (item.duration_days !== undefined
+              ? item.duration_days
+              : item.days));
     return Math.max(1, parseInt(raw, 10) || 1);
   }
 
@@ -91,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return hargaJual * qty;
   }
 
-  // Format label jumlah unit & durasi sewa
+  // format label jumlah unit & durasi sewa agar selalu sinkron dengan isi keranjang atau Beli/Sewa
   function formatUnitLabel(item, mode, units, days) {
     var resolvedMode = resolveItemMode(item, mode);
     var qty = resolveItemUnits(item, units);
@@ -103,7 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return qty + " unit(s)";
   }
 
-  // Normalisasi satu item (dari beliSewa.php, keranjang, atau backend) menjadi struktur seragam
   function normalisasiItem(item, fallbackMode, fallbackUnits, fallbackDays) {
     var resolvedMode = resolveItemMode(item, fallbackMode);
     var qty = resolveItemUnits(item, fallbackUnits);
@@ -126,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
       type: resolvedMode === "rent" ? "RENT" : "BUY",
       mode: resolvedMode,
       units: qty,
-      days: durasi,
       duration_days: durasi,
       name: (item && (item.nama || item.name)) || "",
       origin:
@@ -136,17 +130,18 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  // Susun objek item checkout dari detail kendaraan
+  // Susun objek item checkout dari detail kendaraan Beli/Sewa
   function buatItemDariKendaraan(kendaraan, mode, units, days) {
     return normalisasiItem(kendaraan, mode, units, days);
   }
 
-  // Ambil daftar item dari keranjang di localStorage jika diperlukan
+  // ambil daftar item dari keranjang
   function ambilItemDariKeranjangStorage() {
-    for (var i = 0; i < CART_STORAGE_KEYS.length; i++) {
+    var keys = ["cart", "cartItems", "keranjang", "checkoutCart"];
+    for (var i = 0; i < keys.length; i++) {
       var raw = null;
       try {
-        raw = window.localStorage.getItem(CART_STORAGE_KEYS[i]);
+        raw = window.localStorage.getItem(keys[i]);
       } catch (e) {
         raw = null;
       }
@@ -170,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return [];
   }
 
-  // Buat elemen DOM kartu untuk satu item di daftar checkout
+  // kartu untuk satu item di daftar checkout
   function createItemElement(item) {
     var card = document.createElement("div");
     card.className = "checkout-item";
@@ -185,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
       thumb.appendChild(img);
     }
 
-    // Informasi utama item (badge BUY/RENT, nama, dan merek/tahun)
+    // Informasi utama item (badge buy/rent, nama)
     var info = document.createElement("div");
     info.className = "item-info";
 
@@ -232,11 +227,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return card;
   }
 
-  // Render seluruh data checkout dan hitung subtotal + grand total langsung di JS
+  // Render seluruh data checkout (penerima, daftar item, subtotal, dan grand total) ke halaman
   function renderCheckout(data) {
     if (!data) return;
 
-    // Sinkronkan ID kendaraan serta mode/unit/hari aktif untuk kebutuhan Place Order
+    // Sinkronkan currentIdKendaraan dari respons backend jika tersedia
     if (data.id_kendaraan !== undefined && data.id_kendaraan !== null) {
       currentIdKendaraan = data.id_kendaraan;
     } else if (
@@ -247,20 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
       currentIdKendaraan = data.items[0].id_kendaraan;
     }
 
-    if (data.mode) {
-      activeMode = String(data.mode).toLowerCase() === "rent" ? "rent" : "buy";
-    }
-    if (data.units !== undefined && data.units !== null) {
-      activeUnits = Math.max(1, parseInt(data.units, 10) || 1);
-    }
-    if (data.days !== undefined || data.duration_days !== undefined) {
-      activeDays = Math.max(
-        1,
-        parseInt(data.days !== undefined ? data.days : data.duration_days, 10) || 1
-      );
-    }
-
-    // Tampilkan data penerima dan alamat pengiriman jika tersedia
+    // Tampilkan data penerima dan alamat pengiriman
     var nameEl = document.getElementById("recipientName");
     var addressEl = document.getElementById("recipientAddress");
     var recipientName = data.recipient_name || data.nama_penerima || "";
@@ -277,7 +259,6 @@ document.addEventListener("DOMContentLoaded", function () {
       addressEl.textContent = alamatPengiriman;
     }
 
-    // Render seluruh item lalu hitung subtotal & grand total langsung di JS
     var rawItems = Array.isArray(data.items) ? data.items : [];
     var itemsContainer = document.getElementById("checkoutItemsContainer");
     var subtotal = 0;
@@ -286,14 +267,8 @@ document.addEventListener("DOMContentLoaded", function () {
       itemsContainer.innerHTML = "";
     }
 
-    rawItems.forEach(function (rawItem, index) {
+    rawItems.forEach(function (rawItem) {
       var normalizedItem = normalisasiItem(rawItem);
-      if (index === 0) {
-        activeMode = normalizedItem.mode;
-        activeUnits = normalizedItem.units;
-        activeDays = normalizedItem.days;
-      }
-
       subtotal += Number(normalizedItem.price) || 0;
 
       if (itemsContainer) {
@@ -314,7 +289,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Ambil detail kendaraan dari beliSewa.php?id=... 
   function loadVehicleFromBeliSewa(id, checkoutBaseData) {
     var detailUrl = BELI_SEWA_PHP_URL + "?id=" + encodeURIComponent(id);
 
@@ -334,43 +308,21 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!result || !result.success || !result.data) {
           throw new Error((result && result.message) || "Vehicle not found");
         }
-
-        var resolvedMode =
-          (checkoutBaseData && checkoutBaseData.mode) || urlMode;
-        var resolvedUnits =
-          (checkoutBaseData && checkoutBaseData.units) || urlUnits;
-        var resolvedDays =
-          (checkoutBaseData &&
-            (checkoutBaseData.days !== undefined
-              ? checkoutBaseData.days
-              : checkoutBaseData.duration_days)) ||
-          urlDays;
-
-        currentIdKendaraan = result.data.id_kendaraan || id;
-        activeMode = String(resolvedMode).toLowerCase() === "rent" ? "rent" : "buy";
-        activeUnits = Math.max(1, parseInt(resolvedUnits, 10) || 1);
-        activeDays = Math.max(1, parseInt(resolvedDays, 10) || 1);
-
         var item = buatItemDariKendaraan(
           result.data,
-          activeMode,
-          activeUnits,
-          activeDays
+          urlMode,
+          urlUnits,
+          urlDays
         );
-
         var merged = Object.assign({}, checkoutBaseData || {}, {
-          id_kendaraan: currentIdKendaraan,
-          mode: activeMode,
-          units: activeUnits,
-          days: activeDays,
+          id_kendaraan: result.data.id_kendaraan || id,
           items: [item]
         });
-
         renderCheckout(merged);
       });
   }
 
-  // Memuat data awal checkout via GET
+  // Memuat data awal checkout
   function loadCheckoutData() {
     var targetUrl = CHECKOUT_PHP_URL + window.location.search;
 
@@ -387,20 +339,16 @@ document.addEventListener("DOMContentLoaded", function () {
         return response.json();
       })
       .then(function (data) {
-        // Jika checkout.php sudah mengembalikan array items, render langsung
         var hasItems = Array.isArray(data && data.items) && data.items.length > 0;
         if (hasItems) {
           renderCheckout(data);
           return;
         }
 
-        // Jika ada id_kendaraan dari $_SESSION['checkout'] atau parameter ?id= di URL, ambil detailnya dari beliSewa.php
-        var targetId = urlId || (data && data.id_kendaraan);
-        if (targetId) {
-          return loadVehicleFromBeliSewa(targetId, data);
+        if (urlId) {
+          return loadVehicleFromBeliSewa(urlId, data);
         }
 
-        // Fallback ke keranjang di localStorage bila tidak ada data dari beliSewa / session
         var cartItems = ambilItemDariKeranjangStorage();
         if (cartItems.length > 0) {
           renderCheckout(Object.assign({}, data || {}, { items: cartItems }));
@@ -425,17 +373,19 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // kirim data pesanan via POST ke checkout.php
+  // kirim data pesanan
   var placeOrderBtn = document.getElementById("placeOrderBtn");
   if (placeOrderBtn) {
     placeOrderBtn.addEventListener("click", function () {
       var selectedMethod = getSelectedPaymentMethod();
       if (!selectedMethod) {
-        alert("Choose payment method.");
+        alert(
+          "Choose payment methode."
+        );
         return;
       }
 
-      // Cegah klik ganda saat request POST sedang berjalan
+      // supaya tidak terjadi klik ganda saat req POST berjalan
       placeOrderBtn.disabled = true;
 
       fetch(CHECKOUT_PHP_URL, {
@@ -447,19 +397,20 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({
           action: "place_order",
           id_kendaraan: currentIdKendaraan,
-          mode: activeMode,
-          units: activeUnits,
-          duration_days: activeMode === "rent" ? activeDays : 1,
-          days: activeMode === "rent" ? activeDays : 1,
+          mode: urlMode,
+          units: urlUnits,
+          duration_days: urlMode === "rent" ? urlDays : 1,
           payment_method: selectedMethod
         })
       })
+
         .then(function (response) {
           if (!response.ok) {
             throw new Error("Gagal memproses pesanan");
           }
           return response.json();
         })
+
         .then(function (result) {
           if (result.redirect) {
             window.location.href = result.redirect;
@@ -467,15 +418,18 @@ document.addEventListener("DOMContentLoaded", function () {
             alert(result.message);
           }
         })
+
         .catch(function (err) {
           console.error("Error placeOrder:", err);
           alert("Terjadi kesalahan saat memproses pesanan.");
         })
+
         .finally(function () {
           placeOrderBtn.disabled = false;
         });
     });
   }
 
+  // pengambilan data saat halaman selesai diload
   loadCheckoutData();
 });
