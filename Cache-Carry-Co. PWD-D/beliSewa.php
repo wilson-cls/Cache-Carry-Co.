@@ -4,6 +4,11 @@
 
     header('Content-Type: application/json; charset=utf-8');
 
+    $isLoggedIn = !empty($_SESSION['id_pengguna'])
+    || !empty($_SESSION['id_user'])
+    || !empty($_SESSION['user'])
+    || !empty($_SESSION['username']);
+
     //post menyimpan data checkout atau add to cart
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true);
