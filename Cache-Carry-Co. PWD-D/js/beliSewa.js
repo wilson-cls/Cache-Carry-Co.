@@ -162,14 +162,16 @@ function showBeliSewaPopup(text) {
 
 function syncBeliSewaAction(actionName, payload) {
   if (typeof fetch !== 'function') {
-    return;
+    return Promise.resolve(null);
   }
   var bodyData = Object.assign({ action: actionName }, payload || {});
-  fetch('beli_sewa_action.php', {
+  return fetch('beliSewa.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(bodyData)
-  }).catch(function () {});
+  }).then(function (res) {
+    return res.json();
+  });
 }
 
 // mode transaksi buy/rent
@@ -388,8 +390,11 @@ function renderVehicle(vehicleData) {
 
 // tambah item ke cart
 function addToCart() {
+  if (!validateStock()) return;
+
   var payload = {
     id: currentVehicle.id,
+    id_kendaraan: currentVehicle.id,
     nama: currentVehicle.nama,
     mode: trxState.mode,
     units: trxState.units,
@@ -397,14 +402,26 @@ function addToCart() {
     subtotal: hitungTotalBeliSewa()
   };
 
-  syncBeliSewaAction('add_to_cart', payload);
-  showBeliSewaPopup((currentVehicle.nama || 'Vehicle') + ' added to cart');
+  syncBeliSewaAction('add_to_cart', payload)
+    .then(function (result) {
+      if (result && result.success === false) {
+        showBeliSewaPopup(result.message || 'Failed to add to cart');
+        return;
+      }
+      showBeliSewaPopup((currentVehicle.nama || 'Vehicle') + ' added to cart');
+    })
+    .catch(function () {
+      showBeliSewaPopup('Failed to add to cart');
+    });
 }
 
 // proses checkout langsung
 function checkoutVehicle() {
+  if (!validateStock()) return;
+
   var payload = {
     id: currentVehicle.id,
+    id_kendaraan: currentVehicle.id,
     nama: currentVehicle.nama,
     mode: trxState.mode,
     units: trxState.units,
@@ -412,8 +429,19 @@ function checkoutVehicle() {
     total: hitungTotalBeliSewa()
   };
 
-  syncBeliSewaAction('checkout_vehicle', payload);
   showBeliSewaPopup('Processing ' + trxState.mode + ' order...');
+
+  syncBeliSewaAction('checkout_vehicle', payload)
+    .then(function (result) {
+      if (result && result.success === false) {
+        showBeliSewaPopup(result.message || 'Checkout failed');
+        return;
+      }
+      window.location.href = (result && result.redirect) ? result.redirect : 'checkout.xhtml';
+    })
+    .catch(function () {
+      window.location.href = 'checkout.xhtml';
+    });
 }
 
 var vehicleId = new URLSearchParams(window.location.search).get('id');
