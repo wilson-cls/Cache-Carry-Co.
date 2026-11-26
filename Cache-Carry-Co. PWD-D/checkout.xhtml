@@ -21,8 +21,36 @@
       <div id="recipientName" class="recipient-name"></div>
       <div id="recipientAddress" name="recipient-address"></div>
     </div>
+    <div id="addressSection" class="address-section">
+  <div class="address-header">
+    <span class="address-title">Shipping Address</span>
+    <button type="button" id="toggleAddAddressBtn" class="btn-add-address">+ Add address</button>
+  </div>
+
+  <div id="savedAddressList" class="saved-address-list"></div>
+
+  <div id="newAddressForm" class="new-address-form" style="display: none;">
+    <textarea id="newAddressInput" rows="2" placeholder="Masukkan alamat pengiriman baru..."></textarea>
+    <div class="new-address-actions">
+      <button type="button" id="saveNewAddressBtn" class="btn-save-address">Save &amp; Use</button>
+      <button type="button" id="cancelNewAddressBtn" class="btn-cancel-address">Cancel</button>
+    </div>
+  </div>
+</div>
+
     <hr class="checkout-divider" />
     <div id="checkoutItemsContainer" class="checkout-items"></div>
+
+    <div id="rentalDateSection" class="rental-date-section" style="display: none;">
+    <div class="rental-date-field">
+      <label for="startDateInput">Rental Start Date</label>
+      <input type="date" id="startDateInput" name="start_date" />
+    </div>
+    <div class="rental-date-end">
+      <span>Rental End Date:</span>
+      <strong id="endDateDisplay">-</strong>
+    </div>
+  </div>
 
     <!-- pilih metode pembayaran -->
     <div id="paymentMethodBox" class="payment-method-section">

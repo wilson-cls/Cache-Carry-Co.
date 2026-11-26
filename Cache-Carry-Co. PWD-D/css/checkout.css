@@ -34,13 +34,123 @@
 }
 
 /* Alamat penerima di bawah nama penerima */
-#checkoutPage .recipient-address {
-  font-size: 15px;
-  font-weight: 400;
-  color: #cccccc;
-  line-height: 1.5;
-  min-height: 24px;
-  word-wrap: break-word;
+.address-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.address-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #F3F3F3;
+}
+
+.btn-add-address,
+.btn-save-address,
+.btn-cancel-address {
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-add-address,
+.btn-save-address {
+    background-color: #FCA311;
+    color: #111111;
+}
+
+.btn-cancel-address {
+    background-color: #2A2A2A;
+    color: #F3F3F3;
+    border: 1px solid #383838;
+}
+
+.saved-address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.address-option-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.address-option {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    background-color: #2A2A2A;
+    color: #F3F3F3;
+    border: 1px solid #383838;
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+.address-option.active {
+    border-color: #FCA311;
+}
+
+.address-option-status {
+    font-size: 12px;
+    font-weight: 600;
+    color: #FCA311;
+    flex-shrink: 0;
+}
+
+.btn-delete-address {
+    background-color: transparent;
+    color: #f87171;
+    border: 1px solid #f87171;
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.btn-delete-address:hover {
+    background-color: #f87171;
+    color: #111111;
+}
+
+.new-address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.new-address-form textarea {
+    background-color: #2A2A2A;
+    color: #F3F3F3;
+    border: 1px solid #383838;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: vertical;
+}
+
+.new-address-actions {
+    display: flex;
+    gap: 8px;
 }
 
 /* Garis pemisah horizontal antara bagian penerima dan daftar item */
@@ -130,6 +240,45 @@
   font-size: 12px;
   font-weight: 400;
   color: #f3f3f3;
+}
+
+/* rent date */
+.rental-date-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.rental-date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rental-date-field input[type="date"] {
+    background-color: #2A2A2A;
+    color: #F3F3F3;
+    border: 1px solid #383838;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color-scheme: dark;
+}
+
+.rental-date-field input[type="date"]:focus {
+    outline: none;
+    border-color: #FCA311;
+}
+
+.rental-date-end {
+    font-size: 13px;
+    color: #d1d5db;
+}
+
+.rental-date-end strong {
+    color: #FCA311;
 }
 
 /* opsi metode pembayaran */
