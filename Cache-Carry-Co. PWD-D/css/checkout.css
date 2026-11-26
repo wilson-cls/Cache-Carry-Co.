@@ -1,0 +1,277 @@
+/* Container utama halaman checkout */
+#checkoutPage.checkout-container {
+  max-width: none;
+  margin: 0 auto;
+  padding: 36px 24px 64px 24px;
+  color: #f3f3f3;
+}
+
+#checkoutPage .checkout-title {
+  color: #fca111;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin: 0 0 44px 0;
+}
+
+/* label dan alamat penerima */
+/* Bagian kotak penerima berisi nama dan alamat */
+#checkoutPage .recipient-section {
+  padding: 0 8px;
+  margin-bottom: 26px;
+}
+
+/* Nama penerima yang diisi oleh JavaScript dari database */
+#checkoutPage .recipient-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.5;
+  min-height: 24px;
+  margin-bottom: 4px;
+  word-wrap: break-word;
+}
+
+/* Alamat penerima di bawah nama penerima */
+#checkoutPage .recipient-address {
+  font-size: 15px;
+  font-weight: 400;
+  color: #cccccc;
+  line-height: 1.5;
+  min-height: 24px;
+  word-wrap: break-word;
+}
+
+/* Garis pemisah horizontal antara bagian penerima dan daftar item */
+#checkoutPage .checkout-divider {
+  border: 0;
+  border-top: 1px solid #383838;
+  margin: 0 0 42px 0;
+}
+
+/* Wadah daftar item yang di-render oleh JavaScript */
+#checkoutPage .checkout-items {
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
+  min-height: 160px;
+  margin-bottom: 44px;
+}
+
+/* thumbnail gambar item */
+#checkoutPage .item-thumb {
+  width: 168px;
+  height: 112px;
+  background-color: #d9d9d9;
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 24px;
+}
+
+#checkoutPage .item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* badge tipe, nama, dan asal */
+#checkoutPage .item-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#checkoutPage .item-badge {
+  display: inline-block;
+  background-color: #f3f3f3;
+  color: #1e1e1e;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+#checkoutPage .item-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f3f3f3;
+  letter-spacing: 0.4px;
+  margin-bottom: 6px;
+}
+
+#checkoutPage .item-origin {
+  font-size: 12px;
+  font-weight: 400;
+  color: #b5b5b5;
+}
+
+/* harga dan unit/durasi */
+#checkoutPage .item-price-box {
+  margin-left: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#checkoutPage .item-price {
+  font-size: 18px;
+  font-weight: 500;
+  color: #f3f3f3;
+  margin-bottom: 6px;
+}
+
+#checkoutPage .item-unit {
+  font-size: 12px;
+  font-weight: 400;
+  color: #f3f3f3;
+}
+
+/* opsi metode pembayaran */
+#checkoutPage .payment-method-section {
+  padding: 0 8px;
+  margin-bottom: 36px;
+}
+
+#checkoutPage .payment-method-label {
+  font-size: 16px;
+  font-weight: 550;
+  color: #f3f3f3;
+  margin-bottom: 10px;
+}
+
+#checkoutPage .payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#checkoutPage .payment-option-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 2px 0;
+  font-size: 15px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+#checkoutPage .payment-radio {
+  accent-color: #ffa000;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+#checkoutPage .payment-details-section {
+  padding: 0 8px;
+  margin-bottom: 40px;
+}
+
+#checkoutPage .payment-details-title {
+  font-size: 16px;
+  font-weight: 550;
+  color: #f3f3f3;
+  margin: 0 0 14px 0;
+}
+
+#checkoutPage .subtotal-section {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 14px;
+  color: #d8d8d8;
+  line-height: 1.55;
+}
+
+/* total pembayaran akhir & order button */
+#checkoutPage .checkout-footer {
+  padding: 0 8px;
+}
+
+#checkoutPage .grand-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 6px;
+  margin-bottom: 14px;
+}
+
+#checkoutPage .grand-total-label {
+  font-size: 20px;
+  font-weight: 500;
+  color: #f3f3f3;
+}
+
+#checkoutPage .grand-total-amount {
+  font-size: 26px;
+  font-weight: 500;
+  color: #f3f3f3;
+}
+
+#checkoutPage .place-order-btn {
+  width: 100%;
+  background-color: #fca111;
+  color: #1e1e1e;
+  border: 0;
+  border-radius: 999px;
+  padding: 15px 24px;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#checkoutPage .place-order-btn:hover {
+  background-color: #f3f3f3;
+}
+
+/* Penyesuaian tampilan untuk layar kecil/mobile */
+@media (max-width: 640px) {
+  #checkoutPage.checkout-container {
+    padding: 24px 16px 48px 16px;
+  }
+
+  #checkoutPage .checkout-item {
+    flex-wrap: wrap;
+  }
+
+  #checkoutPage .item-thumb {
+    width: 100%;
+    height: 160px;
+    margin-right: 0;
+    margin-bottom: 14px;
+  }
+
+  #checkoutPage .item-price-box {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #2d2d2d;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #checkoutPage .fee-breakdown {
+    margin-bottom: 56px;
+  }
+
+  #checkoutPage .grand-total-label {
+    font-size: 18px;
+  }
+
+  #checkoutPage .grand-total-amount {
+    font-size: 22px;
+  }
+}

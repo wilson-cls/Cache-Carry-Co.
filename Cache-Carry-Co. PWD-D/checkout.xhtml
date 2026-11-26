@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="id" lang="id">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Checkout - Cache-Carry-Co.</title>
+
+  <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../Cache-Carry-Co. PWD-D/css/cart.css" />
+  <link rel="stylesheet" type="text/css" href="../Cache-Carry-Co. PWD-D/css/checkout.css" />
+  <link rel="icon" type="image/svg+xml" href="../Cache-Carry-Co. PWD-D/images/Logo.svg" />
+</head>
+
+<body>
+  <!-- wrapper utama halaman checkout -->
+  <div id="checkoutPage" class="checkout-container">
+    <h1 class="checkout-title">CHECKOUT</h1>
+
+    <!-- box data penerima dan alamat -->
+    <div id="recipientBox" class="recipient-section">
+      <div id="recipientName" class="recipient-name"></div>
+      <div id="recipientAddress" class="recipient-address"></div>
+    </div>
+    <hr class="checkout-divider" />
+    <div id="checkoutItemsContainer" class="checkout-items"></div>
+
+    <!-- pilih metode pembayaran -->
+    <div id="paymentMethodBox" class="payment-method-section">
+      <div class="payment-method-label">Payment Method</div>
+      <div class="payment-options">
+        <label class="payment-option-item">
+          <input type="radio" name="payment_method" value="credit_card" class="payment-radio" />
+          <span>Credit Card</span>
+        </label>
+        <label class="payment-option-item">
+          <input type="radio" name="payment_method" value="debit" class="payment-radio" />
+          <span>Debit</span>
+        </label>
+      </div>
+    </div>
+
+    <div id="paymentDetailsSection" class="payment-details-section">
+      <h2 class="payment-details-title">Payment details</h2>
+
+      <div id="subTotalBox" class="subtotal-section">
+        <span class="fee-label">Sub Total</span>
+        <span id="subTotalValue" class="fee-value"></span>
+      </div>
+    </div>
+
+    <!-- total akhir dan tombol submit pesanan -->
+    <div id="checkoutFooter" class="checkout-footer">
+      <div class="grand-total-row">
+        <span class="grand-total-label">Total Payment</span>
+        <span id="grandTotalValue" class="grand-total-amount"></span>
+      </div>
+      <button type="button" id="placeOrderBtn" class="place-order-btn">PLACE ORDER</button>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="../Cache-Carry-Co. PWD-D/js/script.js"></script>
+  <script type="text/javascript" src="../Cache-Carry-Co. PWD-D/js/checkout.js"></script>
+</body>
+</html>
