@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   var CHECKOUT_PHP_URL = "checkout.php";
   var BELI_SEWA_PHP_URL = "beliSewa.php";
-  // Ambil parameter dari query string URL (dikirim dari halaman Beli/Sewa) dan amankan nilai minimalnya
+
   var params = new URLSearchParams(window.location.search);
   var urlId = params.get("id");
   var urlMode = params.get("mode") === "rent" ? "rent" : "buy";
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return "Rp" + num.toLocaleString("id-ID");
   }
 
-  // Ambil nilai radio button metode pembayaran yang sedang dipilih user
+  // Ambil value opsi metode pembayaran yang dipilih user
   function getSelectedPaymentMethod() {
     var checked = document.querySelector('input[name="payment_method"]:checked');
     return checked ? checked.value : "";
@@ -259,4 +259,177 @@ document.addEventListener("DOMContentLoaded", function () {
       addressEl.textContent = alamatPengiriman;
     }
 
-    var
+    var rawItems = Array.isArray(data.items) ? data.items : [];
+    var itemsContainer = document.getElementById("checkoutItemsContainer");
+    var subtotal = 0;
+
+    if (itemsContainer) {
+      itemsContainer.innerHTML = "";
+    }
+
+    rawItems.forEach(function (rawItem) {
+      var normalizedItem = normalisasiItem(rawItem);
+      subtotal += Number(normalizedItem.price) || 0;
+
+      if (itemsContainer) {
+        itemsContainer.appendChild(createItemElement(normalizedItem));
+      }
+    });
+
+    var grandTotal = subtotal;
+
+    var subTotalEl = document.getElementById("subTotalValue");
+    if (subTotalEl) {
+      subTotalEl.textContent = formatRupiah(subtotal);
+    }
+
+    var grandTotalEl = document.getElementById("grandTotalValue");
+    if (grandTotalEl) {
+      grandTotalEl.textContent = formatRupiah(grandTotal);
+    }
+  }
+
+  function loadVehicleFromBeliSewa(id, checkoutBaseData) {
+    var detailUrl = BELI_SEWA_PHP_URL + "?id=" + encodeURIComponent(id);
+
+    return fetch(detailUrl, {
+      method: "GET",
+      headers: {
+        Accept: "application/json"
+      }
+    })
+      .then(function (res) {
+        if (!res.ok) {
+          throw new Error("Gagal mengambil detail kendaraan");
+        }
+        return res.json();
+      })
+      .then(function (result) {
+        if (!result || !result.success || !result.data) {
+          throw new Error((result && result.message) || "Vehicle not found");
+        }
+        var item = buatItemDariKendaraan(
+          result.data,
+          urlMode,
+          urlUnits,
+          urlDays
+        );
+        var merged = Object.assign({}, checkoutBaseData || {}, {
+          id_kendaraan: result.data.id_kendaraan || id,
+          items: [item]
+        });
+        renderCheckout(merged);
+      });
+  }
+
+  // Memuat data awal checkout
+  function loadCheckoutData() {
+    var targetUrl = CHECKOUT_PHP_URL + window.location.search;
+
+    fetch(targetUrl, {
+      method: "GET",
+      headers: {
+        Accept: "application/json"
+      }
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error("Gagal memuat data checkout");
+        }
+        return response.json();
+      })
+      .then(function (data) {
+        var hasItems = Array.isArray(data && data.items) && data.items.length > 0;
+        if (hasItems) {
+          renderCheckout(data);
+          return;
+        }
+
+        if (urlId) {
+          return loadVehicleFromBeliSewa(urlId, data);
+        }
+
+        var cartItems = ambilItemDariKeranjangStorage();
+        if (cartItems.length > 0) {
+          renderCheckout(Object.assign({}, data || {}, { items: cartItems }));
+          return;
+        }
+
+        renderCheckout(data);
+      })
+      .catch(function (err) {
+        console.error("Error loadCheckoutData:", err);
+        if (urlId) {
+          loadVehicleFromBeliSewa(urlId, null).catch(function (fallbackErr) {
+            console.error("Fallback beliSewa error:", fallbackErr);
+          });
+          return;
+        }
+
+        var cartItems = ambilItemDariKeranjangStorage();
+        if (cartItems.length > 0) {
+          renderCheckout({ items: cartItems });
+        }
+      });
+  }
+
+  // kirim data pesanan
+  var placeOrderBtn = document.getElementById("placeOrderBtn");
+  if (placeOrderBtn) {
+    placeOrderBtn.addEventListener("click", function () {
+      var selectedMethod = getSelectedPaymentMethod();
+      if (!selectedMethod) {
+        alert(
+          "Choose payment methode."
+        );
+        return;
+      }
+
+      // supaya tidak terjadi klik ganda saat req POST berjalan
+      placeOrderBtn.disabled = true;
+
+      fetch(CHECKOUT_PHP_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify({
+          action: "place_order",
+          id_kendaraan: currentIdKendaraan,
+          mode: urlMode,
+          units: urlUnits,
+          duration_days: urlMode === "rent" ? urlDays : 1,
+          payment_method: selectedMethod
+        })
+      })
+
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("Gagal memproses pesanan");
+          }
+          return response.json();
+        })
+
+        .then(function (result) {
+          if (result.redirect) {
+            window.location.href = result.redirect;
+          } else if (result.message) {
+            alert(result.message);
+          }
+        })
+
+        .catch(function (err) {
+          console.error("Error placeOrder:", err);
+          alert("Terjadi kesalahan saat memproses pesanan.");
+        })
+
+        .finally(function () {
+          placeOrderBtn.disabled = false;
+        });
+    });
+  }
+
+  // pengambilan data saat halaman selesai diload
+  loadCheckoutData();
+});
