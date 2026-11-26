@@ -72,7 +72,7 @@
                         'mode' => $mode,
                         'units' => $units,
                         'duration_days' => $days
-                    ]
+                    ];
                 }
 
                 echo json_encode([
