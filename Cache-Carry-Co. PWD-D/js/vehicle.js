@@ -32,6 +32,7 @@ async function tampilkanKendaraan(kategori, sort, q) {
 
         if(!response.ok || !result.success){
             throw new Error(result.message || "Failed to fetch data");
+            result.style.color = "white";
         }
 
         vehicleContainer.innerHTML = "";
@@ -84,7 +85,7 @@ async function tampilkanKendaraan(kategori, sort, q) {
         if (myRequest !== requestCounter) return;
         console.error("Error: ", error);
         vehicleContainer.textContent = "Failed to Load Vehicle";
-        vehicleContainer.color = "white";
+        vehicleContainer.style.color = "white";
     }
 }
 
