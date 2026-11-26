@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Sesuaikan path ke file checkout.php kamu
+
   const CHECKOUT_PHP_URL = "../Cache-Carry-Co. PWD-D/checkout.php";
 
   // nyimpan id_kendaraan
