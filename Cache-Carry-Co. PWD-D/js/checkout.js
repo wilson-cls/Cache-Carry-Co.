@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         }
       } catch (err) {
-        console.error("Gagal membaca data keranjang dari localStorage:", err);
+        console.error("failed", err);
       }
     }
     return [];
