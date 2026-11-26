@@ -160,7 +160,6 @@ function showBeliSewaPopup(text) {
   }, 2200);
 }
 
-// Kirim aksi ke endpoint backend
 function syncBeliSewaAction(actionName, payload) {
   if (typeof fetch !== 'function') {
     return;
