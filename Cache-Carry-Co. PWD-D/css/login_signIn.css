@@ -45,11 +45,16 @@ body{
     height: auto;
 }
 
+/* Form Login */
 .login-section{
-    min-width: 0;
-    height: auto;
-    justify-content: flex-start;
-    padding: 10px 60px;
+    flex: 0.9;
+    height: 100%;
+    display: flex;
+    max-width: 450px;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0px 20px;
+    box-sizing: border-box;
 }
 
 .login-section .welcome-header{
@@ -71,18 +76,6 @@ body{
     line-height: 1.5;
 }
 
-/* Form Login */
-.login-section{
-    flex: 0.9;
-    height: 100%;
-    display: flex;
-    max-width: 40%;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0px 80px;
-    box-sizing: border-box;
-}
-
 /* Kotak Input */
 .form-group{
    display: flex;
@@ -97,21 +90,24 @@ body{
 
 .form-group input{
     width: 100%;
-    height: 38px;
-    border: none;
-    border-radius: 15px;
-    background-color: #f3f3f3;
+    height: 40px;
+    border: 1px solid #383838;
+    border-radius: 12px;
+    background-color: #2A2A2A;
+    color: #F3F3F3;
     padding: 0 15px;
-    font-size: 18px;
+    font-size: 15px;
     outline: none;
     box-sizing: border-box
 }
 
+.form-group input:focus{
+    border-color: #ffa500;
+}
 
 .button-group{
     margin-top: 16px;
 }
-
 
 .button-group input{
     font-weight: bold;
@@ -151,7 +147,7 @@ body{
     background-color: rgba(20, 22, 28, 0.192);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(252, 162, 17, 0.292);
+    border: 1px solid rgba(252, 162, 17, 0.092);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     padding: 24px;
     border-radius: 25px;
@@ -169,6 +165,11 @@ body{
     color: #A0A0A0;
     letter-spacing: 0.3px;
     padding-left: 4px;
+}
+
+input::placeholder{
+    color: #A0A0A0;
+    font-size: 12px;
 }
 
 /* ini eksperimen juga wkwk */
