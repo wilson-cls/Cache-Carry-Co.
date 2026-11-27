@@ -19,7 +19,7 @@
         const authBtn = document.getElementById("auth-btn") || document.querySelector(".signIn");
 
         if (authBtn){
-            fetch("../Cache-Carry-Co. PWD-D/auth-status.php").then(response => {
+            fetch("../TubesPWD_D_1/auth-status.php").then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to get login status");
                     }

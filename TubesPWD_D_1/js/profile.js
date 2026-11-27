@@ -6,7 +6,7 @@ const profileNameSource = document.getElementById("profile-name");
 
 if (signOutBtn) {
   signOutBtn.addEventListener("click", function () {
-    window.location.href = "../Cache-Carry-Co. PWD-D/login.xhtml";
+    window.location.href = "../TubesPWD_D_1/login.xhtml";
   });
 }
 
