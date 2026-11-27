@@ -55,10 +55,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (result.success) {
                     registerForm.reset(); // form jadi kosong kalau berhasil
-                    // Ntar otomatis ke halaman login setelah 2 detik jika sukses
+                    // Ntar otomatis ke halaman login sesuai detik yang diatur jika sukses
                     setTimeout(() => {
                         window.location.href = "login.xhtml";
-                    }, 5000);
+                    }, 5000); // 5000 ini artinya 5 detik
                 }
             } catch (error) {
                 console.error("Fetch Error:", error);
