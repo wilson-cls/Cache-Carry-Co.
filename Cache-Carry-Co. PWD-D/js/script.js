@@ -23,7 +23,7 @@
         // Belum login dan coba buka halaman yang perlu login
         if (!isLoggedIn && (window.location.pathname.includes("cart.xhtml") || window.location.pathname.includes("garage.xhtml"))) {
             alert("You must sign in first to access the cart!");
-            window.location.href = "signIn.xhtml"; // Arahkan kembali ke index / sign in
+            window.location.href = "register.xhtml"; // Arahkan kembali ke index / sign in
         }
 
         if (isLoggedIn && authBtn) {
