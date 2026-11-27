@@ -28,31 +28,34 @@
                 <div class="welcome-header">
                     <h1>WELCOME</h1>
                 </div>
+
+                <p id="auth-message" style="display: none; margin-bottom: 15px; font-weight: 600; color: white;"></p>
+
                 <div id="form-utama">
-                    <form action="#" method="post">
+                    <form id="register-form" action="register.php" method="post">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="trex@gmail.com" />
+                            <input type="email" id="email" name="email" placeholder="trex@gmail.com"  required="required"/>
                         </div>
 
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" placeholder="08123456789" pattern="[0-9]{10,13}" required="required" />
+                            <input type="tel" id="phone" name="nomor_telepon" placeholder="08123456789" pattern="[0-9]{10,13}" required="required" />
                         </div>
                         
                         <div class="form-group">
-                            <label for="alamat_default">Default Address</label>
-                            <input type="text" id="alamat_default" name="alamat_default" placeholder="742 Evergreen Terrace, Springfield, OR 97477, United States"/>
+                            <label for="alamat_default">Default Address</label> 
+                            <input type="text" id="alamat_default" name="alamat_default" placeholder="742 Evergreen Terrace, Springfield, OR 97477, United States" required="required" />
                         </div>
 
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" id="username" name="username" placeholder="Trex"/>
+                            <input type="text" id="username" name="username" placeholder="Trex" required="required"/>
                         </div>
 
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" id="password" name="password" placeholder="••••••••"/>
+                            <input type="password" id="password" name="password" placeholder="••••••••" required="required"/>
                         </div>
 
                         <div class="button-group">

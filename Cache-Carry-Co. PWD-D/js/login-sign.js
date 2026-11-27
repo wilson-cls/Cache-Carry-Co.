@@ -24,4 +24,50 @@ document.addEventListener("DOMContentLoaded", function () {
         }, duration * 1000);
     }
     setInterval(createStar, 150);
+
+    const registerForm = document.getElementById("register-form");
+    const authMessage = document.getElementById("auth-message");
+
+    if (registerForm) {
+        registerForm.addEventListener("submit", async function (e) {
+            e.preventDefault(); // Cegah halaman biar ga pindah
+            const formData = new FormData(registerForm);
+            try {
+                const response = await fetch(registerForm.getAttribute("action"), {
+                    method: "POST",
+                    body: formData
+                });
+
+                // Error handling misal status HTTP ga 200
+                if (!response.ok) {
+                    throw new Error("Server responded with status: " + response.status);
+                }
+
+                const result = await response.json();
+
+                if (authMessage) {
+                    authMessage.style.display = "block";
+                    authMessage.textContent = result.message || "An unknown error occurred.";
+                    
+                    // putih = sukses, meraah = gagal
+                    authMessage.style.color = result.success ? "#ffffff" : "#ff5252";
+                }
+
+                if (result.success) {
+                    registerForm.reset(); // form jadi kosong kalau berhasil
+                    // Ntar otomatis ke halaman login setelah 2 detik jika sukses
+                    setTimeout(() => {
+                        window.location.href = "login.xhtml";
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                if (authMessage) {
+                    authMessage.style.display = "block";
+                    authMessage.textContent = "Failed to connect to the server. Please check your connection and try again.";
+                    authMessage.style.color = "#ffffff";
+                }
+            }
+        });
+    }
 });
