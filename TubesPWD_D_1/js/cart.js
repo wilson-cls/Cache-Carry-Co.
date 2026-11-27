@@ -280,14 +280,49 @@ function checkoutCart() {
     showCartPopup('choose at least one vehicle to checkout');
     return;
   }
-  syncCartAction('checkout', { ids: selectedIds })
-    .then(function (result) {
-      if(result && result.success) {
-        window.location.href = result.redirect;
+
+  var checkoutBtn = document.getElementById('btnCheckoutCart');
+  
+  if(checkoutBtn){
+    checkoutBtn.disabled = true;
+  }
+
+  fetch('cart.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      action: 'checkout',
+      ids: selectedIds
+    })
+  })
+  .then(function(response) {
+        return response.json().then(function(result) {
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to prepare checkout');
+            }
+
+            return result;
+        });
+    })
+  .then(function(result) {
+      if (result.success && result.redirect) {
+          window.location.href = result.redirect;
       } else {
-        showCartPopup("Failed to prepare checkout");
+          showCartPopup(result.message || 'Failed to prepare checkout');
       }
-    });
+  })
+  .catch(function(error) {
+      console.error('Checkout error:', error);
+      showCartPopup(error.message || 'An error occurred');
+  })
+  .finally(function() {
+      if (checkoutBtn) {
+          checkoutBtn.disabled = false;
+      }
+  });
 }
 
 function loadCart() {

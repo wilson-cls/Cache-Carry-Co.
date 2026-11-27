@@ -140,7 +140,9 @@
             "unit" => $unitText,
             "mode" => $mode,
             "units" => $units,
-            "duration_days" => $days
+            "duration_days" => $days,
+            "harga_satuan" => $harga,
+            "subtotal" => $total
         ];
 
         $subtotal += $total;
@@ -171,66 +173,265 @@
 
     // place order
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $in = json_decode(file_get_contents('php://input'), true);
+        $data = json_decode(file_get_contents('php://input'), true);
 
-        if(!is_array($in)) {
-            $in = [];
+        if (!$data || ($data['action'] ?? '') !== 'place_order') {
+            keluar([
+                "success" => false,
+                "message" => "Request is not valid."
+            ], 400);
         }
 
-        if(($in['action'] ?? "") !== "place_order") {
-            keluar(["success" => false, "message" => "Unknown action"]);
-        }
-
-        $alamat = trim($in['alamat_pengiriman'] ?? '');
+        $alamat = trim($data['alamat_pengiriman'] ?? '');
 
         if($alamat === '') {
             $alamat = $user['alamat_default'];
         }
 
-        $metode = $in['payment_method'] ?? "";
-        if(!in_array($metode, ["credit_card", "debit"], true)) {
-            keluar(["success" => false, "message" => "Invalid payment method"]);
-        }
+        if($alamat == '') {
+            keluar([
+                "success" => false,
+                "message" => "Shipping address is required"
+            ], 400);
+        } 
 
-        $kolomStok = $isRent ? "stok_sewa" : "stok_jual";
-        $units     = (int)$co['units'];
-        $days      = (int)$co['days'];
-        $idKend    = (int)$co['id_kendaraan'];
-        $mode      = $co['mode'];
+        // ambil tanggal setiap kendaraan dari js
+        $tanggalItems = $data['items'] ?? [];
+
+        // buat daftar tanggal berdasarkan id kendaraan
+        $tanggalPerKendaraan = [];
+
+        foreach($tanggalItems as $tanggalItem) {
+            $id = (int) ($tanggalItem['id_kendaraan'] ?? 0);
+
+            if($id > 0) {
+                $tanggalPerKendaraan[$id] = [
+                    'tanggal_mulai' => $tanggalItem['start_date'] ?? '',
+                    'jumlah_hari' => (int) ($tanggalItem['duration_days'] ?? 0)
+                ];
+            }
+        }
 
         mysqli_begin_transaction($conn);
 
         try {
-            // kurangi stok hanya kalau stok masih cukup 
-            $stmt = mysqli_prepare($conn,
-                "UPDATE kendaraan SET $kolomStok = $kolomStok - ? WHERE id_kendaraan = ? AND $kolomStok >= ?");
-            mysqli_stmt_bind_param($stmt, "iii", $units, $idKend, $units);
-            mysqli_stmt_execute($stmt);
+            $totalPembelian = 0;
+            $totalPenyewaan = 0;
 
-            if (mysqli_stmt_affected_rows($stmt) < 1) {
-                throw new Exception("Stock is no longer sufficient");
+            $daftarBeli = [];
+            $daftarSewa = [];
+
+            foreach($items as $item) {
+                if($item['mode'] === 'buy') {
+                    $daftarBeli[] = $item;
+                } else {
+                    $daftarSewa[] = $item;
+                }
+            }
+           
+            //transaksi beli
+
+            if(count($daftarBeli) > 0) {
+                foreach($daftarBeli as $item) {
+                    $totalPembelian += $item['subtotal'];
+                }
+
+                // insert ke tabel pembelian
+                $stmtPembelian = mysqli_prepare($conn, "INSERT INTO pembelian (id_pengguna, alamat_pengiriman, total_harga)
+                VALUES (?, ?, ?)");
+
+                $idPengguna = (int) $_SESSION['id_pengguna'];
+
+                mysqli_stmt_bind_param($stmtPembelian, "isi", $idPengguna, $alamat, $totalPembelian);
+
+                mysqli_stmt_execute($stmtPembelian);
+
+                $idPembelian = mysqli_insert_id($conn);
+
+                // insert setiap kendaraan ke detail_pembelian
+                $stmtDetailBeli = mysqli_prepare(
+                    $conn,
+                    "INSERT INTO detail_pembelian
+                    (id_pembelian, id_kendaraan, jumlah, harga_satuan, sub_total)
+                    VALUES (?, ?, ?, ?, ?)"
+                );
+
+                foreach ($daftarBeli as $item) {
+
+                    $idKendaraan = (int)$item['id_kendaraan'];
+                    $jumlah = (int)$item['units'];
+                    $hargaSatuan = (int)$item['harga_satuan'];
+                    $subtotal = (int)$item['subtotal'];
+
+                    // Kurangi stok jual
+                    $stmtStok = mysqli_prepare(
+                        $conn,
+                        "UPDATE kendaraan
+                        SET stok_jual = stok_jual - ?
+                        WHERE id_kendaraan = ? AND stok_jual >= ?"
+                    );
+
+                    mysqli_stmt_bind_param(
+                        $stmtStok,
+                        "iii",
+                        $jumlah,
+                        $idKendaraan,
+                        $jumlah
+                    );
+
+                    mysqli_stmt_execute($stmtStok);
+
+                    if (mysqli_stmt_affected_rows($stmtStok) !== 1) {
+                        throw new Exception("Stok kendaraan untuk pembelian tidak mencukupi.");
+                    }
+
+                    mysqli_stmt_bind_param(
+                        $stmtDetailBeli,
+                        "iiiii",
+                        $idPembelian,
+                        $idKendaraan,
+                        $jumlah,
+                        $hargaSatuan,
+                        $subtotal
+                    );
+
+                    mysqli_stmt_execute($stmtDetailBeli);
+                }
             }
 
-            // simpan pesanan
-            $stmt = mysqli_prepare($conn,
-                "INSERT INTO pembelian (id_user, id_kendaraan, mode, jumlah, durasi_hari, total, metode_pembayaran, alamat_pengiriman)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            mysqli_stmt_bind_param($stmt, "iisiidss",
-                $idUser, $idKend, $mode, $units, $days, $total, $metode, $alamat);
-            mysqli_stmt_execute($stmt);
+            // transaksi penyewaan
+
+            foreach ($daftarSewa as $item) {
+                $idKendaraan = (int)$item['id_kendaraan'];
+                $jumlah = (int)$item['units'];
+                $hargaSatuan = (int)$item['harga_satuan'];
+                $subtotal = (int)$item['subtotal'];
+
+                // Ambil tanggal khusus kendaraan ini
+                if (!isset($tanggalPerKendaraan[$idKendaraan])) {
+                    throw new Exception("Rent date for vehicle $idKendaraan is required");
+                }
+
+                $tanggalMulai = $tanggalPerKendaraan[$idKendaraan]['tanggal_mulai'];
+                $jumlahHari = $tanggalPerKendaraan[$idKendaraan]['jumlah_hari'];
+
+                // Validasi tanggal dan durasi
+                $tanggalValid = DateTime::createFromFormat('!Y-m-d', $tanggalMulai);
+
+                if (
+                    !$tanggalValid ||
+                    $tanggalValid->format('Y-m-d') !== $tanggalMulai ||
+                    $jumlahHari < 1
+                ) {
+                    throw new Exception("Rent date or duration for vehicle $idKendaraan is invalid");
+                }
+
+                // Hitung total sewa
+                $totalPenyewaan += $subtotal;
+
+                // Setiap kendaraan sewa memiliki record penyewaan sendiri
+                $stmtPenyewaan = mysqli_prepare(
+                    $conn,
+                    "INSERT INTO penyewaan
+                    (id_pengguna, tanggal_mulai, alamat_pengiriman, total_harga)
+                    VALUES (?, ?, ?, ?)"
+                );
+
+                $idPengguna = (int)$_SESSION['id_pengguna'];
+
+                mysqli_stmt_bind_param(
+                    $stmtPenyewaan,
+                    "issi",
+                    $idPengguna,
+                    $tanggalMulai,
+                    $alamat,
+                    $subtotal
+                );
+
+                mysqli_stmt_execute($stmtPenyewaan);
+
+                $idPenyewaan = mysqli_insert_id($conn);
+
+                // Kurangi stok sewa
+                $stmtStokSewa = mysqli_prepare(
+                    $conn,
+                    "UPDATE kendaraan
+                    SET stok_sewa = stok_sewa - ?
+                    WHERE id_kendaraan = ? AND stok_sewa >= ?"
+                );
+
+                mysqli_stmt_bind_param(
+                    $stmtStokSewa,
+                    "iii",
+                    $jumlah,
+                    $idKendaraan,
+                    $jumlah
+                );
+
+                mysqli_stmt_execute($stmtStokSewa);
+
+                if (mysqli_stmt_affected_rows($stmtStokSewa) !== 1) {
+                    throw new Exception("Stok kendaraan untuk penyewaan tidak mencukupi.");
+                }
+
+                // Insert ke detail_penyewaan
+                $stmtDetailSewa = mysqli_prepare(
+                    $conn,
+                    "INSERT INTO detail_penyewaan
+                    (id_penyewaan, id_kendaraan, jumlah, jumlah_hari, harga_satuan, sub_total)
+                    VALUES (?, ?, ?, ?, ?, ?)"
+                );
+
+                mysqli_stmt_bind_param(
+                    $stmtDetailSewa,
+                    "iiiiii",
+                    $idPenyewaan,
+                    $idKendaraan,
+                    $jumlah,
+                    $jumlahHari,
+                    $hargaSatuan,
+                    $subtotal
+                );
+
+                mysqli_stmt_execute($stmtDetailSewa);
+            }
 
             mysqli_commit($conn);
+
+            // Hapus session checkout setelah transaksi berhasil
+            if ($sumberCheckout === 'direct') {
+                unset($_SESSION['checkout']);
+            } else {
+                if(isset($_SESSION['cart'])) {
+                    foreach($daftarCheckout as $checkoutItem) {
+                        $id = $checkoutItem['id_kendaraan'];
+                        unset($_SESSION['cart'][$id]);
+                    }
+               }
+
+               unset($_SESSION['checkout_cart']);
+            }
+
+            keluar([
+                "success" => true,
+                "message" => "Order placed successfully",
+                "redirect" => "garage.xhtml"
+            ]);
+
         } catch (Exception $e) {
+
             mysqli_rollback($conn);
-            keluar(["success" => false, "message" => "Failed to place order: " . $e->getMessage()]);
+
+            keluar([
+                "success" => false,
+                "message" => "Order failed: " . $e->getMessage()
+            ], 400);
         }
-
-        unset($_SESSION['checkout']);
-
-        // ganti tujuan sesuai halaman setelah order (misalnya garage / halaman sukses)
-        keluar(["success" => true, "message" => "Order placed", "redirect" => "garage.xhtml"]);
     }
 
-    keluar(["success" => false, "message" => "Method not allowed"], 405);
+    keluar([
+        "success" => false, 
+        "message" => "Method not allowed"
+    ], 405);
     
 ?>

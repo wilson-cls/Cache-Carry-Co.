@@ -146,9 +146,21 @@
                 }
 
                 $selectedItems = [];
+                $selectedIds = [];
 
                 foreach ($ids as $id) {
                     $id = (int)$id;
+
+                    if($id < 1) {
+                        response([
+                            "success" => false,
+                            "message" => "Invalid vehicle ID"
+                        ]);
+                    }
+
+                    if (in_array($id, $selectedIds, true)) {
+                        continue;
+                    }
 
                     if (!isset($_SESSION['cart'][$id])) {
                         response([
@@ -157,7 +169,29 @@
                         ]);
                     }
 
-                    $selectedItems[] = $_SESSION['cart'][$id];
+                    $cartItem = $_SESSION['cart'][$id];
+
+                     // Validasi data cart
+                    $mode = $cartItem['mode'] ?? '';
+                    $units = (int)($cartItem['units'] ?? 0);
+                    $days = (int)($cartItem['duration_days'] ?? 0);
+
+                    if (!in_array($mode, ['buy', 'rent'], true) || $units < 1 || $days < 1) {
+                        response([
+                            "success" => false,
+                            "message" => "Invalid cart item data"
+                        ]);
+                    }
+
+                    // Simpan data dalam format yang dibaca checkout.php
+                    $selectedItems[] = [
+                        "id" => $id,
+                        "mode" => $mode,
+                        "units" => $units,
+                        "duration_days" => $days
+                    ];
+
+                    $selectedIds[] = $id;
                 }
 
                 if (count($selectedItems) === 0) {
