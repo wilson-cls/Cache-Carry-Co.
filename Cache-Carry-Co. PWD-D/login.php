@@ -4,13 +4,18 @@
 
     $error = '';
     $oldUsername = '';
-
-    //udah login? langsung ke index.php
+    $success = '';
+    //udah login? langsung ke index.php, halaman utamanya
     if(is_logged_in()){
         header('Location: ./index.php');
         exit;
     }
 
+    if(!empty($_SESSION['flash_success'])){
+        $success = $_SESSION['flash_success'];
+        unset($_SESSION['flash_success']);
+    }
+    
     
     if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $username = trim($_POST['username'] ?? '');
@@ -36,7 +41,7 @@
 
             if($user && password_verify($password, $user['password'])){
                 session_regenerate_id(true);
-                $_SESSION['id_pengguna'] = $user['id_pengguna'];
+                $_SESSION['id_pengguna'] = (int) $user['id_pengguna'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['nama'] = $user['nama'];
                 $_SESSION['role'] = $user['role'];

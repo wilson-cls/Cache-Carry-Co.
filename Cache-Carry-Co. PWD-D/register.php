@@ -9,7 +9,7 @@ $old = [
     'username' => '',
 ];
 
-// Jika user sudah login, redirect ke index.php
+// Jika user sudah login, redirect ke index.php langsung aja. Kalau mau register akun baru, harus logout dulu
 if(is_logged_in()){
     header('Location: ./index.php');
     exit;
@@ -75,17 +75,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $role
             );
 
-            if(mysqli_stmt_execute($insertStmt)){
-                session_regenerate_id(true); // Untuk mencegah session fixation
-                $_SESSION['id_pengguna'] = mysqli_insert_id($conn);
-                $_SESSION['username'] = $username;
-                $_SESSION['nama'] = $nama;
-                $_SESSION['role'] = $role;
-
+            if (mysqli_stmt_execute($insertStmt)) {
+                //Revisi dari code lalu, awalnya diberi session dan login langsung. Sekarang, setelah register, harus login dulu
                 $_SESSION['flash_success'] = 'Registrasi berhasil! Silakan login menggunakan akun Anda.';
                 header('Location: ./login.php');
                 exit;
             }
+            
             $error = 'Gagal membuat akun. Silahkan coba lagi nanti';
         }
 

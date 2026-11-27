@@ -1,0 +1,99 @@
+<?php
+    require_once __DIR__ ."/guard.php";
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="id" lang="id">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <!-- buka jalur koneksi lebih awal ke server Google Fonts sebelum file font-nya diunduh -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <!-- mengunduh file font Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../Cache-Carry-Co. PWD-D/css/style.css" />
+    <link rel="icon" type="image/svg+xml" href="../Cache-Carry-Co. PWD-D/images/Logo.svg" />
+    <title>Cache-Carry-Co.</title>
+</head>
+
+<body>
+    <div id="navbar">
+        <div id="logo">
+            <a href="../Cache-Carry-Co. PWD-D/index.xhtml">
+                <img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="logo" />
+                <h2>Cache-Carry-Co. </h2>
+            </a>
+        </div>
+        
+        <!-- nanti pakai JS WAJIB nambahin class ke menu yang diclik -->
+        <div id="navMenu">
+            <a href="../Cache-Carry-Co. PWD-D/index.php" class="active">Home</a>
+            <a href="../Cache-Carry-Co. PWD-D/vehicle.php">Vehicle</a>
+            <a href="../Cache-Carry-Co. PWD-D/garage.php">Garage</a>
+            <a href="../Cache-Carry-Co. PWD-D/cart.php">Cart</a>
+        </div>
+
+        <div id="profile">
+            <button type="button" class="signIn" id="auth-btn">Sign In</button>
+        </div>
+    </div>
+
+    <div id="main">
+        <div id="hero-section" class="main">
+            <div class="hero-content">
+                <h3>Discover and acquire the fleets you actually need.</h3>
+                <p>Explore our official catalog of technical specifications, log your buy-sell and lease transactions, and manage heavy transport, air, and marine assets with total transparency.</p>
+                <div class="button-group">
+                    <button type="button" id="explore" class="btn btn-primary">
+                        Explore Marketplace
+                    </button>
+                    <button type="button" id="list" class="btn btn-secondary">
+                        List a Vehicle
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="main-body" class="main-body">
+            <div id="new-product-header">
+                <h3>Our New Product.</h3>
+            </div>
+
+            <div id="product-container" class="product-grid">
+                <!-- Otomatis muncul kalau BE jadi -->
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom">
+        <div id="btm-header">
+            <div id="logo">
+                <img src="../Cache-Carry-Co. PWD-D/images/Logo.svg" alt="logo" />
+                <h3>Cache-Carry-Co. </h3>
+            </div>
+
+            <div id="about-us">
+                <h3>About Us</h3>
+             <p>Cache-Carry-Co. is a premier digital marketplace and asset management platform dedicated to connecting enterprises with high-performance fleets</p>
+            </div>
+        </div>       
+
+        <div id="creator">
+            <h3>CREATORS: </h3>
+                <div id="name">
+                    <p>wilson-cls</p>
+                    <p>ahenggtsas-gif</p>
+                    <p>audreydeitra</p>
+                    <p>danielnmrisa</p>
+                    <p>vio0onit</p>
+                </div>
+        </div>
+    </div>
+    <script src="../Cache-Carry-Co. PWD-D/js/script.js"></script>
+    <script src="../Cache-Carry-Co. PWD-D/js/homeVehicle.js"></script>
+</body>
+
+</html>
