@@ -20,7 +20,7 @@
         foreach($_SESSION['cart'] as $cartItem) {
             $id = (int)$cartItem['id'];
 
-            $stmt = mysqli_prepare($conn, "SELECT id_kendaraan, nama, merek, tahun, foto, harga_jual, harga_sewa
+            $stmt = mysqli_prepare($conn, "SELECT id_kendaraan, nama, merek, tahun, foto, harga_jual, harga_sewa, stok_jual, stok_sewa
                                            FROM kendaraan
                                            WHERE id_kendaraan = ?");
             
@@ -37,6 +37,8 @@
                     "gambar" => $vehicle['foto'],
                     "harga_beli" => (float)$vehicle['harga_jual'],
                     "harga_sewa" => (float)$vehicle['harga_sewa'],
+                    "stok_jual" => (int)$vehicle['stok_jual'],
+                    "stok_sewa" => (int)$vehicle['stok_sewa'],
                     "mode" => $cartItem['mode'],
                     "units" => (int)$cartItem['units'],
                     "duration_days" => (int)$cartItem['duration_days']
@@ -89,7 +91,39 @@
                     ]);
                 }
 
+                if($mode === 'buy'){
+                    $kolomStok = "stok_jual";
+                } else {
+                    $kolomStok = "stok_sewa";
+                }
+
+                // Ambil stok terbaru dari database
+                $stmt = mysqli_prepare($conn, "SELECT $kolomStok FROM kendaraan WHERE id_kendaraan = ?");
+
+                mysqli_stmt_bind_param($stmt, "i", $id);
+                mysqli_stmt_execute($stmt);
+
+                $result = mysqli_stmt_get_result($stmt);
+                $vehicle = mysqli_fetch_assoc($result);
+
+                mysqli_stmt_close($stmt);
+
+                if (!$vehicle || (int)$vehicle[$kolomStok] < 1) {
+                    response([
+                        "success" => false,
+                        "message" => "This vehicle is out of stock"
+                    ]);
+                }
+
+                // simpan mode baru
                 $_SESSION['cart'][$id]['mode'] = $mode;
+
+                // Sesuaikan quantity jika melebihi stok
+                $stok = (int)$vehicle[$kolomStok];
+
+                if ($_SESSION['cart'][$id]['units'] > $stok) {
+                    $_SESSION['cart'][$id]['units'] = $stok;
+                }
                 break;
 
             case "update_qty":
@@ -100,6 +134,31 @@
                     response([
                         "success" => false,
                         "message" => "Invalid quantity"
+                    ]);
+                }
+
+                $mode = $_SESSION['cart'][$id]['mode'];
+
+                if($mode === 'buy') {
+                    $kolomStok = "stok_jual";
+                } else {
+                    $kolomStok = "stok_sewa";
+                }
+
+                $stmt = mysqli_prepare($conn,"SELECT $kolomStok FROM kendaraan WHERE id_kendaraan = ?");
+
+                mysqli_stmt_bind_param($stmt, "i", $id);
+                mysqli_stmt_execute($stmt);
+
+                $result = mysqli_stmt_get_result($stmt);
+                $vehicle = mysqli_fetch_assoc($result);
+
+                mysqli_stmt_close($stmt);
+
+                if (!$vehicle || $units > (int)$vehicle[$kolomStok]) {
+                    response([
+                        "success" => false,
+                        "message" => "Quantity exceeds available stock"
                     ]);
                 }
 
