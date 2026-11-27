@@ -43,35 +43,98 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (btnEdit) {
         btnEdit.addEventListener("click", function () {
-        const fields = ["username", "email", "nomor_telepon", "address"];
+        // Ubah 'username' ke 'nama-user' karna username tidak bisa diedit, sedangkan nama bisa diedit
+        const fields = ["nama-user", "email", "nomor_telepon", "address"];
         if (!isEditing) {
-          // Ubah teks menjadi kotak input
           fields.forEach(id => {const el = document.getElementById(id);
         if (el){
           const currentVal = el.innerText === "-" ? "" : el.innerText;
-          el.innerHTML = `<input type="text" id="input-${id}" value="${currentVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 8px; border-radius: 15px; font-size: 13px; width: 160px; text-align: right;" />`;
+          //Mencegah karakter tanda kutip (") merusak atribut value HTML
+          const safeVal = currentVal.replace(/"/g, "&quot;");
+          if (id === "nama-user") {
+            el.innerHTML = `<input type="text" id="input-${id}" value="${safeVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 12px; border-radius: 15px; font-size: 16px; font-weight: 600; width: 200px; text-align: center;" />`;
+          } else {
+            el.innerHTML = `<input type="text" id="input-${id}" value="${safeVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 8px; border-radius: 15px; font-size: 13px; width: 160px; text-align: right;" />`;
+          }
         }});
+
+        // Kembalikan border input email ke putih saat user mulai mengetik ulang
+        const emailInput = document.getElementById("input-email");
+        if (emailInput) {
+          emailInput.addEventListener("input", function () {
+            this.style.borderColor = "white";
+          });
+        }
+
         btnEdit.innerText = "Save";
         isEditing = true;
       }else{
         // Ambil nilai baru dari input dan kembalikan ke teks
         const updatedData = {};
         fields.forEach(id => {const inputEl = document.getElementById(`input-${id}`); //dia yang nyalain biar bisa ngedit
-        const containerEl = document.getElementById(id);
-        if(inputEl && containerEl){
-          const newVal = inputEl.value.trim() || "-"; updatedData[id] = newVal; containerEl.innerText = newVal;
+        if(inputEl){
+          // Ubah key 'nama-user' menjadi 'nama' agar cocok dengan parameter di profile.php
+          const payloadKey = id === "nama-user" ? "nama" : id;
+          updatedData[payloadKey] = inputEl.value.trim();
         }});
-        // Biar huruf inisial avatar sesuai
-        const elInitial = document.querySelector(".profile-initial");
-        if (elInitial && updatedData["nama-user"] !== "-") {
-          elInitial.innerText = updatedData["nama-user"].charAt(0).toUpperCase();
+
+        if (!updatedData.nama || !updatedData.email) {
+          alert("Nama atau email tidak boleh kosong!");
+          return;
         }
-        // Kirim perubahan ke server 
-        fetch("../TubesPWD_D_1/update-profile.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updatedData)}).catch(err => console.error("Gagal menyimpan ke server:", err));
-        btnEdit.innerText = "Edit";
-        isEditing = false;
+
+        // Kirim perubahan ke server (profile.php), lalu perbarui tampilan hanya jika server responnya sukses 
+        fetch("../TubesPWD_D_1/profile.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify(updatedData)
+        })
+          .then(response => response.json())
+          .then(result => {
+            if (result.success) {
+              fields.forEach(id => {
+                const containerEl = document.getElementById(id);
+                const payloadKey = id === "nama-user" ? "nama" : id;
+                if (containerEl) {
+                  containerEl.innerText = result.data[payloadKey] || "-";
+                }
+              });
+
+              // Biar huruf inisial avatar sesuai
+              const elInitial = document.querySelector(".profile-initial");
+              // Ambil huruf pertama dari result.data.nama langsung dari DB
+              if (elInitial && result.data.nama && result.data.nama !== "-") {
+                elInitial.innerText = result.data.nama.charAt(0).toUpperCase();
+              }
+
+              btnEdit.innerText = "Edit";
+              isEditing = false;
+            } else if (result.error_type === "duplicate_email") {
+              // Peringatan khusus jika email sudah digunakan akun lain
+              const emailInput = document.getElementById("input-email");
+              if (emailInput) {
+                emailInput.style.borderColor = "#ff4d4d";
+                emailInput.focus();
+                emailInput.select();
+              }
+              alert("Peringatan Email Duplikat:\n" + result.message);
+            } else {
+              //Tampilkan pesan error dari PHP, tapi biasanya email sudah dipakai, karna email wajib diisi user dan harus unique
+              if (result.error_type === "invalid_email") {
+                const emailInput = document.getElementById("input-email");
+                if (emailInput) {
+                  emailInput.style.borderColor = "#ff4d4d";
+                  emailInput.focus();
+                }
+              }
+              alert(result.message || "Gagal memperbarui profil.");
+            }
+          })
+          .catch(err => console.error("Gagal menyimpan ke server:", err));
       }});
     }
+    
     // logout
     const btnLogout = document.getElementById("logout");
     if (btnLogout) {
