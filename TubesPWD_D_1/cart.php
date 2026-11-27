@@ -1,5 +1,6 @@
 <?php 
     require_once "koneksi.php";
+    require_once __DIR__ . "/guard.php";
 
     header('Content-Type: application/json; charset=utf-8');
 
@@ -149,16 +150,22 @@
                 foreach ($ids as $id) {
                     $id = (int)$id;
 
-                    if (isset($_SESSION['cart'][$id])) {
-                        $selectedItems[] = $_SESSION['cart'][$id];
+                    if (!isset($_SESSION['cart'][$id])) {
+                        response([
+                            "success" => false,
+                            "message" => "Some selected vehicles are invalid"
+                        ]);
                     }
+
+                    $selectedItems[] = $_SESSION['cart'][$id];
                 }
 
                 if (count($selectedItems) === 0) {
                     response(["success" => false, "message" => "No valid item"]);
                 }
 
-                $_SESSION['checkout_cart'] = $selectedItems;
+                unset($_SESSION['checkout']); //hapus checkout langsung
+                $_SESSION['checkout_cart'] = $selectedItems; //simpan item yang dipilih untuk checkout
 
                 response([
                     "success" => true,
