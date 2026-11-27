@@ -41,6 +41,8 @@
                     "duration_days" => (int)$cartItem['duration_days']
                 ];
             }
+
+            mysqli_stmt_close($stmt);
         }
 
         response([
@@ -77,48 +79,50 @@
                 $id = $input['id'] ?? '';
                 $mode = $input['mode'] ?? '';
 
-                $index = cariIndexCart($id);
+                if (!isset($_SESSION['cart'][$id]) ||
+                    !in_array($mode, ['buy', 'rent'], true)) {
 
-                if ($index === -1 || !in_array($mode, ['buy', 'rent'], true)) {
-                    response(["success" => false, "message" => "Invalid item"]);
+                    response([
+                        "success" => false,
+                        "message" => "Invalid item"
+                    ]);
                 }
 
-                $_SESSION['cart'][$index]['mode'] = $mode;
+                $_SESSION['cart'][$id]['mode'] = $mode;
                 break;
 
             case "update_qty":
-                $id = $input['id'] ?? '';
+                $id = (int)$input['id'] ?? '';
                 $units = (int)($input['units'] ?? 0);
 
-                $index = cariIndexCart($id);
-
-                if ($index === -1 || $units < 1) {
-                    response(["success" => false, "message" => "Invalid quantiy"]);
+                if (!isset($_SESSION['cart'][$id]) || $units < 1) {
+                    response([
+                        "success" => false,
+                        "message" => "Invalid quantity"
+                    ]);
                 }
 
-                $_SESSION['cart'][$index]['units'] = $units;
+                $_SESSION['cart'][$id]['units'] = $units;
                 break;
             
             case "update_duration":
                 $id = $input['id'] ?? '';
                 $units = (int)($input['duration_days'] ?? 0);
 
-                $index = cariIndexCart($id);
-                
-                if ($index === -1 || $$days < 1) {
-                    response(["success" => false, "message" => "Invalid duration"]);
+                if (!isset($_SESSION['cart'][$id]) || $days < 1) {
+                    response([
+                        "success" => false,
+                        "message" => "Invalid duration"
+                    ]);
                 }
 
-                $_SESSION['cart'][$index]['duration_days'] = $days;
+                $_SESSION['cart'][$id]['duration_days'] = $days;
                 break;
             
             case "remove_item":
                 $id = $input['id'] ?? '';
-                $index = cariIndexCart($id);
 
-                if($index != -1){
-                    array_splice($_SESSION['cart'], $index, 1);
-                }
+                unset($_SESSION['cart'][$id]);
                 break;
             
             case "remove_select":
@@ -128,16 +132,9 @@
                     response(["success" => false, "message" => "Invalid IDs"]);
                 }
 
-                $_SESSION['cart'] = array_values(array_filter(
-                    $_SESSION['cart'],
-                    function ($item) use ($ids) {
-                        return !in_array(
-                            (string)$item['id'],
-                            array_map('strval', $ids),
-                            true
-                        );
-                    }
-                ));
+                foreach ($ids as $id) {
+                    unset($_SESSION['cart'][(int)$id]);
+                }
                 break;
             
             case "checkout":
@@ -149,9 +146,11 @@
 
                 $selectedItems = [];
 
-                foreach ($_SESSION['cart'] as $item) {
-                    if(in_array((string)$item['id'], array_map('strval', $ids), true)) {
-                        $selectedItems[] = $item;
+                foreach ($ids as $id) {
+                    $id = (int)$id;
+                    
+                    if (isset($_SESSION['cart'][$id])) {
+                        $selectedItems[] = $_SESSION['cart'][$id];
                     }
                 }
 

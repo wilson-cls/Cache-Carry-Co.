@@ -48,10 +48,12 @@ function showCartPopup(text) {
 // Sinkronisasi perubahan ke backend PHP
 function syncCartAction(actionName, payload) {
   if (typeof fetch !== 'function') {
-    return;
+    return Promise.resolve(null);
   }
+
   var bodyData = Object.assign({ action: actionName }, payload || {});
-  fetch('cart_action.php', {
+  
+  fetch('cart.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(bodyData)
@@ -289,7 +291,7 @@ function checkoutCart() {
 }
 
 function loadCart() {
-    fetch('cart_action.php')
+    fetch('cart.php')
         .then(function (response) {
             return response.json();
         })
