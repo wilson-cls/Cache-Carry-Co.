@@ -46,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const result = await response.json();
 
                 if (authMessage) {
-                    authMessage.style.display = "block";
                     authMessage.textContent = result.message || "An unknown error occurred.";
                     
                     // putih = sukses, meraah = gagal
@@ -58,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Ntar otomatis ke halaman login sesuai detik yang diatur jika sukses
                     setTimeout(() => {
                         window.location.href = "login.xhtml";
-                    }, 5000); // 5000 ini artinya 5 detik
+                    }, 2000); // 5000 ini artinya 2 detik
                 }
             } catch (error) {
                 console.error("Fetch Error:", error);
