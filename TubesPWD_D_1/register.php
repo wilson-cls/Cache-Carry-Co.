@@ -82,5 +82,5 @@
 
     mysqli_stmt_close($insertStmt);
     echo json_encode($response);
-exit;
+    exit;
 ?>

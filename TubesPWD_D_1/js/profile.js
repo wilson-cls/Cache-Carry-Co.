@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Ambil data user yang login
     fetch("../TubesPWD_D_1/auth-status.php").then(response => {
       if (!response.ok) {
-        throw new Error("Gagal mengambil status login");
+        throw new Error("Failed to get login status");
       }
       return response.json();
     }).then(user => {
