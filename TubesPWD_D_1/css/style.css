@@ -39,6 +39,11 @@ body::-webkit-scrollbar {
     background-color: #1E1E1E;
 }
 
+#navbar h2:hover{
+    color: #FCA311;
+    transition: 0.4s ease;
+}
+
 #logo a{
     display: flex;
     align-items: center;
@@ -171,6 +176,7 @@ body::-webkit-scrollbar {
     font-weight: 600;
     cursor: pointer;
     border: none;
+    transition: all 0.3s ease;
 }
 
 .btn-primary{
@@ -179,10 +185,26 @@ body::-webkit-scrollbar {
     font-weight: 700;
 }
 
+.btn-primary:hover{
+    background-color: transparent;
+    color: #F3F3F3;
+    transform: translateY(-3px);
+    border: 1px solid #F3F3F3;
+    box-shadow: 0 4px 12px #F3F3F3;
+}
+
 .btn-secondary{
     background-color: transparent;
     color: #ffffff;
     border: 1px solid #F3F3F3;
+}
+
+.btn-secondary:hover{
+    background-color: #FCA311;
+    color: #111111;
+    border-color: #FCA311;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px #FCA311;
 }
 
 #main-body{
