@@ -1,19 +1,39 @@
--- How to use:
--- 1. Pastikan sudah import cache_carry_co.sql di phpMyAdmin
--- 2. Buka file index.xhtml lewat localhost (seperti demo biasa)
--- 3. Ganti 'index.xhtml' di URL browser menjadi 'setup_seed.php', lalu tekan Enter
--- 4. Jika muncul pesan sukses, ganti kembali URL ke 'login.xhtml' dan silakan login
+<?php
+/*
+ * How to use:
+ * 1. Pastikan sudah import 'cache_carry_co.sql' di phpMyAdmin
+ * 2. Buka 'index.xhtml' lewat localhost (seperti demo biasa)
+ * 3. Ganti 'index.xhtml' di URL browser menjadi 'setup_seed.php', lalu tekan Enter
+ * 4. Jika muncul pesan sukses, ganti kembali URL ke 'login.xhtml' dan silakan login
+ *
+ * Akun Demo:
+ * - User 1 -> username: user  | password: password
+ * - User 2 -> username: user2 | password: password
+ */
 
--- User 1
--- username : user , password: password
+header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/koneksi.php';
 
--- User 2
--- username : user2 , password: password
+$db = null;
+if (isset($conn) && $conn instanceof mysqli) {
+    $db = $conn;
+} elseif (isset($koneksi) && $koneksi instanceof mysqli) {
+    $db = $koneksi;
+} elseif (isset($mysqli) && $mysqli instanceof mysqli) {
+    $db = $mysqli;
+}
 
+if (!$db) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Koneksi database mysqli gagal.']);
+    exit;
+}
 
+// Menggunakan Nowdoc (<<<'SQL') agar tanda $ di hash password tidak dianggap variabel PHP
+$sql = <<<'SQL'
 -- 1. Data User
 INSERT IGNORE INTO `pengguna` (`id_pengguna`, `username`, `nama`, `email`, `password`, `nomor_telepon`, `alamat_default`, `role`) VALUES
-(50, 'user', 'Aheng', 'aheng@cachecarry.co', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '081234567890', 'Helipad Kuningan, Jakarta Selatan', 'user'),
+(50, 'user', 'Aheng', 'aheng@gmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '081234567890', 'Bulan, Luar Angkasa.', 'user'),
 (51, 'user2', 'Ahong', 'ahong@cachecarry.co', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '081298765432', 'Dermaga Marina Ancol, Jakarta Utara', 'user');
 
 -- 2. Data Pembelian
@@ -47,3 +67,36 @@ INSERT IGNORE INTO `detail_penyewaan` (`id_detail`, `id_penyewaan`, `id_kendaraa
 (53, 53, 1, 1, 3, 150000000, 450000000),
 (54, 54, 9, 1, 2, 150000000, 300000000),
 (55, 55, 6, 1, 2, 150000000, 300000000);
+SQL;
+
+if ($db->multi_query($sql)) {
+    do {
+        if ($result = $db->store_result()) {
+            $result->free();
+        }
+    } while ($db->more_results() && $db->next_result());
+
+    if ($db->errno) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Terjadi error saat menjalankan seed: ' . $db->error
+        ]);
+        exit;
+    }
+
+    echo json_encode([
+        'success' => true,
+        'message' => 'Seed data berhasil dimasukkan! Silakan kembali ke login.xhtml.',
+        'akun_demo' => [
+            ['username' => 'user', 'nama' => 'Aheng', 'password' => 'password'],
+            ['username' => 'user2', 'nama' => 'Ahong', 'password' => 'password']
+        ]
+    ], JSON_PRETTY_PRINT);
+} else {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Gagal mengeksekusi query seed: ' . $db->error
+    ]);
+}
