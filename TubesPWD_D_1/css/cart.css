@@ -24,17 +24,12 @@
 
 .selectBar {
   background-color: transparent;
-  border: 1px solid #fca311;
-  border-radius: 12px;
+  border: none;
   padding: 14px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-}
-
-.selectBar.active {
-  background-color: #fca311;
 }
 
 .selectAllLabel {
@@ -82,6 +77,19 @@
   display: flex;
   gap: 24px;
   align-items: stretch;
+  position: relative;
+}
+
+.cartCard .cartCheckbox.js-check {
+  position: absolute;
+  left: -34px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  accent-color: #FCA311;
+  cursor: pointer;
+  margin: 0;
 }
 
 .cartThumbBox {
@@ -232,10 +240,10 @@
 .pillStepper {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 999px;
-  padding: 3px 10px;
+  padding: 3px 6px;
 }
 
 .stepBtn {
@@ -327,7 +335,7 @@
   background-color: #fca311;
 }
 
-/* Pop-up notifikasi di tengah layar dengan fade-in & fade-out */
+/* Popup notifikasi di tengah layar dengan fadein & fadeout */
 .cartMessage {
   position: fixed;
   top: 50%;
@@ -335,8 +343,8 @@
   transform: translate(-50%, -50%) translateY(8px);
   background-color: #1e1e1e;
   color: #f3f3f3;
-  border: 1px solid #FCA311;
-  border-radius: 14px;
+  border: none;
+  border-radius: 20px;
   padding: 16px 26px;
   font-size: 14px;
   font-weight: 500;
@@ -347,7 +355,6 @@
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-  z-index: 9999;
 }
 
 .cartMessage.show {
