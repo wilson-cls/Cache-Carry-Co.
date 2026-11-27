@@ -36,15 +36,15 @@
                         profileBtn.title = "Profile - " + user.nama;
                         profileBtn.type = "button";
                         profileBtn.style.cssText = `
-                            width: 40px;
-                            height: 40px;
+                            min-width: 40px;
+                            min-height: 40px;
                             border: none;
                             border-radius: 15px;
                             background-color: #FCA311;
                             color: #1E1E1E;
                             font-family: 'Plus Jakarta Sans', sans-serif;
                             font-size: 20px;
-                            font-weight: 900;
+                            font-weight: 700;
                             cursor: pointer;
                             display: flex;
                             align-items: center;
