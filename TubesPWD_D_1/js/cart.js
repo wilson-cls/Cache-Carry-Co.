@@ -7,6 +7,14 @@ var selectedIds = [];
 // Timer pop-up notifikasi
 var cartPopupTimer = null;
 
+function getStok(item) {
+  if(item.mode === 'buy') {
+    return parseInt(item.stok_jual, 10) || 0;
+  } else {
+    return parseInt(item.stok_sewa, 10) || 0;
+  }
+}
+
 // Format angka menjadi Rupiah
 function formatRupiah(num) {
   var angka = Math.max(0, Math.round(Number(num) || 0));
@@ -61,32 +69,63 @@ function syncCartAction(actionName, payload) {
 }
 
 // Ubah mode buy / rent
-function setItemMode(itemId, mode) {
-  for (var i = 0; i < cartItems.length; i++) {
-    if (String(cartItems[i].id) === String(itemId)) {
-      cartItems[i].mode = mode === 'rent' ? 'rent' : 'buy';
-      if (!cartItems[i].duration_days || cartItems[i].duration_days < 1) {
-        cartItems[i].duration_days = 1;
-      }
-      break;
-    }
+function setItemMode(itemId, newMode) {
+  var item = cartItems.find(function (cartItem) {
+    return String(cartItem.id) === String(itemId);
+  });
+
+  if(!item) return;
+
+  //simpan mode sebelumnya
+  var oldMode = item.mode;
+
+  //periksa stok mode baru
+  item.mode = newMode;
+  var stok = getStok(item);
+
+  if(stok < 1){
+    item.mode = oldMode; //kalau stok habis, kembali mode sebelumnya
+    showCartPopup("This vehicle is out of stock");
+    return;
   }
+
+  if (item.units > stok) {
+    item.units = stok;
+  }
+
+  syncCartAction('update_mode', { id: itemId, mode: newMode });
+  syncCartAction('update_qty', { id: itemId, units: item.units });
+
   renderCart();
-  syncCartAction('update_mode', { id: itemId, mode: mode });
 }
 
 // Ubah jumlah unit
 function changeItemUnits(itemId, delta) {
-  var updatedUnits = 1;
-  for (var i = 0; i < cartItems.length; i++) {
-    if (String(cartItems[i].id) === String(itemId)) {
-      cartItems[i].units = Math.max(1, (parseInt(cartItems[i].units, 10) || 1) + delta);
-      updatedUnits = cartItems[i].units;
-      break;
-    }
+  var item = cartItems.find(function (cartItem) {
+    return String(cartItem.id) === String(itemId);
+  });
+
+  if(!item) return;
+
+  //ambil stok based on mode buy or rent
+  var stok = getStok(item);
+
+  //hitung qty baru
+  var currentUnits = parseInt(item.units, 10) || 1;
+  var newUnits = currentUnits + delta;
+
+  if(newUnits < 1) return;
+
+  if(newUnits > stok){
+    showCartPopup("Quantity exceeds available stock");
+    return;
   }
+
+  item.units = newUnits;
+
+  syncCartAction('update_qty', { id: itemId, units: item.units });
+
   renderCart();
-  syncCartAction('update_qty', { id: itemId, units: updatedUnits });
 }
 
 // Ubah durasi sewa (hari)
