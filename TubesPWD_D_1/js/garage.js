@@ -14,21 +14,27 @@ document.addEventListener("DOMContentLoaded", function () {
     function loadTransactions() {
         cardsContainer.innerHTML = '<p class="loading-text">Loading Data</p>';
 
-        // Buat amvil data dari backend PHP berdasarkan kategori tab yang aktif
-        fetch(`api/get_orders.php?category=${encodeURIComponent(currentCategory)}`)
-            .then(response => response.json())
+        // Mengambil data dari garage.php berdasarkan kategori tab yang aktif
+        fetch(`../TubesPWD_D_1/garage.php?category=${encodeURIComponent(currentCategory)}`, {
+            credentials: "same-origin"
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error! Status: " + response.status);
+                }
+                return response.json();
+            })
             .then(data => {
                 renderCards(data);
             })
             .catch(error => {
                 console.error("Error:", error);
                 cardsContainer.innerHTML = '<p class="loading-text">Failed to load data from the server.</p>';
-                
             });
     }
 
     function renderCards(items) {
-        if (items.length === 0) {
+        if (!Array.isArray(items) || items.length === 0) {
             cardsContainer.innerHTML = '<p class="loading-text">No data.</p>';
             return;
         }
