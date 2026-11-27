@@ -92,7 +92,7 @@
                 break;
 
             case "update_qty":
-                $id = (int)$input['id'] ?? '';
+                $id = (int)($input['id'] ?? 0);
                 $units = (int)($input['units'] ?? 0);
 
                 if (!isset($_SESSION['cart'][$id]) || $units < 1) {
@@ -107,7 +107,7 @@
             
             case "update_duration":
                 $id = $input['id'] ?? '';
-                $units = (int)($input['duration_days'] ?? 0);
+                $days = (int)($input['duration_days'] ?? 0);
 
                 if (!isset($_SESSION['cart'][$id]) || $days < 1) {
                     response([
@@ -125,7 +125,7 @@
                 unset($_SESSION['cart'][$id]);
                 break;
             
-            case "remove_select":
+            case "remove_selected":
                 $ids = $input['ids'] ?? '';
 
                 if(!is_array($ids)) {
@@ -148,7 +148,7 @@
 
                 foreach ($ids as $id) {
                     $id = (int)$id;
-                    
+
                     if (isset($_SESSION['cart'][$id])) {
                         $selectedItems[] = $_SESSION['cart'][$id];
                     }

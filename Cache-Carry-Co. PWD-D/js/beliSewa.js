@@ -467,10 +467,7 @@ function addToCart() {
 
 // proses checkout langsung
 function checkoutVehicle() {
-  var checkoutBtn = document.getElementById('btnCheckout') || document.querySelector('.js-checkout');
-  if (redirectToLoginIfNotSignedIn(checkoutBtn)) {
-    return;
-  }
+  if(!validateStock()) return;
 
   var payload = {
     id: currentVehicle.id,
@@ -486,14 +483,27 @@ function checkoutVehicle() {
 
   syncBeliSewaAction('checkout_vehicle', payload)
     .then(function (result) {
-      if (result && result.success === false) {
-        showBeliSewaPopup(result.message || 'Checkout failed');
+      //jika php gagal
+      if(!result || result.success !== true){
+         // Jika PHP meminta user login
+        if (result && result.redirect) {
+          window.location.href = result.redirect;
+          return;
+        }
+
+        showBeliSewaPopup(
+          result ? result.message : 'Checkout failed'
+        );
+
         return;
       }
-      window.location.href = (result && result.redirect) ? result.redirect : 'checkout.xhtml';
+
+      //jika berhasil, pindah ke checkout
+      window.location.href = result.redirect || 'checkout.xhtml';
     })
     .catch(function () {
-      window.location.href = 'checkout.xhtml';
+      console.error('Checkout error:', error);
+      showBeliSewaPopup('Failed to process checkout');
     });
 }
 
