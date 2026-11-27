@@ -1,5 +1,5 @@
 // Data awal dari backend PHP (window.INITIAL_CART_ITEMS)
-var cartItems = Array.isArray(window.INITIAL_CART_ITEMS) ? window.INITIAL_CART_ITEMS.slice() : [];
+var cartItems = [];
 
 // ID item yang sedang dicentang
 var selectedIds = [];
@@ -278,7 +278,30 @@ function checkoutCart() {
     showCartPopup('choose at least one vehicle to checkout');
     return;
   }
-  syncCartAction('checkout', { ids: selectedIds });
+  syncCartAction('checkout', { ids: selectedIds })
+    .then(function (result) {
+      if(result && result.success) {
+        window.location.href = result.redirect;
+      } else {
+        showCartPopup("Failed to prepare checkout");
+      }
+    });
 }
 
-renderCart();
+function loadCart() {
+    fetch('cart_action.php')
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (result) {
+            if (result.success) {
+                cartItems = result.items;
+                renderCart();
+            }
+        })
+        .catch(function (error) {
+            console.error("Failed to load cart:", error);
+        });
+}
+
+loadCart();

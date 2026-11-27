@@ -1,12 +1,23 @@
 <?php 
-    session_start();
     require_once "koneksi.php";
+    require_once __DIR__ . '/guard.php';
 
     header('Content-Type: application/json; charset=utf-8');
 
     //post menyimpan data checkout atau add to cart
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true);
+
+        $action = $input['action'] ?? '';
+
+        if (!is_logged_in()) {
+            echo json_encode([
+                "success" => false,
+                "message" => "Please sign in first",
+                "redirect" => "login.xhtml"
+            ]);
+            exit;
+        }
 
         if(!is_array($input)) {
             echo json_encode([
