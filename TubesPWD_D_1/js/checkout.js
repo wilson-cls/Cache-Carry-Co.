@@ -334,48 +334,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Perbaikan: hitung end date otomatis berdasarkan start date yang dipilih user dan jumlah hari sewa (durationDays)
   function syncRentalDateSection(isRentMode, durationDays, inclusiveDays) {
-    var sectionEl = document.getElementById("rentalDateSection");
-    var startInput = document.getElementById("startDateInput");
-    var endDisplay = document.getElementById("endDateDisplay");
+    var parts = startDateValue.split("-").map(Number);
 
-    if (!sectionEl) return null;
-
-    if (!isRentMode) {
-      sectionEl.style.display = "none";
-      return null;
-    }
-
-    sectionEl.style.display = "flex";
-
-    if (startInput && !startInput.value) {
-      startInput.value = formatDateLocalISO(new Date());
-    }
-
-    var rawVal = startInput ? startInput.value : "";
-    var parts = rawVal.split("-").map(Number);
     if (parts.length !== 3 || parts.some(isNaN)) {
-      if (endDisplay) endDisplay.textContent = "-";
-      return null;
+        return null;
     }
 
     var startDate = new Date(parts[0], parts[1] - 1, parts[2]);
-    var days = Math.max(1, parseInt(durationDays, 10) || 1);
-    var offset = inclusiveDays === false ? days : days - 1;
 
+    var days = Math.max(1, parseInt(durationDays, 10) || 1);
+
+    // Hari terakhir penyewaan dihitung sebagai tanggal mulai + (jumlah hari - 1)
     var endDate = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate() + offset
+        startDate.getFullYear(),
+        startDate.getMonth(),
+        startDate.getDate() + days - 1
     );
 
-    if (endDisplay) {
-      endDisplay.textContent = formatTanggalTampil(endDate);
-    }
-
-    return {
-      start_date: formatDateLocalISO(startDate),
-      end_date: formatDateLocalISO(endDate)
-    };
+    return endDate;
   }
 
   // kartu untuk satu item di daftar checkout
@@ -386,6 +362,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Thumbnail gambar kendaraan
     var thumb = document.createElement("div");
     thumb.className = "item-thumb";
+    
     if (item.image) {
       var img = document.createElement("img");
       img.src = item.image;
@@ -421,10 +398,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var price = document.createElement("div");
     price.className = "item-price";
-    price.textContent =
-      item.price !== undefined && item.price !== null
-        ? formatRupiah(item.price)
-        : "";
+    price.textContent = formatRupiah(item.price);
 
     var unit = document.createElement("div");
     unit.className = "item-unit";
@@ -436,6 +410,56 @@ document.addEventListener("DOMContentLoaded", function () {
     card.appendChild(thumb);
     card.appendChild(info);
     card.appendChild(priceBox);
+
+    // tanggal hanya ditampilkan untuk kendaraan sewa
+    if(item.mode === 'rent') {
+       var dateSection = document.createElement("div");
+        dateSection.className = "rental-date-item";
+
+        var dateLabel = document.createElement("label");
+        dateLabel.textContent = "Rental Start Date";
+
+        var startInput = document.createElement("input");
+        startInput.type = "date";
+        startInput.className = "rental-start-date";
+        startInput.setAttribute(
+            "data-id-kendaraan",
+            item.id_kendaraan
+        );
+
+        // Default tanggal mulai adalah hari ini
+        var today = formatDateLocalISO(new Date());
+        startInput.value = today;
+        startInput.min = today;
+
+        var endLabel = document.createElement("div");
+        endLabel.className = "rental-end-date";
+
+        function updateEndDate() {
+            var endDate = hitungTanggalSelesai(
+                startInput.value,
+                item.duration_days
+            );
+
+            if (endDate) {
+                endLabel.textContent =
+                    "Rental End Date: " + formatTanggalTampil(endDate);
+            } else {
+                endLabel.textContent = "Rental End Date: -";
+            }
+        }
+
+        // Perbarui tanggal selesai saat tanggal mulai berubah
+        startInput.addEventListener("change", updateEndDate);
+
+        updateEndDate();
+
+        dateSection.appendChild(dateLabel);
+        dateSection.appendChild(startInput);
+        dateSection.appendChild(endLabel);
+
+        card.appendChild(dateSection);
+    }
 
     return card;
   }
@@ -498,9 +522,6 @@ document.addEventListener("DOMContentLoaded", function () {
         itemsContainer.appendChild(createItemElement(normalizedItem));
       }
     });
-
-    // Perbaikan: perbarui tampilan & tanggal selesai sewa berdasarkan mode dan durasi hari aktif
-    syncRentalDateSection(activeMode === "rent", activeDays, true);
 
     var grandTotal = subtotal;
 
@@ -570,14 +591,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Perbaikan: inisialisasi awal pilihan alamat (termasuk yang ada di localStorage) sebelum fetch selesai
   siapkanPilihanAlamat(null);
   renderAddressOptions();
-
-  // Perbaikan: dengarkan perubahan start date di checkout agar end date otomatis menyesuaikan jumlah hari
-  var startDateInput = document.getElementById("startDateInput");
-  if (startDateInput) {
-    startDateInput.addEventListener("change", function () {
-      syncRentalDateSection(activeMode === "rent", activeDays, true);
-    });
-  }
 
   function loadVehicleFromBeliSewa(id, checkoutBaseData) {
     var detailUrl = BELI_SEWA_PHP_URL + "?id=" + encodeURIComponent(id);
@@ -669,14 +682,38 @@ document.addEventListener("DOMContentLoaded", function () {
     placeOrderBtn.addEventListener("click", function () {
       var selectedMethod = getSelectedPaymentMethod();
       if (!selectedMethod) {
-        alert(
-          "Choose payment methode."
-        );
+        alert("Choose payment method.");
         return;
       }
 
-      // Perbaikan: ambil start_date & end_date terbaru jika mode sewa aktif
-      var rentalDates = syncRentalDateSection(activeMode === "rent", activeDays, true);
+      //ambil semua input tanggal dari kartu kendaraan sewa
+      var rentalInputs = document.querySelectorAll(
+        "#checkoutItemsContainer .rental-start-date"
+      )
+
+      var rentalItems = [];
+      var tanggalTidakValid = false;
+
+      rentalInputs.forEach(function (input) {
+        var idKendaraan = parseInt(input.getAttribute("data-id-kendaraan"), 10);
+
+        var tanggalMulai = input.value;
+
+        if(!tanggalMulai){
+          tanggalTidakValid = true;
+          return;
+        }
+
+        rentalItems.push({
+          id_kendaraan: idKendaraan,
+          start_date: tanggalMulai
+        });
+      });
+
+      if(tanggalTidakValid){
+        alert("Please select a rental start date for every rented vehicle");
+        return;
+      }
 
       // supaya tidak terjadi klik ganda saat req POST berjalan
       placeOrderBtn.disabled = true;
@@ -689,37 +726,32 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: JSON.stringify({
           action: "place_order",
-          id_kendaraan: currentIdKendaraan,
-          mode: urlMode,
-          units: urlUnits,
-          duration_days: urlMode === "rent" ? urlDays : 1,
-          // Perbaikan: sertakan tanggal mulai dan tanggal selesai sewa ke payload pesanan
-          start_date: rentalDates ? rentalDates.start_date : null,
-          end_date: rentalDates ? rentalDates.end_date : null,
-          // Perbaikan: sertakan alamat pengiriman terpilih ke payload pesanan
           alamat_pengiriman: selectedAddress,
-          payment_method: selectedMethod
+          items: rentalItems
         })
       })
 
         .then(function (response) {
-          if (!response.ok) {
-            throw new Error("Gagal memproses pesanan");
-          }
-          return response.json();
+          return response.json().then(function(result) {
+            if (!response.ok) {
+              throw new Error(result.message || "Failed to process order");
+            }
+
+            return result;
+          });
         })
 
         .then(function (result) {
-          if (result.redirect) {
-            window.location.href = result.redirect;
+          if (result.success && result.redirect) {
+                window.location.href = result.redirect;
           } else if (result.message) {
-            alert(result.message);
+                alert(result.message);
           }
         })
 
         .catch(function (err) {
           console.error("Error placeOrder:", err);
-          alert("Terjadi kesalahan saat memproses pesanan.");
+          alert(err.message || "An error occurred while processing your order.");
         })
 
         .finally(function () {

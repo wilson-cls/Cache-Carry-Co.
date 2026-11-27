@@ -76,3 +76,25 @@
                 });
         }
     });
+
+
+
+            /* 3. Tombol Explore Marketplace --> Vehicle 
+                  Tombol List a Vehicle --> Garage
+            */ 
+
+        const tombolExplore = document.getElementById("explore");
+        const tombolList = document.getElementById("list");
+
+        if (tombolExplore) {
+            tombolExplore.onclick = function () {
+                window.location.href = "../TubesPWD_D_1/vehicle.xhtml";
+            };
+        }
+
+        // 3. Saat tombol List diklik, pindah ke garage.xhtml
+        if (tombolList) {
+            tombolList.onclick = function () {
+                window.location.href = "../TubesPWD_D_1/garage.xhtml";
+            };
+        }

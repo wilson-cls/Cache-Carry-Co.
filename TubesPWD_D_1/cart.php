@@ -1,5 +1,6 @@
 <?php 
     require_once "koneksi.php";
+    require_once __DIR__ . "/guard.php";
 
     header('Content-Type: application/json; charset=utf-8');
 
@@ -145,20 +146,60 @@
                 }
 
                 $selectedItems = [];
+                $selectedIds = [];
 
                 foreach ($ids as $id) {
                     $id = (int)$id;
 
-                    if (isset($_SESSION['cart'][$id])) {
-                        $selectedItems[] = $_SESSION['cart'][$id];
+                    if($id < 1) {
+                        response([
+                            "success" => false,
+                            "message" => "Invalid vehicle ID"
+                        ]);
                     }
+
+                    if (in_array($id, $selectedIds, true)) {
+                        continue;
+                    }
+
+                    if (!isset($_SESSION['cart'][$id])) {
+                        response([
+                            "success" => false,
+                            "message" => "Some selected vehicles are invalid"
+                        ]);
+                    }
+
+                    $cartItem = $_SESSION['cart'][$id];
+
+                     // Validasi data cart
+                    $mode = $cartItem['mode'] ?? '';
+                    $units = (int)($cartItem['units'] ?? 0);
+                    $days = (int)($cartItem['duration_days'] ?? 0);
+
+                    if (!in_array($mode, ['buy', 'rent'], true) || $units < 1 || $days < 1) {
+                        response([
+                            "success" => false,
+                            "message" => "Invalid cart item data"
+                        ]);
+                    }
+
+                    // Simpan data dalam format yang dibaca checkout.php
+                    $selectedItems[] = [
+                        "id" => $id,
+                        "mode" => $mode,
+                        "units" => $units,
+                        "duration_days" => $days
+                    ];
+
+                    $selectedIds[] = $id;
                 }
 
                 if (count($selectedItems) === 0) {
                     response(["success" => false, "message" => "No valid item"]);
                 }
 
-                $_SESSION['checkout_cart'] = $selectedItems;
+                unset($_SESSION['checkout']); //hapus checkout langsung
+                $_SESSION['checkout_cart'] = $selectedItems; //simpan item yang dipilih untuk checkout
 
                 response([
                     "success" => true,
