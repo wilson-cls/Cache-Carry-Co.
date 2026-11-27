@@ -332,6 +332,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function hitungTanggalSelesai(startDateValue, durationDays) {
+      if (!startDateValue) {
+          return null;
+      }
+
+      var parts = startDateValue.split("-").map(Number);
+
+      if (parts.length !== 3 || parts.some(isNaN)) {
+          return null;
+      }
+
+      var startDate = new Date(
+          parts[0],
+          parts[1] - 1,
+          parts[2]
+      );
+
+      var days = Math.max(1, parseInt(durationDays, 10) || 1);
+
+      var endDate = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + days - 1
+      );
+
+      return endDate;
+  }
+
   // Perbaikan: hitung end date otomatis berdasarkan start date yang dipilih user dan jumlah hari sewa (durationDays)
   function syncRentalDateSection(isRentMode, durationDays, inclusiveDays) {
     var parts = startDateValue.split("-").map(Number);
@@ -422,6 +450,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var startInput = document.createElement("input");
         startInput.type = "date";
         startInput.className = "rental-start-date";
+        startInput.setAttribute(
+          "data-duration-days",
+          item.duration_days
+        );
         startInput.setAttribute(
             "data-id-kendaraan",
             item.id_kendaraan
@@ -706,7 +738,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         rentalItems.push({
           id_kendaraan: idKendaraan,
-          start_date: tanggalMulai
+          start_date: tanggalMulai,
+          duration_days: parseInt(input.getAttribute("data-duration-days"), 10)
         });
       });
 

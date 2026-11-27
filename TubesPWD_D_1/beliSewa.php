@@ -80,11 +80,13 @@
 
         // action 2: checkout langsung
         if($action === 'checkout_vehicle') {
+            unset($_SESSION['checkout_cart']);
+
              $_SESSION['checkout'] = [
-            'id_kendaraan' => $id,
-            'mode' => $mode,
-            'units' => $units,
-            'days' => $days
+                'id_kendaraan' => $id,
+                'mode' => $mode,
+                'units' => $units,
+                'days' => $days
             ];
 
             echo json_encode([
