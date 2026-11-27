@@ -7,7 +7,7 @@ body{
 /* ini ada ku ubah dikit eksperimen */
 #login-page{
     position: relative;
-    background: radial-gradient(ellipse at bottom, #432a40 0%, #090a0f 100%);
+    background: radial-gradient(ellipse at bottom, #533a08 0%, #090a0f 100%);
     color: #f3f3f3;
     width: 100vw;
     min-height: 100vh;

@@ -15,10 +15,10 @@
             });
         });
 
-        /* 2. TOMBOL SIGN IN -> PROFILE [Masih pakai data sementara]*/
+        /* 2. TOMBOL SIGN IN -> PROFILE*/
         const authBtn = document.getElementById("auth-btn") || document.querySelector(".signIn");
         const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-        const fullName = localStorage.getItem("username") || "Thomas Wilson";
+        const fullName = localStorage.getItem("username");
 
         // Belum login dan coba buka halaman yang perlu login
         if (!isLoggedIn && (window.location.pathname.includes("cart.xhtml") || window.location.pathname.includes("garage.xhtml"))) {
@@ -43,16 +43,11 @@
                     location.reload();
                 }
             };
-        } else if (authBtn) {
+        }else if (authBtn){
             // Belum login tetap tombol "Sign In"
             authBtn.innerText = "Sign In";
             authBtn.onclick = function () {
-                const inputName = prompt("Masukkan nama kamu (Simulasi Login):", "Thomas Wilson");
-                if (inputName) {
-                    localStorage.setItem("isLoggedIn", "true");
-                    localStorage.setItem("username", inputName);
-                    location.reload();
-                }
+                window.location.href = "signIn.xhtml";
             };
         }
     });

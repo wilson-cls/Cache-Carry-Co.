@@ -32,6 +32,53 @@ var trxState = {
 
 var beliSewaPopupTimer = null;
 
+function isUserLoggedIn() {
+  // 1. Jika backend/script lain menyuntikkan flag global pada window
+  if (typeof window.IS_LOGGED_IN === "boolean") {
+    return window.IS_LOGGED_IN;
+  }
+  if (window.currentUser || window.loggedInUser) {
+    return true;
+  }
+
+  var storageKeys = ["user", "currentUser", "authUser", "loggedInUser", "token", "authToken"];
+  for (var i = 0; i < storageKeys.length; i++) {
+    try {
+      var val = window.localStorage.getItem(storageKeys[i]) || window.sessionStorage.getItem(storageKeys[i]);
+      if (val && val !== "null" && val !== "undefined" && val !== "false") {
+        return true;
+      }
+    } catch (e) {
+    }
+  }
+
+  var signInBtn = document.querySelector("#profile .signIn");
+  if (signInBtn) {
+    var btnText = (signInBtn.textContent || "").trim().toLowerCase();
+    if (btnText && btnText !== "sign in" && btnText !== "login") {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function redirectToLoginIfNotSignedIn(checkoutBtn) {
+  if (isUserLoggedIn()) {
+    return false;
+  }
+
+  var loginUrl =
+    (checkoutBtn && checkoutBtn.getAttribute("data-login-url")) ||
+    window.LOGIN_PAGE_URL ||
+    "login.xhtml";
+
+  var currentPage = window.location.pathname + window.location.search;
+  var separator = loginUrl.indexOf("?") === -1 ? "?" : "&";
+  window.location.href = loginUrl + separator + "redirect=" + encodeURIComponent(currentPage);
+  return true;
+}
+
 function cloneTemplate(tpl) {
   var frag = document.createDocumentFragment();
   var src = (tpl.content && tpl.content.childNodes.length) ? tpl.content : tpl;
@@ -415,7 +462,10 @@ function addToCart() {
 
 // proses checkout langsung
 function checkoutVehicle() {
-  if (!validateStock()) return;
+  var checkoutBtn = document.getElementById('btnCheckout') || document.querySelector('.js-checkout');
+  if (redirectToLoginIfNotSignedIn(checkoutBtn)) {
+    return;
+  }
 
   var payload = {
     id: currentVehicle.id,
