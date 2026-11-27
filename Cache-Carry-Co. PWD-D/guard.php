@@ -7,7 +7,6 @@ Bedanya dengan koneksi.php, koneksi.php dipakai semua halaman untuk buka sama mu
 sedangkan guard.php untuk memastikan user sudah Login di page yang diperlukan. 
 */
 
-
 function is_logged_in(): bool{
     return !empty($_SESSION['id_pengguna']);
 }
