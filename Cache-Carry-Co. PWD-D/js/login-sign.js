@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Ntar otomatis ke halaman login setelah 2 detik jika sukses
                     setTimeout(() => {
                         window.location.href = "login.xhtml";
-                    }, 2000);
+                    }, 5000);
                 }
             } catch (error) {
                 console.error("Fetch Error:", error);
