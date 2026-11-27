@@ -4,7 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/koneksi.php';
 
-// Menyesuaikan nama variabel koneksi mysqli dari koneksi.php ($conn / $koneksi / $mysqli)
+// Menyesuaikan nama variabel koneksi mysqli dari koneksi.php
 $db = null;
 if (isset($conn) && $conn instanceof mysqli) {
     $db = $conn;
@@ -16,31 +16,21 @@ if (isset($conn) && $conn instanceof mysqli) {
 
 if (!$db) {
     http_response_code(500);
-    echo json_encode(['error' => 'Koneksi database mysqli tidak ditemukan.']);
+    echo json_encode(['success' => false, 'message' => 'Koneksi database mysqli tidak ditemukan.']);
     exit;
 }
 
 // Pastikan pengguna sudah login
 if (!isset($_SESSION['id_pengguna'])) {
     http_response_code(401);
-    echo json_encode(['error' => 'Unauthorized']);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit;
-}
-
-$idPengguna = (int) $_SESSION['id_pengguna'];
-$category = $_GET['category'] ?? 'orders';
-
-// Validasi parameter kategori tab
-$allowedCategories = ['orders', 'rentals', 'history'];
-if (!in_array($category, $allowedCategories, true)) {
-    $category = 'orders';
 }
 
 function formatImageUrl(?string $foto): string {
     if (!$foto) {
         return '';
     }
-    // Menyesuaikan path gambar dari DB ("images/...") dengan struktur folder XHTML ("../TubesPWD_D_1/...")
     if (strpos($foto, '../') === 0 || strpos($foto, 'http') === 0) {
         return $foto;
     }
@@ -55,6 +45,96 @@ function formatTanggal(?string $datetime): string {
     return $timestamp ? date('d M Y, H:i', $timestamp) : $datetime;
 }
 
+// =========================================================================
+//        FITUR BUY AGAIN & RENT AGAIN -> MASUK KE $_SESSION['cart']
+// =========================================================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if (!is_array($input) || ($input['action'] ?? '') !== 'reorder') {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid request.']);
+        exit;
+    }
+
+    $idKendaraan = (int) ($input['id_kendaraan'] ?? 0);
+    $mode = $input['mode'] ?? '';
+
+    if ($idKendaraan < 1 || !in_array($mode, ['buy', 'rent'], true)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Data kendaraan atau mode transaksi tidak valid.']);
+        exit;
+    }
+
+    // Cek keberadaan kendaraan dan sisa stok di database
+    $stmt = $db->prepare('SELECT id_kendaraan, nama, stok_jual, stok_sewa FROM kendaraan WHERE id_kendaraan = ?');
+    $stmt->bind_param('i', $idKendaraan);
+    $stmt->execute();
+    $vehicle = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if (!$vehicle) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'Kendaraan tidak ditemukan.']);
+        exit;
+    }
+
+    if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+
+    // Default unit = 1; jika item dengan mode yang sama sudah ada di cart, tambahkan 1 unit
+    $targetUnits = 1;
+    if (isset($_SESSION['cart'][$idKendaraan]) && ($_SESSION['cart'][$idKendaraan]['mode'] ?? '') === $mode) {
+        $targetUnits = (int) $_SESSION['cart'][$idKendaraan]['units'] + 1;
+    }
+
+    $availableStock = ($mode === 'buy') ? (int) $vehicle['stok_jual'] : (int) $vehicle['stok_sewa'];
+
+    if ($availableStock < 1) {
+        $labelMode = ($mode === 'buy') ? 'pembelian' : 'penyewaan';
+        echo json_encode([
+            'success' => false,
+            'message' => 'Maaf, stok ' . $labelMode . ' untuk ' . $vehicle['nama'] . ' sedang habis.'
+        ]);
+        exit;
+    }
+
+    if ($targetUnits > $availableStock) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Stok ' . $vehicle['nama'] . ' tidak mencukupi (tersisa ' . $availableStock . ' unit, dan sudah ada di keranjangmu).'
+        ]);
+        exit;
+    }
+
+    // Simpan ke $_SESSION['cart'] sesuai format yang dibaca oleh cart.php
+    $_SESSION['cart'][$idKendaraan] = [
+        'id'            => $idKendaraan,
+        'mode'          => $mode,
+        'units'         => $targetUnits,
+        'duration_days' => 1
+    ];
+
+    echo json_encode([
+        'success'  => true,
+        'message'  => 'Berhasil ditambahkan ke keranjang.',
+        'redirect' => 'cart.xhtml'
+    ]);
+    exit;
+}
+
+// =========================================================================
+//                 AMBIL DATA ORDERS, RENTALS, & HISTORY
+// =========================================================================
+$idPengguna = (int) $_SESSION['id_pengguna'];
+$category = $_GET['category'] ?? 'orders';
+
+$allowedCategories = ['orders', 'rentals', 'history'];
+if (!in_array($category, $allowedCategories, true)) {
+    $category = 'orders';
+}
+
 $results = [];
 
 // 1. TAB ACTIVE ORDERS: tabel pembelian dengan status != 'done'
@@ -66,6 +146,7 @@ if ($category === 'orders') {
                 p.status,
                 dp.jumlah,
                 dp.sub_total AS price,
+                k.id_kendaraan,
                 k.nama,
                 k.foto
             FROM pembelian p
@@ -82,6 +163,7 @@ if ($category === 'orders') {
     while ($row = $res->fetch_assoc()) {
         $namaKendaraan = $row['nama'] . ((int)$row['jumlah'] > 1 ? ' (x' . (int)$row['jumlah'] . ')' : '');
         $results[] = [
+            'id_kendaraan'     => (int) $row['id_kendaraan'],
             'category'         => 'orders',
             'transaction_type' => 'Purchased',
             'name'             => $namaKendaraan,
@@ -105,6 +187,7 @@ elseif ($category === 'rentals') {
                 ds.jumlah,
                 ds.jumlah_hari,
                 ds.sub_total AS price,
+                k.id_kendaraan,
                 k.nama,
                 k.foto
             FROM penyewaan s
@@ -121,6 +204,7 @@ elseif ($category === 'rentals') {
     while ($row = $res->fetch_assoc()) {
         $namaKendaraan = $row['nama'] . ((int)$row['jumlah'] > 1 ? ' (x' . (int)$row['jumlah'] . ')' : '');
         $results[] = [
+            'id_kendaraan'     => (int) $row['id_kendaraan'],
             'category'         => 'rentals',
             'transaction_type' => 'Rented',
             'name'             => $namaKendaraan,
@@ -145,6 +229,7 @@ elseif ($category === 'history') {
                     p.status,
                     dp.jumlah,
                     dp.sub_total AS price,
+                    k.id_kendaraan,
                     k.nama,
                     k.foto
                 FROM pembelian p
@@ -161,6 +246,7 @@ elseif ($category === 'history') {
         $namaKendaraan = $row['nama'] . ((int)$row['jumlah'] > 1 ? ' (x' . (int)$row['jumlah'] . ')' : '');
         $tempHistory[] = [
             'raw_date'         => $row['raw_date'],
+            'id_kendaraan'     => (int) $row['id_kendaraan'],
             'category'         => 'history',
             'transaction_type' => 'Purchased',
             'name'             => $namaKendaraan,
@@ -180,6 +266,7 @@ elseif ($category === 'history') {
                     s.status,
                     ds.jumlah,
                     ds.sub_total AS price,
+                    k.id_kendaraan,
                     k.nama,
                     k.foto
                 FROM penyewaan s
@@ -196,6 +283,7 @@ elseif ($category === 'history') {
         $namaKendaraan = $row['nama'] . ((int)$row['jumlah'] > 1 ? ' (x' . (int)$row['jumlah'] . ')' : '');
         $tempHistory[] = [
             'raw_date'         => $row['raw_date'],
+            'id_kendaraan'     => (int) $row['id_kendaraan'],
             'category'         => 'history',
             'transaction_type' => 'Rented',
             'name'             => $namaKendaraan,
@@ -213,7 +301,6 @@ elseif ($category === 'history') {
         return strtotime($b['raw_date']) <=> strtotime($a['raw_date']);
     });
 
-    // Hapus field bantuan raw_date sebelum dikirim ke JS
     foreach ($tempHistory as $item) {
         unset($item['raw_date']);
         $results[] = $item;

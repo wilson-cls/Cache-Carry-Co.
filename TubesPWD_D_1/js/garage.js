@@ -10,11 +10,46 @@ document.addEventListener("DOMContentLoaded", function () {
             maximumFractionDigits: 0
         });
     }
+    
+    // Fungsi Untuk order Ulang
+    function handleReorder(buttonEl, idKendaraan, mode) {
+        const originalText = buttonEl.textContent;
+        buttonEl.disabled = true;
+        buttonEl.textContent = "Processing...";
+
+        fetch("../TubesPWD_D_1/garage.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                action: "reorder",
+                id_kendaraan: idKendaraan,
+                mode: mode
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    window.location.href = result.redirect || "cart.xhtml";
+                } else {
+                    alert(result.message || "Gagal menambahkan item ke keranjang.");
+                    buttonEl.disabled = false;
+                    buttonEl.textContent = originalText;
+                }
+            })
+            .catch(error => {
+                console.error("Reorder error:", error);
+                alert("Terjadi kesalahan koneksi ke server.");
+                buttonEl.disabled = false;
+                buttonEl.textContent = originalText;
+            });
+    }
 
     function loadTransactions() {
         cardsContainer.innerHTML = '<p class="loading-text">Loading Data</p>';
 
-        // Mengambil data dari garage.php berdasarkan kategori tab yang aktif
         fetch(`../TubesPWD_D_1/garage.php?category=${encodeURIComponent(currentCategory)}`, {
             credentials: "same-origin"
         })
@@ -65,10 +100,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p class="price">${formatCurrency(item.price)}</p>
                 `;
             } else if (item.category === "history") {
-                const btnLabel = item.transaction_type === "Purchased" ? "Buy Again" : "Rent Again";
+                const isBuy = item.transaction_type === "Purchased";
+                const btnLabel = isBuy ? "Buy Again" : "Rent Again";
+                const mode = isBuy ? "buy" : "rent";
+
                 rightActionHtml = `
                     <span class="badge badge-gold">${item.status}</span>
-                    <button type="button" class="btn-primary">${btnLabel}</button>
+                    <button type="button" class="btn-primary reorder-btn" data-id="${item.id_kendaraan}" data-mode="${mode}">${btnLabel}</button>
                 `;
             }
 
@@ -88,6 +126,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     ${rightActionHtml}
                 </div>
             `;
+
+            // Pasang event klik khusus tombol Buy Again / Rent Again
+            const reorderBtn = card.querySelector(".reorder-btn");
+            if (reorderBtn) {
+                reorderBtn.addEventListener("click", function () {
+                    const idKendaraan = parseInt(this.getAttribute("data-id"), 10);
+                    const mode = this.getAttribute("data-mode");
+                    handleReorder(this, idKendaraan, mode);
+                });
+            }
 
             cardsContainer.appendChild(card);
         });
