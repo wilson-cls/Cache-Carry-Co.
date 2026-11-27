@@ -17,37 +17,62 @@
 
         /* 2. TOMBOL SIGN IN -> PROFILE*/
         const authBtn = document.getElementById("auth-btn") || document.querySelector(".signIn");
-        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-        const fullName = localStorage.getItem("username");
 
-        // Belum login dan coba buka halaman yang perlu login
-        if (!isLoggedIn && (window.location.pathname.includes("cart.xhtml") || window.location.pathname.includes("garage.xhtml"))) {
-            alert("You must sign in first to access the cart!");
-            window.location.href = "register.xhtml"; // Arahkan kembali ke index / sign in
-        }
+        if (authBtn){
+            fetch("../Cache-Carry-Co. PWD-D/auth-status.php").then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to get login status");
+                    }
+                    return response.json();
+                })
+                .then(user => {
+                    if (user.isLoggedIn){
+                        // Ambil huruf pertama dari nama pengguna
+                        const initial = user.nama.charAt(0).toUpperCase();
+                        // Tombol profile
+                        const profileBtn = document.createElement("button");
+                        profileBtn.className = "profile-initial";
+                        profileBtn.innerText = initial;
+                        profileBtn.title = "Profile - " + user.nama;
+                        profileBtn.type = "button";
+                        profileBtn.style.cssText = `
+                            width: 40px;
+                            height: 40px;
+                            border: none;
+                            border-radius: 15px;
+                            background-color: #FCA311;
+                            color: #1E1E1E;
+                            font-family: 'Plus Jakarta Sans', sans-serif;
+                            font-size: 20px;
+                            font-weight: 900;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            text-align: center;
+                            appearance: none;
+                        `;
+                        // Klik prorfile lalu ntar pindah halaman profile
+                        profileBtn.onclick = function (){
+                            window.location.href = "profile.xhtml";
+                        };
+                        authBtn.replaceWith(profileBtn);
+                    }else{
+                        // Belum login, jadi tetap tampil Sign In
+                        authBtn.innerText = "Sign In";
+                        authBtn.onclick = function (){
+                            window.location.href = "login.xhtml";
+                        };
 
-        if (isLoggedIn && authBtn) {
-            const profileImg = document.createElement("img");
-            profileImg.src = "../Cache-Carry-Co. PWD-D/images/Login.svg";
-            profileImg.alt = "Profile Logo"
-            profileImg.style.width = "40px";
-            profileImg.style.height = "40px";
-            profileImg.style.objectFit = "cover";
-            profileImg.style.cursor = "pointer";
-            profileImg.title = `Logged in as ${fullName} (Klik untuk Logout)`;
-            authBtn.replaceWith(profileImg);
-            profileImg.onclick = function () {
-                if (confirm(`Keluar dari akun ${fullName}?`)) {
-                    localStorage.removeItem("isLoggedIn");
-                    localStorage.removeItem("username");
-                    location.reload();
-                }
-            };
-        }else if (authBtn){
-            // Belum login tetap tombol "Sign In"
-            authBtn.innerText = "Sign In";
-            authBtn.onclick = function () {
-                window.location.href = "register.xhtml";
-            };
+                        // Proteksi buat yang perlu login dulu
+                        const currentPage = window.location.pathname;
+                        if (currentPage.includes("cart.xhtml") || currentPage.includes("garage.xhtml") || currentPage.includes("profile.xhtml")){
+                            alert("You must sign in first!");
+                            window.location.href = "login.xhtml";
+                        }
+                    }
+                }).catch(error => {
+                    console.error("Authentication error:", error);
+                });
         }
     });

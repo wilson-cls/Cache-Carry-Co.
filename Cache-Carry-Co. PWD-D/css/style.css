@@ -111,26 +111,26 @@ body::-webkit-scrollbar {
     justify-content: center;
 }
 
-.hero-content h3 {
+.hero-content h3{
     font-size: 42px;
     line-height: 1.2;
     margin-bottom: 18px;
     font-weight: 700;
 }
 
-.hero-content p {
+.hero-content p{
     font-size: 15px;
     line-height: 1.6;
     color: #d1d5db;
     margin-bottom: 32px;
 }
 
-.button-group {
+.button-group{
     display: flex;
     gap: 16px;
 }
 
-.btn {
+.btn{
     padding: 12px 24px;
     border-radius: 8px;
     font-size: 14px;
@@ -139,13 +139,13 @@ body::-webkit-scrollbar {
     border: none;
 }
 
-.btn-primary {
+.btn-primary{
     background-color: #FCA311;
     color: #111111;
     font-weight: 700;
 }
 
-.btn-secondary {
+.btn-secondary{
     background-color: transparent;
     color: #ffffff;
     border: 1px solid #F3F3F3;
