@@ -47,7 +47,7 @@
             // Belum login tetap tombol "Sign In"
             authBtn.innerText = "Sign In";
             authBtn.onclick = function () {
-                window.location.href = "signIn.xhtml";
+                window.location.href = "register.xhtml";
             };
         }
     });
