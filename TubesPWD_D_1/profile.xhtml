@@ -1,103 +1,59 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="id" lang="id">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <!-- buka jalur koneksi lebih awal ke server Google Fonts sebelum file font-nya diunduh -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <!-- mengunduh file font Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
 
-    <!-- buka jalur koneksi lebih awal ke server Google Fonts sebelum file font-nya diunduh -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossorigin="anonymous"
-    />
-    <!-- mengunduh file font Plus Jakarta Sans -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
-      rel="stylesheet"
-    />
+  <link rel="stylesheet" href="../TubesPWD_D_1/css/style.css" />
+  <link rel="stylesheet" href="../TubesPWD_D_1/css/profile.css" />
+  <link rel="icon" type="image/svg+xml" href="../TubesPWD_D_1/images/Logo.svg" />
+  <title>Cache-Carry-Co.</title>
+</head>
 
-    <link rel="stylesheet" href="../TubesPWD_D_1/css/style.css" />
-    <link rel="stylesheet" href="../TubesPWD_D_1/css/profile.css" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="../TubesPWD_D_1/images/Logo.svg"
-    />
-    <title>Profile - Cache-Carry-Co.</title>
-  </head>
-
-  <body>
-    <div id="navbar">
-      <div id="logo">
-        <a href="../TubesPWD_D_1/index.xhtml">
-          <img src="../TubesPWD_D_1/images/Logo.svg" alt="logo" />
-          <h2>Cache-Carry-Co.</h2>
-        </a>
+<body>
+  <div id="main-profile">
+    <div id="main-profile-frame">
+      <!-- nampilin foto avata -->
+      <div id="user-avatar">
+        <div class="profile-initial">-</div>
+        <h2 class="nama-user" id="nama-user">-</h2>
       </div>
 
-      <!-- nanti pakai JS WAJIB nambahin class ke menu yang diclik -->
-      <div id="navMenu">
-        <a href="../TubesPWD_D_1/index.xhtml">Home</a>
-        <a href="../TubesPWD_D_1/vehicle.xhtml">Vehicle</a>
-        <a href="../TubesPWD_D_1/garage.xhtml">Garage</a>
-        <a href="../TubesPWD_D_1/cart.xhtml">Cart</a>
-      </div>
-
-      <div id="profile">
-        <button type="button" class="logo-profile" id="profile-btn">
-          <img src="images/Login.svg" alt="logo-profile" />
-        </button>
-      </div>
-    </div>
-
-    <!-- Bagian Foto profile & username -->
-    <div id="head-profile">
-      <div id="profile-card">
-        <div id="avatar-wrapper">
-          <img
-            src="images/profileimg.svg"
-            alt="Foto Profil Pengguna"
-            class="avatar"
-          />
+      <!-- Info User -->
+      <div class="data-user">
+        <div class="data">
+          <span class="datalabel">Username</span>
+          <span class="datavalue" id="username">-</span>
         </div>
-        <h2><span id="username">@Tmsxxx123</span></h2>
+        <div class="data">
+          <span class="datalabel">Email</span>
+          <span class="datavalue" id="email">-</span>
+        </div>
+        <div class="data">
+          <span class="datalabel">Phone</span>
+          <span class="datavalue" id="nomor_telepon">-</span>
+        </div>
+        <div class="data">
+          <span class="datalabel">Address</span>
+          <span class="datavalue" id="address">-</span>
+        </div>
+      </div>
+
+      <!-- aksi -->
+      <div class="profileActions">
+        <button type="button" class="tombol" id="back">Back</button>
+        <button type="button" class="tombol" id="edit">Edit</button>
+        <button type="button" class="tombol" id="logout">Sign Out</button>
       </div>
     </div>
+  </div>
+  
+  <script src="../TubesPWD_D_1/js/script.js"></script>
+  <script src="../TubesPWD_D_1/js/profile.js"></script>
+</body>
 
-    <!-- Bagian Informasi Data User (Nama, Email, dsb) -->
-    <div id="profile-content">
-      <div id="profile-content-box">
-        <div class="atribut-profile">
-          <p><span class="label-profile">Name</span></p>
-          <p><span id="name-value" class="field-value">Thomas Wilson</span></p>
-        </div>
-        <div class="atribut-profile">
-          <p><span class="label-profile">Email</span></p>
-          <p>
-            <span id="email-value" class="field-value"
-              >ThomasWilson@yahoo.com</span
-            >
-          </p>
-        </div>
-        <div class="atribut-profile">
-          <p><span class="label-profile">Phone Number</span></p>
-          <p>
-            <span id="phone-value" class="field-value">+628-XXXX-XXXX</span>
-          </p>
-        </div>
-        <div class="atribut-profile">
-          <p><span class="label-profile">Address</span></p>
-          <p>
-            <span id="address-value" class="field-value">User Address</span>
-          </p>
-        </div>
-        <!-- Bagian Tombol Sign Out -->
-        <div class="profile-actions">
-          <button type="button" id="btn-sign-out">Sign Out</button>
-        </div>
-      </div>
-    </div>
-
-    <script src="../TubesPWD_D_1/js/profile.js"></script>
-  </body>
 </html>

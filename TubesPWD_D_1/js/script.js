@@ -75,11 +75,8 @@
                     console.error("Authentication error:", error);
                 });
         }
-    });
 
-
-
-            /* 3. Tombol Explore Marketplace --> Vehicle 
+         /* 3. Tombol Explore Marketplace --> Vehicle 
                   Tombol List a Vehicle --> Garage
             */ 
 
@@ -98,3 +95,4 @@
                 window.location.href = "../TubesPWD_D_1/garage.xhtml";
             };
         }
+    });

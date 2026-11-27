@@ -1,103 +1,182 @@
-body {
-  font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+#main-profile{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at bottom, #95bbe93f 0%, #090a0f 100%);
+  box-sizing: border-box;
 }
 
-#main-profile {
+#main-profile-frame{
+  background-color: rgba(20, 22, 28, 0.255);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(252, 162, 17, 0.092);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  padding: 24px;
+  border-radius: 25px;
+  width: 35%;
+  height: 80vh;
+  position: relative;
+  z-index: 20;
+}
+
+#user-avatar{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.profile-initial{
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background-color: #FCA311;
+  color: #1E1E1E;
+  font-size: 28px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
 }
 
-#profile-btn {
-  background-color: #1e1e1e;
-  border: none;
+.nama-user{
+  font-size: 20px;
+  font-weight: 600;
+  color: #f3f3f3;
+  margin-bottom: 18px;
 }
 
-#profile-card {
-  text-align: center;
-  padding: 24px;
+/* data user */
+.data-user{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-#avatar-wrapper {
-  display: inline-block;
+.data{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 14px;
+  padding: 12px 15px;
 }
 
-.avatar {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  object-fit: cover;
+.datalabel{
+  color: #a8a8a8;
 }
 
-#profile-card h2 {
+.datavalue{
+  color: #f3f3f3;
+  font-weight: 500;
+}
+
+/* ini buat tombol-tombolnya */
+.profileActions{
+  display: flex;
+  gap: 10px;
+  margin-top: 50px;
+}
+
+.profileActions button{
+  flex: 1;
+  height: 42px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tombol{
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #a8a8a8;
+}
+
+#back:hover{
+  background: rgba(255, 255, 255, 0.08);
   color: #f3f3f3;
 }
 
-#profile-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
+#logout:hover{
+  border-color: #ff4d4d;
+  color: #ff4d4d;
 }
 
-#profile-content-box {
-  background-color: #f3f3f3;
-  border: 1px solid #fca311;
-  padding: 30px;
-  width: 50%;
-  height: 100%;
-  border-radius: 30px;
+#edit:hover{
+  background: rgba(246, 179, 45, 0.17);
+  opacity: 0.9;
 }
 
-#profile-content-box .atribut-profile {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 15px 5px;
-  border-bottom: 1px solid #1e1e1e;
+/* Efek saat kotak input sedang diketik/diklik (focus) */
+.data-user input[type="text"]:focus {
+  border-color: #ffa800;
+  box-shadow: 0 0 8px rgba(252, 163, 17, 0.3);
 }
 
-.name-profile .label-profile {
-  font-size: 16px;
-  font-weight: 500;
-  color: #1e1e1e;
+/* ini kode buat animasi ku tambahin biar ga flat aja */
+.js-snowflake {
+  position: absolute;
+  top: -10px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.85;
+  z-index: 10;
+  animation: snowfall linear forwards;
 }
 
-.name-profile .field-value {
-  font-size: 16px;
-  font-weight: 400;
-  color: #1e1e1e;
-  text-align: right;
-  max-width: 70%;
-  word-break: break-word;
+@keyframes snowfall {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(var(--fall-distance)) translateX(var(--wind));
+    opacity: 0;
+  }
 }
 
-.profile-actions {
-  margin-top: 55px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px 0;
-}
-
-#btn-sign-out {
+#main-profile::after{
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  max-width: 180px;
-  padding: 12px 24px;
-  font-weight: 600;
-  background-color: #fca311;
-  border-radius: 680px;
-  border: 1px solid #fca311;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  font-weight: bold;
-  font-size: 18px;
-  color: #1e1e1e;
-  cursor: pointer;
+  background: linear-gradient(
+    to top,
+    rgba(235, 244, 255, 0.9) 0%,
+    rgba(195, 215, 238, 0.45) 55%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 15;
+  box-shadow: 0 -4px 18px rgba(180, 210, 245, 0.35);
+  animation: buildSnow 12s ease-out forwards;
 }
 
-#btn-sign-out:hover {
-  background-color: #f3f3f3;
-  color: #fca311;
+@keyframes buildSnow{
+  0% {
+    height: 0px;
+    opacity: 0;
+  }
+  100% {
+    height: 25px; 
+    opacity: 1;
+  }
 }
+
+/* ==== */
