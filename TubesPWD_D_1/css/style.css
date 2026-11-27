@@ -68,6 +68,36 @@ body::-webkit-scrollbar {
 #navMenu a{
     color: #F3F3F3;
     text-decoration: none;
+    position: relative;
+    padding-bottom: 5px;
+    transition: color 0.3s ease;
+}
+
+#navMenu a::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #FCA311;
+    transition: width 0.3s ease;
+}
+
+#navMenu a:hover{
+    color: #FCA311;
+}
+
+#navMenu a:hover::after{
+    width: 100%;
+}
+
+#navMenu a.active{
+    color: #FCA311;
+}
+
+#navMenu a.active::after{
+    width: 100%;
 }
 
 #navMenu a.active{
