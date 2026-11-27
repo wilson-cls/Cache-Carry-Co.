@@ -29,6 +29,7 @@
                 "success" => false,
                 "message" => "Invalid request data"
             ]);
+            exit;
         }
 
         $action = $input['action'] ?? '';
@@ -61,43 +62,25 @@
             exit;
         }
 
-        // action 1: add to card
+        // action 1: add to cart
         if ($action === 'add_to_cart') {
             if (!isset($_SESSION['cart'])) {
                 $_SESSION['cart'] = [];
             }
 
-            $found = false;
+            $_SESSION['cart'][$id] = [
+                'id' => $id,
+                'mode' => $mode,
+                'units' => $units,
+                'duration_days' => $days
+            ];
 
-            foreach($_SESSION['cart'] as $index => $item) {
-                if((int)$item === $id) {
-                    $_SESSION['cart'][$index] = [
-                        'id' => $id,
-                        'mode' => $mode,
-                        'units' => $units,
-                        'duration_days' => $days
-                    ];
+            echo json_encode([
+                "success" => true,
+                "message" => "Vehicle added to cart"
+            ]);
 
-                    $found = true;
-                    break;
-                }
-
-                if(!$found) {
-                    $_SESSION['cart'][] = [
-                        'id' => $id,
-                        'mode' => $mode,
-                        'units' => $units,
-                        'duration_days' => $days
-                    ];
-                }
-
-                echo json_encode([
-                    "success" => true,
-                    "message" => "Vehicle added to cart"
-                ]);
-
-                exit;
-            }
+            exit;
         }
 
         // action 2: checkout langsung

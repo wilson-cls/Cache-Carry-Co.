@@ -449,8 +449,13 @@ function addToCart() {
 
   syncBeliSewaAction('add_to_cart', payload)
     .then(function (result) {
-      if (result && result.success === false) {
-        showBeliSewaPopup(result.message || 'Failed to add to cart');
+      if (!result || result.success !== true) {
+        showBeliSewaPopup(result ? result.message : 'Failed to add to cart');
+        
+        if(result && result.redirect) {
+          window.location.href = result.redirect;
+        }
+
         return;
       }
       showBeliSewaPopup((currentVehicle.nama || 'Vehicle') + ' added to cart');
