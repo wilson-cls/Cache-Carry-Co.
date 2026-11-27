@@ -59,21 +59,42 @@
 
         // action 1: add to cart
         if ($action === 'add_to_cart') {
-            if (!isset($_SESSION['cart'])) {
-                $_SESSION['cart'] = [];
+            $idUser = (int)$_SESSION['id_pengguna'];
+
+            $stmt = mysqli_prepare($conn, "INSERT INTO keranjang
+                (id_pengguna, id_kendaraan, tipe, jumlah, jumlah_hari)
+                VALUES (?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    tipe = VALUES(tipe),
+                    jumlah = VALUES(jumlah),
+                    jumlah_hari = VALUES(jumlah_hari)
+            ");
+
+            mysqli_stmt_bind_param(
+                $stmt,
+                "iissi",
+                $idUser,
+                $id,
+                $mode,
+                $units,
+                $days
+            );
+
+            if (mysqli_stmt_execute($stmt)) {
+                mysqli_stmt_close($stmt);
+
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Vehicle added to cart"
+                ]);
+            } else {
+                mysqli_stmt_close($stmt);
+
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Failed to add vehicle to cart"
+                ]);
             }
-
-            $_SESSION['cart'][$id] = [
-                'id' => $id,
-                'mode' => $mode,
-                'units' => $units,
-                'duration_days' => $days
-            ];
-
-            echo json_encode([
-                "success" => true,
-                "message" => "Vehicle added to cart"
-            ]);
 
             exit;
         }

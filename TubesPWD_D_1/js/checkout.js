@@ -360,28 +360,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return endDate;
   }
 
-  // Perbaikan: hitung end date otomatis berdasarkan start date yang dipilih user dan jumlah hari sewa (durationDays)
-  function syncRentalDateSection(isRentMode, durationDays, inclusiveDays) {
-    var parts = startDateValue.split("-").map(Number);
-
-    if (parts.length !== 3 || parts.some(isNaN)) {
-        return null;
-    }
-
-    var startDate = new Date(parts[0], parts[1] - 1, parts[2]);
-
-    var days = Math.max(1, parseInt(durationDays, 10) || 1);
-
-    // Hari terakhir penyewaan dihitung sebagai tanggal mulai + (jumlah hari - 1)
-    var endDate = new Date(
-        startDate.getFullYear(),
-        startDate.getMonth(),
-        startDate.getDate() + days - 1
-    );
-
-    return endDate;
-  }
-
   // kartu untuk satu item di daftar checkout
   function createItemElement(item) {
     var card = document.createElement("div");

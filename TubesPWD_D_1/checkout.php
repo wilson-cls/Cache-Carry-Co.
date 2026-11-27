@@ -244,7 +244,9 @@
 
                 mysqli_stmt_bind_param($stmtPembelian, "isi", $idPengguna, $alamat, $totalPembelian);
 
-                mysqli_stmt_execute($stmtPembelian);
+                if (!mysqli_stmt_execute($stmtPembelian)) {
+                    throw new Exception("Failed to create purchase record.");
+                }
 
                 $idPembelian = mysqli_insert_id($conn);
 
@@ -279,10 +281,13 @@
                         $jumlah
                     );
 
-                    mysqli_stmt_execute($stmtStok);
+
+                    if (!mysqli_stmt_execute($stmtStok)) {
+                        throw new Exception("Failed to update purchase stock.");
+                    }
 
                     if (mysqli_stmt_affected_rows($stmtStok) !== 1) {
-                        throw new Exception("Stok kendaraan untuk pembelian tidak mencukupi.");
+                        throw new Exception("Insufficient vehicle stock for purchase.");
                     }
 
                     mysqli_stmt_bind_param(
@@ -295,7 +300,9 @@
                         $subtotal
                     );
 
-                    mysqli_stmt_execute($stmtDetailBeli);
+                    if (!mysqli_stmt_execute($stmtDetailBeli)) {
+                        throw new Exception("Failed to save purchase details.");
+                    }
                 }
             }
 
@@ -305,7 +312,6 @@
                 $idKendaraan = (int)$item['id_kendaraan'];
                 $jumlah = (int)$item['units'];
                 $hargaSatuan = (int)$item['harga_satuan'];
-                $subtotal = (int)$item['subtotal'];
 
                 // Ambil tanggal khusus kendaraan ini
                 if (!isset($tanggalPerKendaraan[$idKendaraan])) {
@@ -313,7 +319,11 @@
                 }
 
                 $tanggalMulai = $tanggalPerKendaraan[$idKendaraan]['tanggal_mulai'];
-                $jumlahHari = $tanggalPerKendaraan[$idKendaraan]['jumlah_hari'];
+                $jumlahHari = (int)$tanggalPerKendaraan[$idKendaraan]['jumlah_hari'];
+
+                if ($jumlahHari < 1 || $jumlahHari !== (int)$item['duration_days']) {
+                    throw new Exception("Rental duration does not match checkout data.");
+                }
 
                 // Validasi tanggal dan durasi
                 $tanggalValid = DateTime::createFromFormat('!Y-m-d', $tanggalMulai);
@@ -325,6 +335,15 @@
                 ) {
                     throw new Exception("Rent date or duration for vehicle $idKendaraan is invalid");
                 }
+
+                $hariIni = new DateTime('today');
+                
+                if ($tanggalValid < $hariIni) {
+                    throw new Exception("Rental start date cannot be in the past.");
+                }
+
+                // Hitung ulang subtotal berdasarkan harga, jumlah unit, dan durasi sewa
+                $subtotal = $hargaSatuan * $jumlah * $jumlahHari;
 
                 // Hitung total sewa
                 $totalPenyewaan += $subtotal;
@@ -348,7 +367,9 @@
                     $subtotal
                 );
 
-                mysqli_stmt_execute($stmtPenyewaan);
+                if (!mysqli_stmt_execute($stmtPenyewaan)) {
+                    throw new Exception("Failed to create rental record.");
+                }
 
                 $idPenyewaan = mysqli_insert_id($conn);
 
@@ -368,10 +389,12 @@
                     $jumlah
                 );
 
-                mysqli_stmt_execute($stmtStokSewa);
+                if (!mysqli_stmt_execute($stmtStokSewa)) {
+                    throw new Exception("Failed to update rental stock.");
+                }
 
                 if (mysqli_stmt_affected_rows($stmtStokSewa) !== 1) {
-                    throw new Exception("Stok kendaraan untuk penyewaan tidak mencukupi.");
+                    throw new Exception("Insufficient vehicle stock for rental.");
                 }
 
                 // Insert ke detail_penyewaan
@@ -393,7 +416,35 @@
                     $subtotal
                 );
 
-                mysqli_stmt_execute($stmtDetailSewa);
+                if (!mysqli_stmt_execute($stmtDetailSewa)) {
+                    throw new Exception("Failed to save rental details.");
+                }
+            }
+
+            if ($sumberCheckout === 'cart') {
+                $stmtHapusCart = mysqli_prepare(
+                    $conn,
+                    "DELETE FROM keranjang
+                    WHERE id_pengguna = ? AND id_kendaraan = ?"
+                );
+
+                foreach ($daftarCheckout as $checkoutItem) {
+
+                    $idKendaraan = (int)$checkoutItem['id_kendaraan'];
+
+                    mysqli_stmt_bind_param(
+                        $stmtHapusCart,
+                        "ii",
+                        $idUser,
+                        $idKendaraan
+                    );
+
+                    if (!mysqli_stmt_execute($stmtHapusCart)) {
+                        throw new Exception("Failed to remove checked-out vehicle from cart.");
+                    }
+                }
+
+                mysqli_stmt_close($stmtHapusCart);
             }
 
             mysqli_commit($conn);
@@ -402,14 +453,7 @@
             if ($sumberCheckout === 'direct') {
                 unset($_SESSION['checkout']);
             } else {
-                if(isset($_SESSION['cart'])) {
-                    foreach($daftarCheckout as $checkoutItem) {
-                        $id = $checkoutItem['id_kendaraan'];
-                        unset($_SESSION['cart'][$id]);
-                    }
-               }
-
-               unset($_SESSION['checkout_cart']);
+                unset($_SESSION['checkout_cart']);
             }
 
             keluar([
