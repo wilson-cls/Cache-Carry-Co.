@@ -161,7 +161,7 @@
     margin-top: 12px;
 }
 
-.btn-primary{
+.btn-garage{
     background-color: #FCA311;
     color: #141414;
     border: none;
@@ -169,13 +169,14 @@
     padding: 8px 18px;
     font-size: 13px;
     font-weight: 700;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.btn-primary:hover{
-    background-color: #e0920e;
+.btn-garage:hover{
+    background-color: transparent;
+    color: #F3F3F3;
+    border: 1px solid #F3F3F3;
 }
 
 .loading-text{

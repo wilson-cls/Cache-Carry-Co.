@@ -190,7 +190,7 @@ body::-webkit-scrollbar {
     color: #F3F3F3;
     transform: translateY(-3px);
     border: 1px solid #F3F3F3;
-    box-shadow: 0 4px 12px #F3F3F3;
+    box-shadow: 0 4px 8px #F3F3F3;
 }
 
 .btn-secondary{

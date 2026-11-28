@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 rightActionHtml = `
                     <span class="badge badge-transit">${item.status}</span>
                     <p class="price">${formatCurrency(item.price)}</p>
-                    <button type="button" class="btn-primary">Track Order</button>
+                    <button type="button" class="btn-garage">Track Order</button>
                 `;
             } else if (item.category === "rentals") {
                 rightActionHtml = `
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 rightActionHtml = `
                     <span class="badge badge-gold">${item.status}</span>
-                    <button type="button" class="btn-primary reorder-btn" data-id="${item.id_kendaraan}" data-mode="${mode}">${btnLabel}</button>
+                    <button type="button" class="btn-garage reorder-btn" data-id="${item.id_kendaraan}" data-mode="${mode}">${btnLabel}</button>
                 `;
             }
 
