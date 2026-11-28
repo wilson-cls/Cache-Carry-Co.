@@ -1,0 +1,405 @@
+#admin-dashboard {
+    display: flex;
+    min-height: 100vh;
+    background-color: #1E1E1E;
+    color: #F3F3F3;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
+
+#admin-dashboard * {
+    box-sizing: border-box;
+}
+
+#admin-dashboard h1,
+#admin-dashboard h2,
+#admin-dashboard h3,
+#admin-dashboard h4,
+#admin-dashboard p {
+    margin: 0;
+}
+
+
+#sidebar {
+    width: 250px;
+    min-width: 250px;
+    min-height: 100vh;
+    background-color: #1E1E1E;
+    border-right: 1px solid #383838;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+}
+
+.sidebar-logo {
+    padding: 5px 10px 30px;
+    border-bottom: 1px solid #383838;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.sidebar-logo h2 {
+    color: #FCA311;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.sidebar-logo p {
+    color: #A0A0A0;
+    font-size: 16px;
+    margin-top: 8px;
+    letter-spacing: 2px;
+}
+
+
+/* SIDEBAR MENU */
+
+.sidebar-menu {
+    margin-top: 30px;
+}
+
+.menu-title {
+    color: #A0A0A0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 0 10px;
+    margin-bottom: 15px !important;
+}
+
+
+/* TAMPILAN SEMUA MENU */
+
+#menu-dashboard,
+#menu-vehicles,
+#menu-users,
+#menu-transactions {
+    display: flex;
+    align-items: center;
+
+    min-height: 44px;
+    padding: 12px 14px;
+    margin-bottom: 7px;
+
+    border-radius: 7px;
+
+    color: #A0A0A0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+
+    transition: all 0.3s ease;
+}
+
+
+/* KONDISI HOVER */
+
+#menu-dashboard:hover,
+#menu-vehicles:hover,
+#menu-users:hover,
+#menu-transactions:hover {
+    background-color: #2A2A2A;
+    color: #FCA311;
+    text-decoration: none;
+}
+
+
+/* KONDISI ACTIVE */
+
+#menu-dashboard.active,
+#menu-vehicles.active,
+#menu-users.active,
+#menu-transactions.active {
+    background-color: #2A2A2A;
+    color: #FCA311;
+    border-left: 3px solid #FCA311;
+    text-decoration: none;
+}
+
+
+/* MENGATUR LINK YANG SUDAH DIKUNJUNGI */
+
+#menu-dashboard:visited,
+#menu-vehicles:visited,
+#menu-users:visited,
+#menu-transactions:visited {
+    color: #A0A0A0;
+    text-decoration: none;
+}
+
+#menu-dashboard.active:visited,
+#menu-vehicles.active:visited,
+#menu-users.active:visited,
+#menu-transactions.active:visited {
+    color: #FCA311;
+}
+
+
+/* SIGN OUT BUTTON */
+
+#sign-out-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    margin-top: 18px;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 7px;
+    background-color: #FCA311;
+    color: #1E1E1E;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#sign-out-button:hover {
+    background-color: #F3F3F3;
+    color: #1E1E1E;
+}
+
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #383838;
+}
+
+
+#main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 32px 38px;
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 25px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid #383838;
+}
+
+.header-title h1 {
+    color: #F3F3F3;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.header-title p {
+    color: #A0A0A0;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-avatar {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: #FCA311;
+    color: #1E1E1E;
+}
+
+.admin-avatar span {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.admin-detail h4 {
+    color: #F3F3F3;
+    font-size: 13px;
+}
+
+.admin-detail p {
+    color: #A0A0A0;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+
+/* DASHBOARD OVERVIEW */
+
+#dashboard-overview {
+    background-color: #2A2A2A;
+    border: 1px solid #383838;
+    border-radius: 12px;
+
+    padding: 28px 30px;
+    margin-bottom: 38px;
+}
+
+.overview-heading {
+    margin-bottom: 28px;
+}
+
+.overview-heading h2 {
+    color: #F3F3F3;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.overview-container {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.overview-item {
+    padding: 8px 24px;
+    border-right: 1px solid #494949;
+}
+
+.overview-item:first-child {
+    padding-left: 0;
+}
+
+.overview-item:last-child {
+    padding-right: 0;
+    border-right: none;
+}
+
+.overview-item p {
+    color: #A0A0A0;
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.overview-item h3 {
+    color: #FCA311;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+
+/* Transaksi */
+
+#recent-transactions {
+    margin-top: 35px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    color: #F3F3F3;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.section-heading p {
+    color: #A0A0A0;
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+#view-all {
+    color: #FCA311;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: color 0.3s ease;
+}
+
+#view-all:hover {
+    color: #F3F3F3;
+}
+
+
+/* TABLE */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+
+    background-color: #2A2A2A;
+    border: 1px solid #383838;
+    border-radius: 10px;
+}
+
+#recent-transactions table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+#recent-transactions thead {
+    background-color: #383838;
+}
+
+#recent-transactions th {
+    color: #F3F3F3;
+    font-size: 12px;
+    font-weight: 600;
+
+    padding: 16px 20px;
+}
+
+#recent-transactions td {
+    color: #A0A0A0;
+    font-size: 12px;
+
+    padding: 17px 20px;
+    border-bottom: 1px solid #414141;
+}
+
+#recent-transactions tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+#recent-transactions tbody tr:hover {
+    background-color: #333333;
+}
+
+#recent-transactions tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* TRANSACTION STATUS */
+
+.status {
+    display: inline-block;
+    padding: 6px 10px;
+
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.status.processing {
+    background-color: rgba(252, 163, 17, 0.15);
+    color: #FCA311;
+}
+
+.status.completed {
+    background-color: rgba(243, 243, 243, 0.12);
+    color: #F3F3F3;
+}
+

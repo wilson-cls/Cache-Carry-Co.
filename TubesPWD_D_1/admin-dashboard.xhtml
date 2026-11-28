@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="id" lang="id">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Admin Dashboard - Cache-Carry-Co.</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" type="text/css" href="css/admin-dashboard.css" />
+</head>
+
+<body>
+  
+    <div id="admin-dashboard">
+
+        <!-- SIDEBAR -->
+        <div id="sidebar">
+
+            <div class="sidebar-logo">
+                <img src="../TubesPWD_D_1/images/Logo.svg" alt="logo" />
+                <h2>CACHE CARRY CO.</h2>
+            </div>
+
+            <div class="sidebar-menu">
+
+                <a href="admin-dashboard.xhtml" id="menu-dashboard" class="menu-link active">
+                    <span>Dashboard</span>
+                        </a>
+
+                        <a href="#" id="menu-vehicles" class="menu-link">
+                            <span>Vehicles</span>
+                        </a>
+
+                        <a href="#" id="menu-users" class="menu-link">
+                            <span>Users</span>
+                        </a>
+
+                        <a href="#" id="menu-transactions" class="menu-link">
+                            <span>Transactions</span>
+                        </a>
+
+                        <button type="button" id="sign-out-button">
+                            Sign Out
+                        </button>
+                        
+            </div>
+
+        </div>
+
+
+        <!-- MAIN CONTENT -->
+        <div id="main-content">
+
+            <!-- HEADER -->
+            <div class="main-header">
+
+                <div class="header-title">
+                    <h1>Dashboard</h1>
+                    <p>Welcome to Cache Carry Co. Admin Panel</p>
+                </div>
+
+                <div class="admin-info">
+
+                    <div class="admin-avatar">
+                        <span>-</span>
+                    </div>
+ 
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD OVERVIEW -->
+            <div id="dashboard-overview">
+
+                <div class="overview-heading">
+                    <h2>Dashboard Overview</h2>
+                </div>
+
+                <div class="overview-container">
+
+                    <div class="overview-item">
+                        <p>Total Purchases</p>
+                        <h3 id="total-purchases">—</h3>
+                    </div>
+
+                    <div class="overview-item">
+                        <p>Total Rentals</p>
+                        <h3 id="total-rentals">—</h3>
+                    </div>
+
+                    <div class="overview-item">
+                        <p>Processing</p>
+                        <h3 id="total-processing">—</h3>
+                    </div>
+
+                    <div class="overview-item">
+                        <p>Completed</p>
+                        <h3 id="total-completed">—</h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BAGIAN TRANKSAKSI -->
+            <div id="recent-transactions">
+
+                <div class="section-heading">
+
+                    <div>
+                        <h2>Recent Transactions</h2>
+                        <p>Latest marketplace transactions</p>
+                    </div>
+
+                    <a href="#" id="view-all">View All</a>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="transaction-list">
+
+                            <tr>
+                                <td id="id-user"><span>-</span></td>
+                                <td id="nama-user">-</td>
+                                <td id="kendaraan">-</td>
+                                <td id="tipe">-</td>
+                                <td id="status">
+                                    <span class="status processing">-</span>
+                                </td>
+                                <td id="tanggal">-</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+  <script type="text/javascript" src="js/script.js"></script>
+  <script type="text/javascript" src="js/admin-dashboard.js"></script>
+</body>
+
+</html>
