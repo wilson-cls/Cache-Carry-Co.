@@ -223,6 +223,12 @@ ALTER TABLE `keranjang`
   ADD KEY `id_kendaraan` (`id_kendaraan`);
 
 --
+-- Unique Key buat 'keranjang'
+--
+ALTER TABLE keranjang
+ADD UNIQUE KEY unik_user_kendaraan (id_pengguna, id_kendaraan);
+
+--
 -- Indexes for table `pembelian`
 --
 ALTER TABLE `pembelian`
