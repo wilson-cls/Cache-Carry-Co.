@@ -83,13 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        // Kirim perubahan ke server (profile.php), lalu perbarui tampilan hanya jika server responnya sukses 
-        fetch("../TubesPWD_D_1/profile.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "same-origin",
-          body: JSON.stringify(updatedData)
-        })
+        // Kirim perubahan ke server 
+        fetch("../TubesPWD_D_1/profile.php", {method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify(updatedData)})
           .then(response => response.json())
           .then(result => {
             if (result.success) {
@@ -128,10 +123,10 @@ document.addEventListener("DOMContentLoaded", function () {
                   emailInput.focus();
                 }
               }
-              alert(result.message || "Gagal memperbarui profil.");
+              alert(result.message || "Failed to update profile.");
             }
           })
-          .catch(err => console.error("Gagal menyimpan ke server:", err));
+          .catch(err => console.error("Failed to save to the server: ", err));
       }});
     }
     
@@ -143,7 +138,6 @@ document.addEventListener("DOMContentLoaded", function () {
           window.location.href = "../TubesPWD_D_1/logout.php";
         }});
     }
-// =============================================================================
   // ini buat animasi
   const profileContainer = document.getElementById("main-profile");
 
