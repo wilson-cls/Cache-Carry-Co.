@@ -4,11 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let currentCategory = "orders";
 
-    function formatCurrency(amount) {
-        return "$" + Number(amount).toLocaleString("en-US", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
+    function formatCurrency(amount){
+        var angka = Math.max(0, Math.round(Number(amount) || 0));
+        return 'IDR ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
     
     // Fungsi Untuk order Ulang
@@ -34,14 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (result.success) {
                     window.location.href = result.redirect || "cart.xhtml";
                 } else {
-                    alert(result.message || "Gagal menambahkan item ke keranjang.");
+                    alert(result.message || "Failed to add item to the cart.");
                     buttonEl.disabled = false;
                     buttonEl.textContent = originalText;
                 }
             })
             .catch(error => {
                 console.error("Reorder error:", error);
-                alert("Terjadi kesalahan koneksi ke server.");
+                alert("There was a connection error to the server.");
                 buttonEl.disabled = false;
                 buttonEl.textContent = originalText;
             });
@@ -92,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 rightActionHtml = `
                     <span class="badge badge-transit">${item.status}</span>
                     <p class="price">${formatCurrency(item.price)}</p>
-                    <button type="button" class="btn-primary">Track Order</button>
+                    <button type="button" class="btn-garage">Track Order</button>
                 `;
             } else if (item.category === "rentals") {
                 rightActionHtml = `
@@ -106,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 rightActionHtml = `
                     <span class="badge badge-gold">${item.status}</span>
-                    <button type="button" class="btn-primary reorder-btn" data-id="${item.id_kendaraan}" data-mode="${mode}">${btnLabel}</button>
+                    <button type="button" class="btn-garage reorder-btn" data-id="${item.id_kendaraan}" data-mode="${mode}">${btnLabel}</button>
                 `;
             }
 

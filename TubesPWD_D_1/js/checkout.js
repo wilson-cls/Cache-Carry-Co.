@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Format angka menjadi mata uang Rupiah (tanpa desimal)
   function formatRupiah(amount) {
     var num = Math.max(0, Math.round(Number(amount || 0)));
-    return "Rp" + num.toLocaleString("id-ID");
+    return "IDR " + num.toLocaleString("id-ID");
   }
 
   // Ambil value opsi metode pembayaran yang dipilih user
