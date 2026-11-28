@@ -286,3 +286,11 @@ body::-webkit-scrollbar {
     display: flex;
     margin-bottom: 10px;
 }
+
+.profile-initial {
+    transition: all 0.2s ease;
+}
+
+.profile-initial:hover {
+    background-color: #F3F3F3 !important;
+}
