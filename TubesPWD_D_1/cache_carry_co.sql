@@ -145,7 +145,7 @@ CREATE TABLE `pembelian` (
   `tanggal_beli` datetime DEFAULT current_timestamp(),
   `alamat_pengiriman` text NOT NULL,
   `total_harga` bigint(20) NOT NULL,
-  `status` enum('proceed','sent','done') NOT NULL DEFAULT 'proceed'
+  `status` enum('processed','shipped','done') NOT NULL DEFAULT 'processed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -178,7 +178,7 @@ CREATE TABLE `penyewaan` (
   `tanggal_mulai` date NOT NULL,
   `alamat_pengiriman` text NOT NULL,
   `total_harga` bigint(20) NOT NULL,
-  `status` enum('proceed','sent','done') NOT NULL DEFAULT 'proceed'
+  `status` enum('processed','shipped','done') NOT NULL DEFAULT 'processed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
