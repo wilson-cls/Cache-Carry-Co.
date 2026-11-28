@@ -12,7 +12,7 @@ if (!isset($_SESSION['id_pengguna'])) {
     http_response_code(401);
     echo json_encode([
         'success' => false,
-        'message' => 'Sesi login berakhir. Silakan login kembali.'
+        'message' => 'Your login session has ended. Please log in again.'
     ]);
     exit;
 }
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!$user) {
         http_response_code(404);
-        echo json_encode(['success' => false, 'message' => 'Pengguna tidak ditemukan.']);
+        echo json_encode(['success' => false, 'message' => 'User not found.']);
         exit;
     }
 
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(400);
         echo json_encode([
             'success' => false,
-            'message' => 'Format data tidak valid.'
+            'message' => 'User not found.'
         ]);
         exit;
     }
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($nama === '' || $nama === '-') {
         echo json_encode([
             'success' => false,
-            'message' => 'Nama tidak boleh kosong.'
+            'message' => 'Name cant be empty.'
         ]);
         exit;
     }
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([
             'success' => false,
             'error_type' => 'invalid_email',
-            'message' => 'Format email tidak valid. Contoh: nama@domain.com'
+            'message' => 'Invalid email format. Example: name@domain.com'
         ]);
         exit;
     }
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([
             'success'    => false,
             'error_type' => 'duplicate_email',
-            'message'    => 'Email "' . $email . '" sudah terdaftar pada akun lain. Silakan gunakan email yang berbeda.'  //Messagenya ditampilin javascript default (diatas gitu) kalau email duplikat
+            'message'    => 'Email "' . $email . '" already registered on another account. Please use a different email.'  //Messagenya ditampilin javascript default (diatas gitu) kalau email duplikat
         ]);
         
         exit;
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(500);
         echo json_encode([
             'success' => false,
-            'message' => 'Gagal menyimpan perubahan profil.'
+            'message' => 'Failed to save profile changes.'
         ]);
         exit;
     }
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     echo json_encode([
         'success' => true,
-        'message' => 'Profil berhasil diperbarui.',
+        'message' => 'Profile successfully updated.',
         'data'    => [
             'nama'          => $nama,
             'email'         => $email,
