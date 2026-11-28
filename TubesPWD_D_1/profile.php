@@ -63,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nomorTelepon = trim((string) ($input['nomor_telepon'] ?? ''));
     $address      = trim((string) ($input['address'] ?? ''));
     $password     = (string) ($input['password'] ?? '');
+    $currentPassword = (string) ($input['current_password'] ?? '');
 
     // Validasi wajib isi untuk nama & email
     if ($nama === '' || $nama === '-') {
@@ -93,6 +94,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
             exit;
         }
+
+        if (trim($currentPassword) === ''){
+            echo json_encode([
+                'success' => false,
+                'error_type' => 'invalid_current_password',
+                'message' => 'Please enter your current password.'
+            ]);
+            exit;
+        }
+
+        // ambil hash password lama dari database
+        $passwordStmt = mysqli_prepare($conn, "SELECT password from pengguna WHERE id_pengguna = ?");
+        mysqli_stmt_bind_param($passwordStmt, 'i', $idPengguna);
+        mysqli_stmt_execute($passwordStmt);
+
+        $passwordResult = mysqli_fetch_assoc(mysqli_stmt_get_result($passwordStmt));
+
+        mysqli_stmt_close($passwordStmt);
+
+        // verifikasi password lama
+        if(!$passwordResult || !password_verify($currentPassword, $passwordResult['password'])) {
+            echo json_encode([
+                'success' => false,
+                'error_type' => 'wrong_current_password',
+                'message' => 'Current password does not match.',
+            ]);
+            exit;
+        }
+
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $updatePassword = true;
     }

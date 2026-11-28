@@ -58,7 +58,25 @@ document.addEventListener("DOMContentLoaded", function () {
           if (id === "nama-user") {
             el.innerHTML = `<input type="text" id="input-${id}" value="${safeVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 12px; border-radius: 15px; font-size: 16px; font-weight: 600; width: 200px; text-align: center;" />`;
           }else if(id === 'password'){
-            el.innerHTML = `<input type="password" id="input-${id}" placeholder="**********" value="${safeVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 8px; border-radius: 15px; font-size: 13px; width: 160px; text-align: right;" />`;
+            el.innerHTML = `
+              <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+
+                  <input
+                      type="password"
+                      id="input-current-password"
+                      placeholder="Current Password"
+                      style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 8px; border-radius: 15px; font-size: 13px; width: 160px;"
+                  />
+
+                  <input
+                      type="password"
+                      id="input-password"
+                      placeholder="New Password"
+                      style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 8px; border-radius: 15px; font-size: 13px; width: 160px;"
+                  />
+
+              </div>
+            `;
           }else{
             el.innerHTML = `<input type="text" id="input-${id}" value="${safeVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 8px; border-radius: 15px; font-size: 13px; width: 160px; text-align: right;" />`;
           }
@@ -72,17 +90,36 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         }
 
+        // Kembalikan border Current Password ke putih saat user mengetik ulang
+        const currentPasswordInput = document.getElementById("input-current-password");
+
+        if (currentPasswordInput) {
+          currentPasswordInput.addEventListener("input", function () {
+            this.style.borderColor = "white";
+          });
+        }
+
         btnEdit.innerText = "Save";
         isEditing = true;
       }else{
         // Ambil nilai baru dari input dan kembalikan ke teks
         const updatedData = {};
-        fields.forEach(id => {const inputEl = document.getElementById(`input-${id}`); //dia yang nyalain biar bisa ngedit
-        if(inputEl){
-          // Ubah key 'nama-user' menjadi 'nama' agar cocok dengan parameter di profile.php
-          const payloadKey = id === "nama-user" ? "nama" : id;
-          updatedData[payloadKey] = inputEl.value.trim();
-        }});
+        fields.forEach(id => {
+          const inputEl = document.getElementById(`input-${id}`); //dia yang nyalain biar bisa ngedit
+          if(inputEl){
+            // Ubah key 'nama-user' menjadi 'nama' agar cocok dengan parameter di profile.php
+            const payloadKey = id === "nama-user" ? "nama" : id;
+            updatedData[payloadKey] = inputEl.value.trim();
+          }
+        });
+
+        // ambil password lama 
+
+        const currentPasswordInput = document.getElementById("input-current-password");
+
+        if(currentPasswordInput){
+          updatedData.current_password = currentPasswordInput.value;
+        }
 
         if (!updatedData.nama || !updatedData.email) {
           alert("Name or email can't be empty");
@@ -114,6 +151,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
               btnEdit.innerText = "Edit";
               isEditing = false;
+            }else if(result.error_type === "wrong_current_password" || result.error_type === "invalid_current_password"){
+              const currentPasswordInput = document.getElementById("input-current-password");
+
+              if(currentPasswordInput){
+                currentPasswordInput.style.borderColor = "#ff4d4d";
+                currentPasswordInput.focus();
+              }
+
+              alert(result.message);
             }else if(result.error_type === "duplicate_email"){
               // Peringatan khusus jika email sudah digunakan akun lain
               const emailInput = document.getElementById("input-email");
