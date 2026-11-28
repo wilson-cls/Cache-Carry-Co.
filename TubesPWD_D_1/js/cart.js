@@ -18,7 +18,7 @@ function getStok(item) {
 // Format angka menjadi Rupiah
 function formatRupiah(num) {
   var angka = Math.max(0, Math.round(Number(num) || 0));
-  return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return 'IDR ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 // Hitung subtotal per item

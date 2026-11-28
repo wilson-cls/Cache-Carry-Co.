@@ -123,6 +123,10 @@
     color: #CCCCCC;
 }
 
+#cards-container{
+    margin-top: 20px;
+}
+
 .card-action{
     display: flex;
     flex-direction: column;
