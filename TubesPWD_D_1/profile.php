@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email        = trim((string) ($input['email'] ?? ''));
     $nomorTelepon = trim((string) ($input['nomor_telepon'] ?? ''));
     $address      = trim((string) ($input['address'] ?? ''));
+    $password     = (string) ($input['password'] ?? '');
 
     // Validasi wajib isi untuk nama & email
     if ($nama === '' || $nama === '-') {
@@ -81,6 +82,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // cek password kalau biar tetap sesuai ama yang di register aturannya
+    $updatePassword = false;
+    $hashedPassword = '';
+    if ($password !== '') {
+        if (strlen($password) < 8) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Password must be at least 8 characters long.'
+            ]);
+            exit;
+        }
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $updatePassword = true;
+    }
+    
     // Cek apakah email sudah dipakai akun lain (karena kolom email UNIQUE di DB)
     $checkStmt = mysqli_prepare(
         $conn,
@@ -106,14 +122,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dbPhone   = ($nomorTelepon === '' || $nomorTelepon === '-') ? null : $nomorTelepon;
     $dbAddress = ($address === '' || $address === '-') ? null : $address;
 
-    // Update data tanpa mengubah username
-    $updateStmt = mysqli_prepare(
-        $conn,
-        "UPDATE pengguna
-         SET nama = ?, email = ?, nomor_telepon = ?, alamat_default = ?
-         WHERE id_pengguna = ?"
-    );
-    mysqli_stmt_bind_param($updateStmt, 'ssssi', $nama, $email, $dbPhone, $dbAddress, $idPengguna);
+    // cek pass ikut update atau ga
+    if($updatePassword){
+        $updateStmt = mysqli_prepare(
+            $conn,
+            "UPDATE pengguna
+             SET nama = ?, email = ?, nomor_telepon = ?, alamat_default = ?, password = ?
+             WHERE id_pengguna = ?"
+        );
+        mysqli_stmt_bind_param($updateStmt, 'sssssi', $nama, $email, $dbPhone, $dbAddress, $hashedPassword, $idPengguna);
+    }else{
+        $updateStmt = mysqli_prepare(
+            $conn,
+            "UPDATE pengguna
+             SET nama = ?, email = ?, nomor_telepon = ?, alamat_default = ?
+             WHERE id_pengguna = ?"
+        );
+        mysqli_stmt_bind_param($updateStmt, 'ssssi', $nama, $email, $dbPhone, $dbAddress, $idPengguna);
+    }
 
     if (!mysqli_stmt_execute($updateStmt)) {
         mysqli_stmt_close($updateStmt);
@@ -141,4 +167,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 http_response_code(405);
-echo json_encode(['success' => false, 'message' => 'Method tidak diizinkan.']);
+echo json_encode(['success' => false, 'message' => 'Method not allowed.']);

@@ -6,7 +6,7 @@
         $id = $_SESSION['id_pengguna'];
         $query = mysqli_prepare($conn,
             "SELECT username, nama, email, nomor_telepon,
-                    alamat_default AS address, role
+                    alamat_default AS address, password, role
             FROM pengguna
             WHERE id_pengguna = ?"
         );
@@ -23,7 +23,8 @@
                 'email' => $user['email'],
                 'nomor_telepon' => $user['nomor_telepon'],
                 'address' => $user['address'],
-                'role' => $user['role']
+                'role' => $user['role'],
+                'password' => $user['password']
             ]);
         }else{
             echo json_encode([

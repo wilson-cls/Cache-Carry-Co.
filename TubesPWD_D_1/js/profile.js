@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const elEmail = document.getElementById("email");
       const elPhone = document.getElementById("nomor_telepon");
       const elAddress = document.getElementById("address");
+      const elPassword = document.getElementById("password");
 
       if (elInitial) elInitial.innerText = initial;
       if (elNama) elNama.innerText = user.nama || "-";
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (elEmail) elEmail.innerText = user.email || "-";
       if (elPhone) elPhone.innerText = user.nomor_telepon || "-";
       if (elAddress) elAddress.innerText = user.address || "-";
+      if (elPassword) elPassword.innerText = user.password ? "**********" : "-";
     }else{
       alert("You must sign in first!");
       window.location.href = "login.xhtml";
@@ -44,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btnEdit) {
         btnEdit.addEventListener("click", function () {
         // Ubah 'username' ke 'nama-user' karna username tidak bisa diedit, sedangkan nama bisa diedit
-        const fields = ["nama-user", "email", "nomor_telepon", "address"];
+        const fields = ["nama-user", "email", "nomor_telepon", "address", "password"];
         if (!isEditing) {
           fields.forEach(id => {const el = document.getElementById(id);
         if (el){
@@ -92,10 +94,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 const containerEl = document.getElementById(id);
                 const payloadKey = id === "nama-user" ? "nama" : id;
                 if (containerEl) {
-                  containerEl.innerText = result.data[payloadKey] || "-";
+                  if(id === "password"){
+                    containerEl.innerText = "**********";
+                  }else{
+                    containerEl.innerText = result.data[payloadKey] || "-";
+                  }
                 }
               });
-
               // Biar huruf inisial avatar sesuai
               const elInitial = document.querySelector(".profile-initial");
               // Ambil huruf pertama dari result.data.nama langsung dari DB
@@ -105,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
               btnEdit.innerText = "Edit";
               isEditing = false;
-            } else if (result.error_type === "duplicate_email") {
+            }else if(result.error_type === "duplicate_email"){
               // Peringatan khusus jika email sudah digunakan akun lain
               const emailInput = document.getElementById("input-email");
               if (emailInput) {
