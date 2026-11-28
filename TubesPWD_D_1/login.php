@@ -46,8 +46,13 @@
             $_SESSION['nama'] = $user['nama'];
             $_SESSION['role'] = $user['role'];
 
+            if($user['role'] === 'admin') {
+                $redirect = 'admin-dashboard.xhtml';
+            } else {
+                $redirect = 'index.xhtml';
+            }
             // BERHASIL: Pindah ke index.xhtml
-            header('Location: ./index.xhtml');
+            header('Location: ./' . $redirect);
             exit;
         }
     }
