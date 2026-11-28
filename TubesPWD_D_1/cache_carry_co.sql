@@ -165,6 +165,23 @@ CREATE TABLE `pengguna` (
   `role` enum('user','admin') NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Data admin for table `pengguna`
+--
+
+INSERT INTO `pengguna`
+(`username`, `nama`, `email`, `password`, `nomor_telepon`, `alamat_default`, `role`)
+VALUES
+(
+    'admin',
+    'Administrator',
+    'admin@cachecarryco.com',
+    '$2y$12$Gz1vB1xXi3u0invl9FVGWu16eNUlR0TRFkHY5A0ts.RNicwQrLz/e',
+    NULL,
+    NULL,
+    'admin'
+);
+
 -- --------------------------------------------------------
 
 --
