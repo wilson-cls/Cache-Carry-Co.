@@ -50,12 +50,16 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!isEditing) {
           fields.forEach(id => {const el = document.getElementById(id);
         if (el){
-          const currentVal = el.innerText === "-" ? "" : el.innerText;
-          //Mencegah karakter tanda kutip (") merusak atribut value HTML
+          let currentVal = el.innerText === "-" ? "" : el.innerText;
+          if(id === "password"){
+            currentVal = "";
+          }
           const safeVal = currentVal.replace(/"/g, "&quot;");
           if (id === "nama-user") {
             el.innerHTML = `<input type="text" id="input-${id}" value="${safeVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 12px; border-radius: 15px; font-size: 16px; font-weight: 600; width: 200px; text-align: center;" />`;
-          } else {
+          }else if(id === 'password'){
+            el.innerHTML = `<input type="password" id="input-${id}" placeholder="**********" value="${safeVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 8px; border-radius: 15px; font-size: 13px; width: 160px; text-align: right;" />`;
+          }else{
             el.innerHTML = `<input type="text" id="input-${id}" value="${safeVal}" style="background: none; border: 1px solid white; color: #f3f3f3; padding: 4px 8px; border-radius: 15px; font-size: 13px; width: 160px; text-align: right;" />`;
           }
         }});
@@ -81,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }});
 
         if (!updatedData.nama || !updatedData.email) {
-          alert("Nama atau email tidak boleh kosong!");
+          alert("Name or email can't be empty");
           return;
         }
 
@@ -95,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const payloadKey = id === "nama-user" ? "nama" : id;
                 if (containerEl) {
                   if(id === "password"){
-                    containerEl.innerText = "**********";
+                    containerEl.innerText = "**********" || "-";
                   }else{
                     containerEl.innerText = result.data[payloadKey] || "-";
                   }
@@ -119,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 emailInput.select();
               }
               alert("Peringatan Email Duplikat:\n" + result.message);
-            } else {
+            }else{
               //Tampilkan pesan error dari PHP, tapi biasanya email sudah dipakai, karna email wajib diisi user dan harus unique
               if (result.error_type === "invalid_email") {
                 const emailInput = document.getElementById("input-email");
