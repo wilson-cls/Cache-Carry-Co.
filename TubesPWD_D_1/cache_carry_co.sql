@@ -145,7 +145,7 @@ CREATE TABLE `pembelian` (
   `tanggal_beli` datetime DEFAULT current_timestamp(),
   `alamat_pengiriman` text NOT NULL,
   `total_harga` bigint(20) NOT NULL,
-  `status` enum('processed','shipped','done') NOT NULL DEFAULT 'processed'
+  `status` enum('processed','shipped','done', 'cancelled') NOT NULL DEFAULT 'processed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -195,7 +195,7 @@ CREATE TABLE `penyewaan` (
   `tanggal_mulai` date NOT NULL,
   `alamat_pengiriman` text NOT NULL,
   `total_harga` bigint(20) NOT NULL,
-  `status` enum('processed','shipped','done') NOT NULL DEFAULT 'processed'
+  `status` enum('processed','shipped','done', 'cancelled') NOT NULL DEFAULT 'processed'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -240,10 +240,18 @@ ALTER TABLE `keranjang`
   ADD KEY `id_kendaraan` (`id_kendaraan`);
 
 --
+-- Add status kendaraan for table 'kendaraan'
+--
+
+ALTER TABLE `kendaraan`
+ADD `status_kendaraan` ENUM(`aktif`, `nonaktif`)
+NOT NULL DEFAULT `aktif`;
+
+--
 -- Unique Key buat 'keranjang'
 --
-ALTER TABLE keranjang
-ADD UNIQUE KEY unik_user_kendaraan (id_pengguna, id_kendaraan);
+ALTER TABLE `keranjang`
+ADD UNIQUE KEY `unik_user_kendaraan` (`id_pengguna`, `id_kendaraan`);
 
 --
 -- Indexes for table `pembelian`
